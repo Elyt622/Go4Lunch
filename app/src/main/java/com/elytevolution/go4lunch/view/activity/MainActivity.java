@@ -9,7 +9,6 @@ import android.view.View;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.databinding.ActivityMainBinding;
 import com.elytevolution.go4lunch.presenter.MainPresenter;
-import com.elytevolution.go4lunch.view.adapter.ViewPagerAdapter;
 import com.elytevolution.go4lunch.view.adapter.ViewPagerFragmentAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -51,11 +50,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         listImageViewPager.add(R.drawable.baseline_list_black_18dp);
         listImageViewPager.add(R.drawable.baseline_group_black_18dp);
 
-        viewPager.setAdapter(new ViewPagerAdapter(this, listNameViewPager, viewPager));
+        viewPager.setAdapter(new ViewPagerFragmentAdapter(getSupportFragmentManager(), getLifecycle()));
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setIcon(listImageViewPager.get(position))).attach();
         for(String list : listNameViewPager)
             tabLayout.getTabAt(listNameViewPager.indexOf(list)).setText(list);
-
-        viewPager.setAdapter(new ViewPagerFragmentAdapter(getSupportFragmentManager(), getLifecycle()));
     }
 }

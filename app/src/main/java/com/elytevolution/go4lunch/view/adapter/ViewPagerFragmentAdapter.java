@@ -1,6 +1,5 @@
 package com.elytevolution.go4lunch.view.adapter;
 
-import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.view.fragment.ListFragment;
 import com.elytevolution.go4lunch.view.fragment.MapsFragment;
 import com.elytevolution.go4lunch.view.fragment.WorkmatesFragment;
