@@ -1,8 +1,12 @@
 package com.elytevolution.go4lunch.view.adapter;
 
+import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.view.fragment.ListFragment;
 import com.elytevolution.go4lunch.view.fragment.MapsFragment;
 import com.elytevolution.go4lunch.view.fragment.WorkmatesFragment;
+import com.google.android.gms.maps.MapFragment;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,9 +18,12 @@ public class ViewPagerFragmentAdapter extends FragmentStateAdapter {
 
     private FragmentManager fm;
 
-    public ViewPagerFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+    private List<Restaurant> restaurants;
+
+    public ViewPagerFragmentAdapter(List<Restaurant> restaurants, @NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
         this.fm = fragmentManager;
+        this.restaurants = restaurants;
     }
 
     @Override
@@ -31,7 +38,7 @@ public class ViewPagerFragmentAdapter extends FragmentStateAdapter {
             case 0:
                 return MapsFragment.newInstance();
             case 1:
-                return ListFragment.newInstance();
+                return ListFragment.newInstance(restaurants);
             default:
                 return WorkmatesFragment.newInstance();
         }

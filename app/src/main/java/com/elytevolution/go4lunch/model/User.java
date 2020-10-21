@@ -2,7 +2,7 @@ package com.elytevolution.go4lunch.model;
 
 public class User {
 
-    private int id;
+    private String uid;
 
     private String name;
 
@@ -10,19 +10,17 @@ public class User {
 
     private String email;
 
-    private String picture;
+    private String urlPicture;
 
-    public User(int id, String name, String surname, String email, String picture) {
-        this.id = id;
+    public User(String uid, String name, String surname, String email, String urlPicture) {
+        this.uid = uid;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.picture = picture;
+        this.urlPicture = urlPicture;
     }
 
-    public int getId() {
-        return id;
-    }
+    public String getId() { return uid; }
 
     public String getName() {
         return name;
@@ -36,7 +34,7 @@ public class User {
         return email;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getUrlPicture() {
+        return urlPicture;
     }
 }

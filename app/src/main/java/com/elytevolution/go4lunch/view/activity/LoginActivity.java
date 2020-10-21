@@ -14,6 +14,8 @@ import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements LoginPresenter.View {
 
@@ -50,4 +52,9 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
         // 4 - Handle SignIn Activity response on activity result
         presenter.handleResponseAfterSignIn(constraintLayout, requestCode, resultCode, data);
     }
+
+    protected FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
+
+    protected Boolean isCurrentUserLogged(){ return (this.getCurrentUser() != null); }
+
 }

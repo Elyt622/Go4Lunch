@@ -1,6 +1,5 @@
 package com.elytevolution.go4lunch.view.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
+
         List<Restaurant> list;
 
         public RecyclerViewAdapter(List<Restaurant> list1){
@@ -33,10 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         holder.textViewName.setText(list.get(position).getName());
-        holder.textViewDistance.setText(String.valueOf(list.get(position).getDistance()));
         holder.textViewAddress.setText(list.get(position).getAddress());
-        holder.textViewOpen.setText(String.valueOf(list.get(position).getOpen()));
-        holder.textViewVote.setText(String.valueOf(list.get(position).getChoiceRestaurantForUser().size()));
 
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,44 +1,41 @@
 package com.elytevolution.go4lunch.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.net.URL;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public class Restaurant {
 
-    private int id;
+    private String uid;
 
     private String name;
 
     private String address;
 
-    private int rate;
+    @Nullable
+    private double rate;
 
-    private int open;
+    @Nullable
+    private String urlPicture;
 
-    private int close;
+    private LatLng latLng;
 
-    private int distance;
-
-    private String type;
-
-    private String picture;
-
+    @Nullable
     private List<User> choiceRestaurantForUser;
 
-    public Restaurant(int id, String name, String address, int rate, int open, int close, int distance, String type, String picture, List<User> choiceRestaurantForUser) {
-        this.id = id;
+    public Restaurant(String uid, String name, String address, LatLng latLng, @Nullable List<User> choiceRestaurantForUser) {
+        this.uid = uid;
         this.name = name;
         this.address = address;
-        this.rate = rate;
-        this.open = open;
-        this.close = close;
-        this.distance = distance;
-        this.type = type;
-        this.picture = picture;
+        this.latLng = latLng;
         this.choiceRestaurantForUser = choiceRestaurantForUser;
     }
 
-    public int getId() {
-        return id;
+    public String getId() {
+        return uid;
     }
 
     public String getName() {
@@ -49,31 +46,21 @@ public class Restaurant {
         return address;
     }
 
-    public int getRate() {
+    public double getRate() {
         return rate;
     }
 
-    public int getOpen() {
-        return open;
+    @Nullable
+    public String getUrlPicture() {
+        return urlPicture;
     }
 
-    public int getClose() {
-        return close;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getPicture() {
-        return picture;
-    }
-
+    @Nullable
     public List<User> getChoiceRestaurantForUser() {
         return choiceRestaurantForUser;
+    }
+
+    public LatLng getLatLng() {
+        return latLng;
     }
 }
