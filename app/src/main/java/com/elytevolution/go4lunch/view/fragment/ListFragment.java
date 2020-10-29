@@ -80,11 +80,8 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
     }
 
     private void updateUI(View view, RecyclerView recyclerView) {
-        synchronized (tests){
             adapter = new RecyclerViewAdapter(tests, location);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-            tests.notifyAll();
-        }
     }
 }

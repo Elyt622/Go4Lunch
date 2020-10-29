@@ -1,5 +1,6 @@
 package com.elytevolution.go4lunch.view.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.NearBySearch;
+import com.elytevolution.go4lunch.view.activity.DetailRestaurantActivity;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -100,9 +102,12 @@ import androidx.recyclerview.widget.RecyclerView;
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(v.getContext(), DetailRestaurantActivity.class);
+                intent.putExtra("ID", results.get(position).getPlace_id());
+                v.getContext().startActivity(intent);
             }
         });
+
     }
 
     private double distFrom(double lat1, double lng1, double lat2, double lng2) {
@@ -142,6 +147,7 @@ import androidx.recyclerview.widget.RecyclerView;
             textViewDistance = itemView.findViewById(R.id.text_view_distance_restaurant);
 
             constraintLayout = itemView.findViewById(R.id.constraint_layout_item);
+
         }
     }
 }
