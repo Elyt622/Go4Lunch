@@ -5,77 +5,107 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraint_layout_item"
     android:layout_width="match_parent"
-    android:layout_height="120dp">
+    android:layout_height="110dp">
 
     <TextView
         android:id="@+id/name_restaurant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="10dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/image_view_restaurant" />
 
     <TextView
         android:id="@+id/text_view_address_type_restaurant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
+        android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/image_view_restaurant" />
 
     <TextView
         android:id="@+id/text_view_open_restaurant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="60dp"
+        android:textSize="12sp"
+        android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/image_view_restaurant" />
 
     <TextView
         android:id="@+id/text_view_distance_restaurant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="8dp"
+        android:text="130m"
+        android:textColor="@color/quantum_grey"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_vote_restaurant"
+        app:layout_constraintTop_toTopOf="@+id/image_view_restaurant" />
 
     <TextView
         android:id="@+id/text_view_vote_restaurant"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="19dp"
+        android:layout_marginEnd="4dp"
+        android:text="(3)"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/image_view_vote_restaurant"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_restaurant"
+        app:layout_constraintStart_toEndOf="@+id/image_view_vote_restaurant" />
 
     <ImageView
-        android:id="@+id/image_view_people_restaurant"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/image_view_vote_restaurant"
+        android:layout_width="21dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_restaurant"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_distance_restaurant" />
 
     <ImageView
-        android:id="@+id/image_view_rate_restaurant"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/image_view_rate_restaurant1"
+        android:layout_width="21dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@android:drawable/btn_star_big_on"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_restaurant"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_vote_restaurant" />
 
     <ImageView
-        android:id="@+id/imge_view_restaurant"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
+        android:id="@+id/image_view_rate_restaurant2"
+        android:layout_width="21dp"
+        android:layout_height="21dp"
+        android:layout_marginEnd="2dp"
+        android:src="@android:drawable/btn_star_big_on"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_rate_restaurant1"
+        app:layout_constraintTop_toTopOf="@+id/image_view_rate_restaurant1" />
+
+    <ImageView
+        android:id="@+id/image_view_rate_restaurant3"
+        android:layout_width="21dp"
+        android:layout_height="21dp"
+        android:layout_marginEnd="1dp"
+        android:src="@android:drawable/btn_star_big_on"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_rate_restaurant2"
+        app:layout_constraintTop_toTopOf="@+id/image_view_rate_restaurant2" />
+
+    <ImageView
+        android:id="@+id/image_view_restaurant"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

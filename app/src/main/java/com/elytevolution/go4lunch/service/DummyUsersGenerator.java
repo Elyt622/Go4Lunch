@@ -2,11 +2,10 @@ package com.elytevolution.go4lunch.service;
 
 import com.elytevolution.go4lunch.model.User;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DummyRestaurantGenerator {
+public class DummyUsersGenerator {
     public static List<User> USERS = Arrays.asList(
             new User("1", "Yohan", "Test" ,"yohan.bernole@gmail.com", ""),
             new User("2", "Joseph","Test" ,"joseph.dupond@gmail.com", ""),
@@ -18,7 +17,4 @@ public class DummyRestaurantGenerator {
             new User("8", "Jane","Test" ,"jane.doe@gmail.com", ""),
             new User("9", "Franck", "Test","franck.email@gmail.com", "")
     );
-
-    static List<User> generateUsers() { return new ArrayList<>(USERS); }
-
 }

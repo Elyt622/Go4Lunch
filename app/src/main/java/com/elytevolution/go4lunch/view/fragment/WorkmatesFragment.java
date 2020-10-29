@@ -10,11 +10,6 @@ import android.view.ViewGroup;
 
 import com.elytevolution.go4lunch.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link WorkmatesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class WorkmatesFragment extends Fragment {
 
     public WorkmatesFragment() {
