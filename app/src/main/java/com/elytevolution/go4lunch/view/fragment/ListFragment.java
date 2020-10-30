@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,8 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
 
     private View view;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private LatLng location;
 
     public ListFragment(LatLng location) {
@@ -46,16 +49,19 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
                              Bundle savedInstanceState) {
         executeHttpRequestWithRetrofit();
         view = inflater.inflate(R.layout.fragment_list, container, false);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_fragment_list);
         recyclerView = view.findViewById(R.id.recycler_view_fragment_list);
-        updateUI(view, recyclerView);
+        adapter = new RecyclerViewAdapter(tests, location);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        configureSwipeRefreshLayout();
         return view;
     }
 
     @Override
     public void onResponse(@Nullable NearBySearch tests) {
         if (tests != null) {
-            this.tests.addAll(tests.getResults());
-            updateUI(view, recyclerView);
+            updateUI(tests.getResults());
         } else {
             Log.d("DEBUG", "RESPONSE IS NULL");
         }
@@ -75,13 +81,24 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
         GooglePlaceCalls.fetchFollowing(this, convertLatLngToStringUrl(location), "5000", "restaurant", "AIzaSyBAzeJeEsP2gNXjE_7XYMaywZECaJvmQAg");
     }
 
+    // 2 - Configure the SwipeRefreshLayout
+    private void configureSwipeRefreshLayout(){
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                executeHttpRequestWithRetrofit();
+            }
+        });
+    }
+
     private String convertLatLngToStringUrl(LatLng latLng){
         return latLng.latitude+","+latLng.longitude;
     }
 
-    private void updateUI(View view, RecyclerView recyclerView) {
-            adapter = new RecyclerViewAdapter(tests, location);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+    private void updateUI(List<NearBySearch.Results> results) {
+        this.tests.clear();
+        this.tests.addAll(results);
+        adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
