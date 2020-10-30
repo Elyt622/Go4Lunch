@@ -2,8 +2,11 @@ package com.elytevolution.go4lunch.view.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,7 +29,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
 
     private TextView textViewName, textViewAddress;
 
-    private ImageView imageViewRestaurant, imageViewCall, imageViewLike, imageViewWebsite;
+    private ImageView imageViewRestaurant, imageViewCall, imageViewLike, imageViewWebsite, imageViewFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +46,25 @@ public class DetailRestaurantActivity extends AppCompatActivity {
         imageViewCall = findViewById(R.id.image_view_call_detail_activity);
         imageViewLike = findViewById(R.id.image_view_like_detail_activity);
         imageViewWebsite = findViewById(R.id.image_view_website_detail_activity);
+        imageViewFavorite = findViewById(R.id.image_view_favorite_detail_activity);
+
         textViewName = findViewById(R.id.text_view_name_detail_activity);
         textViewAddress = findViewById(R.id.text_view_address_detail_activity);
 
         imageViewCall.setImageResource(R.drawable.ic_call_black_18dp);
         imageViewWebsite.setImageResource(R.drawable.ic_public_18px);
         imageViewLike.setImageResource(R.drawable.ic_star_rate_18px);
+
+        imageViewLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imageViewFavorite.getVisibility() == View.VISIBLE) {
+                    imageViewFavorite.setVisibility(View.INVISIBLE);
+                }else{
+                    imageViewFavorite.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
     }
 
@@ -76,6 +92,27 @@ public class DetailRestaurantActivity extends AppCompatActivity {
                                 + "&key=AIzaSyBAzeJeEsP2gNXjE_7XYMaywZECaJvmQAg";
                         Glide.with(this).load(imgUrl).into(imageViewRestaurant);
                     }
+
+            imageViewCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String mobileNumber = place.getPhoneNumber();
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_DIAL); // Action for what intent called for
+                    intent.setData(Uri.parse("tel: " + mobileNumber)); // Data with intent respective action on intent
+                    startActivity(intent);
+                }
+            });
+            imageViewWebsite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri url = place.getWebsiteUri();
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(url);
+                    startActivity(i);
+                }
+            });
+
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
                 final ApiException apiException = (ApiException) exception;
