@@ -20,6 +20,7 @@ import com.elytevolution.go4lunch.view.adapter.ViewPagerFragmentAdapter;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +50,14 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         View view = binding.getRoot();
         setContentView(view);
         configureViewPagerAndTabLayout();
+        if(!isLogged()){
+            finish();
+        }
     }
 
+    private boolean isLogged(){
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
 
     private void configureViewPagerAndTabLayout() {
         viewPager = binding.mainActivityViewPager;
