@@ -20,20 +20,20 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-    public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
+    public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RecyclerViewHolder> {
 
         private List<NearBySearch.Results> results;
 
         private LatLng myLocation;
 
-        public RecyclerViewAdapter(List<NearBySearch.Results> results, LatLng location){
+        public RestaurantListAdapter(List<NearBySearch.Results> results, LatLng location){
             myLocation = location;
             this.results = results;
         }
 
     @NonNull
     @Override
-    public RecyclerViewAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RestaurantListAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.restaurant_item, parent, false);
         return new RecyclerViewHolder(view);
     }

@@ -1,8 +1,8 @@
 package com.elytevolution.go4lunch.view.adapter;
 
 import com.elytevolution.go4lunch.view.fragment.ListFragment;
-import com.elytevolution.go4lunch.view.fragment.MapsFragment;
-import com.elytevolution.go4lunch.view.fragment.WorkmatesFragment;
+import com.elytevolution.go4lunch.view.fragment.MapFragment;
+import com.elytevolution.go4lunch.view.fragment.WorkmateFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import androidx.annotation.NonNull;
@@ -33,11 +33,11 @@ public class ViewPagerFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return MapsFragment.newInstance();
+                return MapFragment.newInstance();
             case 1:
                 return ListFragment.newInstance(location);
             default:
-                return WorkmatesFragment.newInstance();
+                return WorkmateFragment.newInstance();
         }
     }
 }

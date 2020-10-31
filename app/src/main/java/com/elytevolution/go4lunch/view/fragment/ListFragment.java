@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
-import com.elytevolution.go4lunch.view.adapter.RecyclerViewAdapter;
+import com.elytevolution.go4lunch.view.adapter.RestaurantListAdapter;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
 
     private final List<NearBySearch.Results> tests = new ArrayList<>();
 
-    private RecyclerViewAdapter adapter;
+    private RestaurantListAdapter adapter;
 
     private View view;
 
@@ -51,7 +51,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
         view = inflater.inflate(R.layout.fragment_list, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe_fragment_list);
         recyclerView = view.findViewById(R.id.recycler_view_fragment_list);
-        adapter = new RecyclerViewAdapter(tests, location);
+        adapter = new RestaurantListAdapter(tests, location);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         configureSwipeRefreshLayout();

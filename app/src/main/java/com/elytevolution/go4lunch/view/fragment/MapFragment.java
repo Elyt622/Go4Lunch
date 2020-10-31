@@ -7,12 +7,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.elytevolution.go4lunch.R;
-import com.facebook.appevents.suggestedevents.ViewOnClickListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,17 +18,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment implements OnMapReadyCallback{
 
     private GoogleMap googleMap;
     private ViewPager2 viewPager2;
 
-    public MapsFragment() {
+    public MapFragment() {
         // Required empty public constructor
     }
 
-    public static MapsFragment newInstance() {
-        return (new MapsFragment());
+    public static MapFragment newInstance() {
+        return (new MapFragment());
     }
 
     @Nullable
