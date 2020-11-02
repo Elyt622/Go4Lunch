@@ -33,7 +33,7 @@ public class ViewPagerFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return MapFragment.newInstance();
+                return MapFragment.newInstance(location);
             case 1:
                 return ListFragment.newInstance(location);
             default:
