@@ -4,39 +4,34 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.elytevolution.go4lunch.MapViewInScroll;
+import com.elytevolution.go4lunch.customview.MapViewInScroll;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, GooglePlaceCalls.Callbacks {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GooglePlaceCalls.Callbacks, GoogleMap.OnMyLocationButtonClickListener,
+        GoogleMap.OnMyLocationClickListener {
 
-    MapViewInScroll mapViewInScroll;
+    private MapViewInScroll mapViewInScroll;
 
     private GoogleMap googleMap;
 
@@ -62,19 +57,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
         mapViewInScroll = view.findViewById(R.id.mapView);
         mapViewInScroll.onCreate(savedInstanceState);
         mapViewInScroll.onResume();
+        mapViewInScroll.getMapAsync(this);
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    public void onMapReady(GoogleMap map) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            map.setMyLocationEnabled(true);
+            map.setOnMyLocationButtonClickListener(this);
+            map.setOnMyLocationClickListener(this);
+        }
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-    }
 
     // Execute HTTP request and update UI
     private void executeHttpRequestWithRetrofit(){
@@ -86,13 +81,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
     }
 
     private void updateUI(List<NearBySearch.Results> results) {
-            this.tests.clear();
-            this.tests.addAll(results);
-            addMarkerOnMap();
+        this.tests.clear();
+        this.tests.addAll(results);
+        addMarkerOnMap();
     }
 
     private void addMarkerOnMap(){
         for (NearBySearch.Results result : tests) {
+            Log.d("MapsFragment","test");
             double lat = result.getGeometry().getLocation().getLat();
             double lgt = result.getGeometry().getLocation().getLng();
             LatLng latLng = new LatLng(lat, lgt);
@@ -104,6 +100,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
     @Override
     public void onResponse(@Nullable NearBySearch results) {
         if(results != null) {
+            Log.d("MapsFragment","test");
             tests.addAll(results.getResults());
             updateUI(tests);
         }
@@ -136,5 +133,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
     public void onLowMemory() {
         super.onLowMemory();
         mapViewInScroll.onLowMemory();
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(getContext(), "My location", Toast.LENGTH_SHORT)
+                .show();
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG)
+                .show();
     }
 }

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="110dp">
+    android:layout_height="90dp">
 
     <ImageView
         android:id="@+id/image_view_picture_workmates"
@@ -18,7 +18,7 @@
         android:id="@+id/text_view_user_choose_workmates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/image_view_picture_workmates"
         app:layout_constraintStart_toEndOf="@+id/image_view_picture_workmates"
         app:layout_constraintTop_toTopOf="@+id/image_view_picture_workmates" />
