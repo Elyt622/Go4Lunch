@@ -7,13 +7,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
@@ -22,12 +19,19 @@ import com.elytevolution.go4lunch.databinding.ActivityMainBinding;
 import com.elytevolution.go4lunch.presenter.MainPresenter;
 import com.elytevolution.go4lunch.view.adapter.ViewPagerFragmentAdapter;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.elytevolution.go4lunch.UserHelper.createUser;
+import static com.elytevolution.go4lunch.UserHelper.getUsersCollection;
 
 public class MainActivity extends AppCompatActivity implements MainPresenter.View {
 
@@ -54,10 +58,20 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         View view = binding.getRoot();
         setContentView(view);
         configureViewPagerAndTabLayout();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(!isLogged()){
             finish();
+        }else {
+            getUsersCollection().document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(!task.getResult().exists()){
+                        createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()));
+                    }
+                }
+            });
+            }
         }
-    }
 
     private boolean isLogged(){
         return FirebaseAuth.getInstance().getCurrentUser() != null;
