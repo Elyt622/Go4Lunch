@@ -1,4 +1,4 @@
-package com.elytevolution.go4lunch;
+package com.elytevolution.go4lunch.customview;
 
 import android.content.Context;
 import android.util.AttributeSet;

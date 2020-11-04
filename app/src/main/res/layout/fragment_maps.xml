@@ -3,10 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.elytevolution.go4lunch.MapViewInScroll
+    <com.elytevolution.go4lunch.customview.MapViewInScroll
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 
 </RelativeLayout>
