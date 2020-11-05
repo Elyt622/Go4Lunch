@@ -22,6 +22,9 @@ import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -32,8 +35,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
         GoogleMap.OnMyLocationClickListener {
 
     private MapViewInScroll mapViewInScroll;
-
-    private GoogleMap googleMap;
 
     private final List<NearBySearch.Results> tests = new ArrayList<>();
 
@@ -67,6 +68,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
             map.setMyLocationEnabled(true);
             map.setOnMyLocationButtonClickListener(this);
             map.setOnMyLocationClickListener(this);
+            addMarkerOnMap(map);
         }
     }
 
@@ -83,26 +85,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
     private void updateUI(List<NearBySearch.Results> results) {
         this.tests.clear();
         this.tests.addAll(results);
-        addMarkerOnMap();
     }
 
-    private void addMarkerOnMap(){
+    private void addMarkerOnMap(GoogleMap map){
         for (NearBySearch.Results result : tests) {
-            Log.d("MapsFragment","test");
+            Log.d("MapsFragment", String.valueOf(result.getGeometry().getLocation().getLat()));
             double lat = result.getGeometry().getLocation().getLat();
             double lgt = result.getGeometry().getLocation().getLng();
             LatLng latLng = new LatLng(lat, lgt);
-            googleMap.addMarker(new MarkerOptions().position(latLng).title(result.getName()));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            map.addMarker(new MarkerOptions().position(latLng).title(result.getName()));
         }
     }
 
     @Override
     public void onResponse(@Nullable NearBySearch results) {
         if(results != null) {
-            Log.d("MapsFragment","test");
             tests.addAll(results.getResults());
-            updateUI(tests);
+            mapViewInScroll.getMapAsync(this);
         }
     }
 
@@ -111,29 +110,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
         Log.d("Maps Fragment", "Retrofit request failed");
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mapViewInScroll.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mapViewInScroll.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mapViewInScroll.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapViewInScroll.onLowMemory();
-    }
 
     @Override
     public boolean onMyLocationButtonClick() {
