@@ -3,7 +3,7 @@ package com.elytevolution.go4lunch.view.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.Context;
@@ -16,13 +16,11 @@ import android.view.View;
 
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.databinding.ActivityMainBinding;
-import com.elytevolution.go4lunch.presenter.MainPresenter;
 import com.elytevolution.go4lunch.view.adapter.ViewPagerFragmentAdapter;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,26 +28,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.elytevolution.go4lunch.UserHelper.createUser;
-import static com.elytevolution.go4lunch.UserHelper.getUsersCollection;
+import static com.elytevolution.go4lunch.api.UserHelper.createUser;
+import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 
-public class MainActivity extends AppCompatActivity implements MainPresenter.View {
-
-    private MainPresenter presenter = new MainPresenter(this);
+public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-
-    private ViewPager2 viewPager;
-
-    private TabLayout tabLayout;
 
     private List<String> listNameViewPager = new ArrayList<>();
 
     private List<Integer> listImageViewPager = new ArrayList<>();
-
-    private LocationManager locMan;
-
-    private LatLng location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +50,17 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         if(!isLogged()){
             finish();
         }else {
-            getUsersCollection().document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(!task.getResult().exists()){
-                        createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()));
+            if (currentUser != null) {
+                getUsersCollection().document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(!task.getResult().exists()){
+                            createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()));
+                        }
                     }
-                }
-            });
+                });
             }
+        }
         }
 
     private boolean isLogged(){
@@ -78,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     private void configureViewPagerAndTabLayout() {
-        viewPager = binding.mainActivityViewPager;
-        tabLayout = binding.tabLayout;
+        ViewPager viewPager = binding.mainActivityViewPager;
+        TabLayout tabLayout = binding.tabLayout;
 
         listNameViewPager.add("Map View");
         listNameViewPager.add("List View");
@@ -88,17 +78,20 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         listImageViewPager.add(R.drawable.baseline_list_black_18dp);
         listImageViewPager.add(R.drawable.baseline_group_black_18dp);
 
-        location = startLocate();
+        LatLng location = startLocate();
 
-        viewPager.setAdapter(new ViewPagerFragmentAdapter(location, getSupportFragmentManager(), getLifecycle()));
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setIcon(listImageViewPager.get(position))).attach();
+        viewPager.setAdapter(new ViewPagerFragmentAdapter(location, getSupportFragmentManager()));
+        tabLayout.setupWithViewPager(viewPager);
+        for(int icon : listImageViewPager) {
+            tabLayout.getTabAt(listImageViewPager.indexOf(icon)).setIcon(icon);
+        }
         for (String list : listNameViewPager)
             tabLayout.getTabAt(listNameViewPager.indexOf(list)).setText(list);
     }
 
     private LatLng startLocate() {
         double lat = 0, lng = 0;
-        locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locMan != null) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Location lastLoc = locMan.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);

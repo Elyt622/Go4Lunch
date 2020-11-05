@@ -8,29 +8,23 @@ import com.google.android.gms.maps.model.LatLng;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Lifecycle;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.fragment.app.FragmentPagerAdapter;
 
-public class ViewPagerFragmentAdapter extends FragmentStateAdapter {
+public class ViewPagerFragmentAdapter extends FragmentPagerAdapter {
 
     private FragmentManager fm;
 
     private LatLng location;
 
-    public ViewPagerFragmentAdapter(LatLng location, @NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
-        super(fragmentManager, lifecycle);
+    public ViewPagerFragmentAdapter(LatLng location, @NonNull FragmentManager fragmentManager) {
+        super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.fm = fragmentManager;
         this.location = location;
     }
 
-    @Override
-    public int getItemCount() {
-        return 3;
-    }
-
     @NonNull
     @Override
-    public Fragment createFragment(int position) {
+    public Fragment getItem(int position) {
         switch (position) {
             case 0:
                 return MapFragment.newInstance(location);
@@ -39,6 +33,11 @@ public class ViewPagerFragmentAdapter extends FragmentStateAdapter {
             default:
                 return WorkmateFragment.newInstance();
         }
+    }
+
+    @Override
+    public int getCount() {
+        return 3;
     }
 }
 
