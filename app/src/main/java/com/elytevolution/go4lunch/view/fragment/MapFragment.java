@@ -15,16 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.elytevolution.go4lunch.customview.MapViewInScroll;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -34,11 +30,11 @@ import java.util.List;
 public class MapFragment extends Fragment implements OnMapReadyCallback, GooglePlaceCalls.Callbacks, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener {
 
-    private MapViewInScroll mapViewInScroll;
-
     private final List<NearBySearch.Results> tests = new ArrayList<>();
 
     private LatLng location;
+
+    private SupportMapFragment mapFragment;
 
     public MapFragment(LatLng location) {
         this.location = location;
@@ -55,16 +51,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
                              @Nullable Bundle savedInstanceState) {
         executeHttpRequestWithRetrofit();
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
-        mapViewInScroll = view.findViewById(R.id.mapView);
-        mapViewInScroll.onCreate(savedInstanceState);
-        mapViewInScroll.onResume();
-        mapViewInScroll.getMapAsync(this);
+        mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.support_map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
         return view;
     }
 
     @Override
     public void onMapReady(GoogleMap map) {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
             map.setOnMyLocationButtonClickListener(this);
             map.setOnMyLocationClickListener(this);
@@ -101,7 +99,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
     public void onResponse(@Nullable NearBySearch results) {
         if(results != null) {
             tests.addAll(results.getResults());
-            mapViewInScroll.getMapAsync(this);
+            mapFragment.getMapAsync(this);
         }
     }
 
