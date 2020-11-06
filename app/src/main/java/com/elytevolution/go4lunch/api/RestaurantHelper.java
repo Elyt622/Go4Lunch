@@ -1,4 +1,4 @@
-package com.elytevolution.go4lunch;
+package com.elytevolution.go4lunch.api;
 
 import com.elytevolution.go4lunch.model.Restaurant;
 import com.google.android.gms.tasks.Task;
