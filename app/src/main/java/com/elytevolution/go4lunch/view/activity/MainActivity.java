@@ -33,6 +33,8 @@ import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     private ActivityMainBinding binding;
 
     private List<String> listNameViewPager = new ArrayList<>();
@@ -51,12 +53,9 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }else {
             if (currentUser != null) {
-                getUsersCollection().document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(!task.getResult().exists()){
-                            createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()));
-                        }
+                getUsersCollection().document(currentUser.getUid()).get().addOnCompleteListener(task -> {
+                    if(!task.getResult().exists()){
+                        createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()));
                     }
                 });
             }
@@ -107,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
        else{
-            Log.d("PERMISSION", "PERMISSION NOT GRANTED");
+            Log.d(TAG, "PERMISSION NOT GRANTED");
         }
        return new LatLng(lat,lng);
     }

@@ -57,7 +57,7 @@ import androidx.recyclerview.widget.RecyclerView;
             holder.textViewAddress.setText(results.get(position).getVicinity());
         }
 
-        if(results.get(position).getPhotos().size() > 0) {
+        if(results.get(position).getPhotos() != null) {
             String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
                     +results.get(position).getPhotos().get(0).getPhoto_reference()
                     +"&key=AIzaSyBAzeJeEsP2gNXjE_7XYMaywZECaJvmQAg";

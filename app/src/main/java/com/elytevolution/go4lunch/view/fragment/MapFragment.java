@@ -30,6 +30,8 @@ import java.util.List;
 public class MapFragment extends Fragment implements OnMapReadyCallback, GooglePlaceCalls.Callbacks, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener {
 
+    private static final String TAG = "MapFragment";
+
     private final List<NearBySearch.Results> tests = new ArrayList<>();
 
     private LatLng location;
@@ -80,14 +82,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
         return latLng.latitude+","+latLng.longitude;
     }
 
-    private void updateUI(List<NearBySearch.Results> results) {
-        this.tests.clear();
-        this.tests.addAll(results);
-    }
-
     private void addMarkerOnMap(GoogleMap map){
         for (NearBySearch.Results result : tests) {
-            Log.d("MapsFragment", String.valueOf(result.getGeometry().getLocation().getLat()));
             double lat = result.getGeometry().getLocation().getLat();
             double lgt = result.getGeometry().getLocation().getLng();
             LatLng latLng = new LatLng(lat, lgt);
@@ -105,7 +101,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
 
     @Override
     public void onFailure() {
-        Log.d("Maps Fragment", "Retrofit request failed");
+        Log.d(TAG, "Retrofit request failed");
     }
 
 
@@ -120,7 +116,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG)
+        Toast.makeText(getContext(), "Current location:\n" + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_LONG)
                 .show();
     }
 }

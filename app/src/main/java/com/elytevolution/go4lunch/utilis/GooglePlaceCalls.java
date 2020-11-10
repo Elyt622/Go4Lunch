@@ -13,6 +13,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GooglePlaceCalls {
+    private static final String TAG = "GooglePlace" ;
+
     // 1 - Creating a callback
     public interface Callbacks {
         void onResponse(@Nullable NearBySearch results);
@@ -36,14 +38,14 @@ public class GooglePlaceCalls {
             @Override
             public void onResponse(@NonNull Call<NearBySearch> call, @NonNull Response<NearBySearch> response) {
                 // 2.5 - Call the proper callback used in controller (ListFragment)
-                Log.d("DEBUG", String.valueOf(call.request()));
+                Log.d(TAG, String.valueOf(call.request()));
                 if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onResponse(response.body());
             }
 
             @Override
             public void onFailure(@NonNull Call<NearBySearch> call, @NonNull Throwable t) {
                 // 2.5 - Call the proper callback used in controller (ListFragment)
-                Log.d("DEBUG", String.valueOf(t.getMessage()));
+                Log.d(TAG, String.valueOf(t.getMessage()));
                 if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onFailure();
             }
         });

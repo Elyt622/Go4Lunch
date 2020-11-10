@@ -9,8 +9,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.User;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -19,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapter.RecyclerViewHolder> {
 
-    private List<User> users = new ArrayList<>();
+    private List<User> users;
 
     public WorkmateListAdapter(@Nullable List<User> users){
         this.users = users;

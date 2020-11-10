@@ -2,7 +2,6 @@ package com.elytevolution.go4lunch.view.fragment;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,27 +19,20 @@ import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
 import com.elytevolution.go4lunch.view.adapter.RestaurantListAdapter;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.elytevolution.go4lunch.RestaurantHelper.createRestaurant;
-import static com.elytevolution.go4lunch.RestaurantHelper.getRestaurant;
-import static com.elytevolution.go4lunch.RestaurantHelper.getRestaurantCollection;
-import static com.elytevolution.go4lunch.UserHelper.createUser;
+import static com.elytevolution.go4lunch.api.RestaurantHelper.createRestaurant;
+import static com.elytevolution.go4lunch.api.RestaurantHelper.getRestaurantCollection;
 
 public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks{
 
-    private RecyclerView recyclerView;
+    private static final String TAG = "ListFragment";
 
     private final List<NearBySearch.Results> results = new ArrayList<>();
 
     private RestaurantListAdapter adapter;
-
-    private View view;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -60,9 +52,9 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         executeHttpRequestWithRetrofit();
-        view = inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe_fragment_list);
-        recyclerView = view.findViewById(R.id.recycler_view_fragment_list);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_fragment_list);
 
         adapter = new RestaurantListAdapter(results, location);
         recyclerView.setAdapter(adapter);
@@ -78,13 +70,13 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
             updateUI(tests.getResults());
             insertRestaurantInFireStore();
         } else {
-            Log.d("DEBUG", "RESPONSE IS NULL");
+            Log.d(TAG, "RESPONSE IS NULL");
         }
     }
 
     @Override
     public void onFailure() {
-        Log.d("DEBUG", "FAILURE");
+        Log.d(TAG, "FAILURE");
     }
 
     // ------------------------------
@@ -98,12 +90,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
 
     // 2 - Configure the SwipeRefreshLayout
     private void configureSwipeRefreshLayout(){
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                executeHttpRequestWithRetrofit();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this::executeHttpRequestWithRetrofit);
     }
 
     private String convertLatLngToStringUrl(LatLng latLng){
@@ -119,20 +106,17 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
 
     private void allRestaurant(List<NearBySearch.Results> results){
         for(NearBySearch.Results result: results){
-            restaurants.add(new Restaurant(result.getPlace_id()));
+            restaurants.add(new Restaurant(result.getPlace_id(), result.getName()));
         }
     }
 
     private void insertRestaurantInFireStore(){
         allRestaurant(results);
         for(Restaurant restaurant : restaurants)
-            getRestaurantCollection().document(restaurant.getIdPlace()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        if (!task.getResult().exists()) {
-                            createRestaurant(restaurant.getIdPlace());
-                        }
+            getRestaurantCollection().document(restaurant.getIdPlace()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    if (!task.getResult().exists()) {
+                        createRestaurant(restaurant.getIdPlace(), restaurant.getName());
                     }
                 }
             });

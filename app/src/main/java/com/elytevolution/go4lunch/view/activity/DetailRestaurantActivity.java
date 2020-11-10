@@ -1,6 +1,5 @@
 package com.elytevolution.go4lunch.view.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,19 +17,15 @@ import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.User;
 import com.elytevolution.go4lunch.view.adapter.DetailRestaurantListAdapter;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
@@ -44,8 +39,6 @@ public class DetailRestaurantActivity extends AppCompatActivity {
     private Place place;
 
     private TextView textViewName, textViewAddress;
-
-    private RecyclerView recyclerView;
 
     private DetailRestaurantListAdapter adapter;
 
@@ -75,7 +68,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
         textViewName = findViewById(R.id.text_view_name_detail_activity);
         textViewAddress = findViewById(R.id.text_view_address_detail_activity);
 
-        recyclerView = findViewById(R.id.recycler_view_users_detail_activity);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_users_detail_activity);
 
         adapter = new DetailRestaurantListAdapter(usersParticipants);
         recyclerView.setAdapter(adapter);
@@ -85,29 +78,23 @@ public class DetailRestaurantActivity extends AppCompatActivity {
         imageViewWebsite.setImageResource(R.drawable.ic_public_18px);
         imageViewLike.setImageResource(R.drawable.ic_star_rate_18px);
 
-        imageViewLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(imageViewFavorite.getVisibility() == View.VISIBLE) {
-                    imageViewFavorite.setVisibility(View.INVISIBLE);
-                }else{
-                    imageViewFavorite.setVisibility(View.VISIBLE);
-                }
+        imageViewLike.setOnClickListener(v -> {
+            if(imageViewFavorite.getVisibility() == View.VISIBLE) {
+                imageViewFavorite.setVisibility(View.INVISIBLE);
+            }else{
+                imageViewFavorite.setVisibility(View.VISIBLE);
             }
         });
     }
 
     private void getUsersIdParticipation(String idPlace){
-        getParticipationCollection().whereEqualTo("idPlace", idPlace).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document: task.getResult()){
-                        usersIdParticipation = (ArrayList<String>) document.get("uid");
-                    }
-                    if (usersIdParticipation != null) {
-                        getUserWithId(usersIdParticipation);
-                    }
+        getParticipationCollection().whereEqualTo("idPlace", idPlace).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                for(QueryDocumentSnapshot document: task.getResult()){
+                    usersIdParticipation = (ArrayList<String>) document.get("uid");
+                }
+                if (usersIdParticipation != null) {
+                    getUserWithId(usersIdParticipation);
                 }
             }
         });
@@ -116,19 +103,16 @@ public class DetailRestaurantActivity extends AppCompatActivity {
 
     private void getUserWithId(List<String> uIds){
         for(String user : uIds){
-            getUsersCollection().whereEqualTo("uid", user).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful()){
-                        for(QueryDocumentSnapshot user : task.getResult()){
-                            usersParticipants.add(new User(user.getString("uid"),
-                                    user.getString("firstName"),
-                                    user.getString("lastName"),
-                                    user.getString("email"),
-                                    user.getString("urlPicture")));
-                        }
-                        adapter.notifyDataSetChanged();
+            getUsersCollection().whereEqualTo("uid", user).get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot user1 : task.getResult()){
+                        usersParticipants.add(new User(user1.getString("uid"),
+                                user1.getString("firstName"),
+                                user1.getString("lastName"),
+                                user1.getString("email"),
+                                user1.getString("urlPicture")));
                     }
+                    adapter.notifyDataSetChanged();
                 }
             });
         }
@@ -159,30 +143,24 @@ public class DetailRestaurantActivity extends AppCompatActivity {
                         Glide.with(DetailRestaurantActivity.this).load(imgUrl).into(imageViewRestaurant);
                     }
 
-            imageViewCall.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String mobileNumber = place.getPhoneNumber();
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_DIAL); // Action for what intent called for
-                    intent.setData(Uri.parse("tel: " + mobileNumber)); // Data with intent respective action on intent
-                    startActivity(intent);
-                }
+            imageViewCall.setOnClickListener(v -> {
+                String mobileNumber = place.getPhoneNumber();
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_DIAL); // Action for what intent called for
+                intent.setData(Uri.parse("tel: " + mobileNumber)); // Data with intent respective action on intent
+                startActivity(intent);
             });
-            imageViewWebsite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri url = place.getWebsiteUri();
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(url);
-                    startActivity(i);
-                }
+            imageViewWebsite.setOnClickListener(v -> {
+                Uri url = place.getWebsiteUri();
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(url);
+                startActivity(i);
             });
 
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
                 final ApiException apiException = (ApiException) exception;
-                Log.e("DEBUG", "Place not found: " + exception.getMessage());
+                Log.e(TAG, "Place not found: " + exception.getMessage());
                 final int statusCode = apiException.getStatusCode();
             }
         });
