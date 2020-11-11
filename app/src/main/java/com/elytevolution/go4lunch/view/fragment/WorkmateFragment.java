@@ -2,6 +2,7 @@ package com.elytevolution.go4lunch.view.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,15 +14,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elytevolution.go4lunch.R;
+import com.elytevolution.go4lunch.event.PrintPlaceForUser;
 import com.elytevolution.go4lunch.model.User;
 import com.elytevolution.go4lunch.view.adapter.WorkmateListAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
+import static com.elytevolution.go4lunch.api.RestaurantHelper.getRestaurantCollection;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 
 public class WorkmateFragment extends Fragment {
@@ -35,6 +45,8 @@ public class WorkmateFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private FirebaseUser currentUser;
+
+    private String idPlace, namePlace;
 
     public WorkmateFragment() {
         // Required empty public constructor
@@ -62,6 +74,7 @@ public class WorkmateFragment extends Fragment {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        users.clear();
         getAllUsers();
         configureSwipeRefreshLayout();
         return view;
@@ -97,5 +110,46 @@ public class WorkmateFragment extends Fragment {
     private void updateUI() {
         adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(PrintPlaceForUser event){
+        getParticipationCollection().whereArrayContains("uid", event.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+               if(task.isSuccessful()){
+                   for(QueryDocumentSnapshot document: task.getResult()){
+                       idPlace = document.getString("idPlace");
+                       event.setName(getRestaurantNameWithId(idPlace));
+                   }
+               }
+            }
+        });
+    }
+
+    private String getRestaurantNameWithId(String idPlace) {
+        getRestaurantCollection().whereEqualTo("idPlace", idPlace).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        namePlace = document.getString("name");
+                    }
+                }
+            }
+        });
+        return namePlace;
     }
 }

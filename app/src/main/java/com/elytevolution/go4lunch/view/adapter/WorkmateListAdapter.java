@@ -8,7 +8,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.elytevolution.go4lunch.R;
+import com.elytevolution.go4lunch.event.PrintPlaceForUser;
 import com.elytevolution.go4lunch.model.User;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -34,8 +39,12 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
     public void onBindViewHolder(@NonNull WorkmateListAdapter.RecyclerViewHolder holder, int position) {
         holder.textViewUser.setText(users.get(position).getFirstName()+" hasn't decided yet");
 
+        EventBus.getDefault().post(new PrintPlaceForUser(users.get(position).getId()));
+
         Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).into(holder.imageViewUser);
     }
+
+
 
     @Override
     public int getItemCount() {
