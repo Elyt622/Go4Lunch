@@ -46,8 +46,6 @@ public class WorkmateFragment extends Fragment {
 
     private FirebaseUser currentUser;
 
-    private String idPlace, namePlace;
-
     public WorkmateFragment() {
         // Required empty public constructor
     }
@@ -110,46 +108,5 @@ public class WorkmateFragment extends Fragment {
     private void updateUI() {
         adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Subscribe
-    public void onEvent(PrintPlaceForUser event){
-        getParticipationCollection().whereArrayContains("uid", event.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-               if(task.isSuccessful()){
-                   for(QueryDocumentSnapshot document: task.getResult()){
-                       idPlace = document.getString("idPlace");
-                       event.setName(getRestaurantNameWithId(idPlace));
-                   }
-               }
-            }
-        });
-    }
-
-    private String getRestaurantNameWithId(String idPlace) {
-        getRestaurantCollection().whereEqualTo("idPlace", idPlace).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        namePlace = document.getString("name");
-                    }
-                }
-            }
-        });
-        return namePlace;
     }
 }
