@@ -6,30 +6,32 @@ public class User {
 
     private String uid;
 
-    private String firstName;
-
-    private String lastName;
+    private String displayName;
 
     private String email;
 
     @Nullable private String urlPicture;
 
-    public User(String uid, String firstName, String lastName, String email, @Nullable String urlPicture) {
+    private String idPlace;
+
+    public User(String uid, String displayName, String email, @Nullable String urlPicture, String idPlace) {
         this.uid = uid;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.displayName = displayName;
         this.email = email;
         this.urlPicture = urlPicture;
+        this.idPlace = idPlace;
     }
 
-    public String getId() { return uid; }
-
-    public String getFirstName() {
-        return firstName;
+    public String getUid() {
+        return uid;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getIdPlace() {
+        return idPlace;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getEmail() {

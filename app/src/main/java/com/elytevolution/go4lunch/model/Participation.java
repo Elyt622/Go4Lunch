@@ -6,11 +6,18 @@ public class Participation {
 
     private String idPlace;
 
+    private String namePlace;
+
     private List<String> uid;
 
-    public Participation(String idPlace, List<String> uid){
+    public Participation(String idPlace, String namePlace, List<String> uid){
         this.idPlace = idPlace;
+        this.namePlace = namePlace;
         this.uid = uid;
+    }
+
+    public String getNamePlace() {
+        return namePlace;
     }
 
     public String getIdPlace() {

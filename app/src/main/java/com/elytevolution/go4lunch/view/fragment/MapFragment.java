@@ -32,6 +32,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
 
     private static final String TAG = "MapFragment";
 
+    private static final String RADIUS = "550";
+
+    private static final String TYPE = "restaurant";
+
     private final List<NearBySearch.Results> tests = new ArrayList<>();
 
     private LatLng location;
@@ -75,7 +79,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
 
     // Execute HTTP request and update UI
     private void executeHttpRequestWithRetrofit(){
-        GooglePlaceCalls.fetchFollowing(this, convertLatLngToStringUrl(location), "5000", "restaurant", "AIzaSyBAzeJeEsP2gNXjE_7XYMaywZECaJvmQAg");
+        GooglePlaceCalls.fetchFollowing(this, convertLatLngToStringUrl(location), RADIUS, TYPE, String.valueOf(R.string.google_maps_key));
     }
 
     private String convertLatLngToStringUrl(LatLng latLng){

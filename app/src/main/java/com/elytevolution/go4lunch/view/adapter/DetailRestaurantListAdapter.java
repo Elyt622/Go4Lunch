@@ -32,7 +32,7 @@ public class DetailRestaurantListAdapter extends RecyclerView.Adapter<DetailRest
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-        holder.textViewUser.setText(users.get(position).getFirstName()+" is joining!");
+        holder.textViewUser.setText(users.get(position).getDisplayName()+" is joining!");
 
         Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).into(holder.imageViewUser);
     }

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,18 +22,22 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.elytevolution.go4lunch.api.ParticipationHelper.createParticipation;
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 
 public class DetailRestaurantActivity extends AppCompatActivity {
 
     private static String TAG = "DetailActivity";
+
+    private FirebaseUser currentUser;
 
     private String idPlace;
 
@@ -43,6 +48,8 @@ public class DetailRestaurantActivity extends AppCompatActivity {
     private DetailRestaurantListAdapter adapter;
 
     private ImageView imageViewRestaurant, imageViewCall, imageViewLike, imageViewWebsite, imageViewFavorite;
+
+    private ImageButton participateButton;
 
     private List<String> usersIdParticipation = new ArrayList<>();
 
@@ -65,6 +72,8 @@ public class DetailRestaurantActivity extends AppCompatActivity {
         imageViewWebsite = findViewById(R.id.image_view_website_detail_activity);
         imageViewFavorite = findViewById(R.id.image_view_favorite_detail_activity);
 
+        participateButton = findViewById(R.id.image_button_participation_detail_activity);
+
         textViewName = findViewById(R.id.text_view_name_detail_activity);
         textViewAddress = findViewById(R.id.text_view_address_detail_activity);
 
@@ -77,6 +86,14 @@ public class DetailRestaurantActivity extends AppCompatActivity {
         imageViewCall.setImageResource(R.drawable.ic_call_black_18dp);
         imageViewWebsite.setImageResource(R.drawable.ic_public_18px);
         imageViewLike.setImageResource(R.drawable.ic_star_rate_18px);
+
+        participateButton.setOnClickListener(v -> {
+            // if participation not activated
+                // if participation exist update user
+                // else create participation
+            //else
+                // delete user in participation
+        });
 
         imageViewLike.setOnClickListener(v -> {
             if(imageViewFavorite.getVisibility() == View.VISIBLE) {
@@ -107,10 +124,9 @@ public class DetailRestaurantActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
                     for(QueryDocumentSnapshot user1 : task.getResult()){
                         usersParticipants.add(new User(user1.getString("uid"),
-                                user1.getString("firstName"),
-                                user1.getString("lastName"),
+                                user1.getString("displayName"),
                                 user1.getString("email"),
-                                user1.getString("urlPicture")));
+                                user1.getString("urlPicture"), null));
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -121,7 +137,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
     private void getDetailsPlaceLocation(String idPlace) {
 
         // Initialize the SDK
-        Places.initialize(getApplicationContext(), "AIzaSyBAzeJeEsP2gNXjE_7XYMaywZECaJvmQAg");
+        Places.initialize(getApplicationContext(), String.valueOf(R.string.google_maps_key));
 
         // Create a new PlacesClient instance
         PlacesClient placesClient = Places.createClient(this);
@@ -139,7 +155,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
                     if (place.getPhotoMetadatas() != null){
                         String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
                                 + place.getPhotoMetadatas().get(0).zza()
-                                + "&key=AIzaSyBAzeJeEsP2gNXjE_7XYMaywZECaJvmQAg";
+                                + "&key="+R.string.google_maps_key;
                         Glide.with(DetailRestaurantActivity.this).load(imgUrl).into(imageViewRestaurant);
                     }
 

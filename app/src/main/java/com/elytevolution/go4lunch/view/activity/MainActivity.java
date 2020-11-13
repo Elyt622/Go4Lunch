@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             if (currentUser != null) {
                 getUsersCollection().document(currentUser.getUid()).get().addOnCompleteListener(task -> {
                     if(!task.getResult().exists()){
-                        createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()));
+                        createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()), null);
                     }
                 });
             }

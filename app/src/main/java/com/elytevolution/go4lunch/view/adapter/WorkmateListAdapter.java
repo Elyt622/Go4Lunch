@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
-import static com.elytevolution.go4lunch.api.RestaurantHelper.getRestaurantCollection;
 
 public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapter.RecyclerViewHolder> {
 
@@ -40,35 +39,20 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull WorkmateListAdapter.RecyclerViewHolder holder, int position) {
-        getParticipationCollection().whereArrayContains("uid", users.get(position).getId()).get().addOnCompleteListener(task -> {
+        getParticipationCollection().whereArrayContains("uid", users.get(position).getUid()).get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 for(QueryDocumentSnapshot document: task.getResult()){
-                    idPlace = document.getString("idPlace");
-                    Log.d("TAG", idPlace);
+                    namePlace = document.getString("namePlace");
+                    Log.d("TAG" , namePlace);
+                    holder.textViewUser.setText(users.get(position).getDisplayName() + " want to join " + namePlace);
                 }
-                getRestaurantNameWithId(idPlace, holder.textViewUser, position);
-                idPlace = null;
+                if(namePlace == null){
+                    holder.textViewUser.setText(users.get(position).getDisplayName() + " hasn't decided yet!");
+                }
+                namePlace=null;
             }
         });
         Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).into(holder.imageViewUser);
-    }
-
-    private String getRestaurantNameWithId(String idPlace, TextView textView, int position) {
-        if(idPlace != null) {
-            getRestaurantCollection().whereEqualTo("idPlace", idPlace).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        namePlace = document.getString("name");
-                        textView.setText(users.get(position).getFirstName() + " want to join " + namePlace);
-                        namePlace = null;
-                    }
-                }
-            });
-        }
-        else {
-            textView.setText(users.get(position).getFirstName() + " hasn't decided yet!");
-        }
-        return namePlace;
     }
 
     @Override

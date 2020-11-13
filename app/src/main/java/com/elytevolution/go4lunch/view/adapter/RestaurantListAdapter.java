@@ -60,7 +60,7 @@ import androidx.recyclerview.widget.RecyclerView;
         if(results.get(position).getPhotos() != null) {
             String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
                     +results.get(position).getPhotos().get(0).getPhoto_reference()
-                    +"&key=AIzaSyBAzeJeEsP2gNXjE_7XYMaywZECaJvmQAg";
+                    +"&key="+R.string.google_maps_key;
             Glide.with(holder.itemView.getContext()).load(imgUrl).centerCrop().into(holder.imageViewRestaurant);
         }
 

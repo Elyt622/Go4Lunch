@@ -6,6 +6,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import androidx.annotation.Nullable;
+
 public class UserHelper {
 
     private static final String COLLECTION_NAME = "users";
@@ -18,8 +20,8 @@ public class UserHelper {
 
     // --- CREATE ---
 
-    public static Task<Void> createUser(String uid, String firstName, String lastName, String email, String urlPicture) {
-        User userToCreate = new User(uid, firstName, lastName, email, urlPicture);
+    public static Task<Void> createUser(String uid, String displayName, String email, String urlPicture, @Nullable String idPlace) {
+        User userToCreate = new User(uid, displayName, email, urlPicture, idPlace);
         return UserHelper.getUsersCollection().document(uid).set(userToCreate);
     }
 

@@ -20,8 +20,8 @@ public class ParticipationHelper {
 
     // --- CREATE ---
 
-    public static Task<Void> createParticipation(String idPlace, List<String> uid) {
-        Participation participationToCreate = new Participation(idPlace, uid);
+    public static Task<Void> createParticipation(String idPlace, String namePlace, List<String> uid) {
+        Participation participationToCreate = new Participation(idPlace, namePlace, uid);
         return ParticipationHelper.getParticipationCollection().document(idPlace).set(participationToCreate);
     }
 

@@ -23,12 +23,16 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.elytevolution.go4lunch.api.RestaurantHelper.createRestaurant;
-import static com.elytevolution.go4lunch.api.RestaurantHelper.getRestaurantCollection;
+import static com.elytevolution.go4lunch.api.ParticipationHelper.createParticipation;
+import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
 
 public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks{
 
     private static final String TAG = "ListFragment";
+
+    private static final String RADIUS = "550";
+
+    private static final String TYPE = "restaurant";
 
     private final List<NearBySearch.Results> results = new ArrayList<>();
 
@@ -68,7 +72,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
     public void onResponse(@Nullable NearBySearch tests) {
         if (tests != null) {
             updateUI(tests.getResults());
-            insertRestaurantInFireStore();
+            insertParticipationInFireStore();
         } else {
             Log.d(TAG, "RESPONSE IS NULL");
         }
@@ -85,7 +89,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
 
     // Execute HTTP request and update UI
     private void executeHttpRequestWithRetrofit(){
-        GooglePlaceCalls.fetchFollowing(this, convertLatLngToStringUrl(location), "5000", "restaurant", "AIzaSyBAzeJeEsP2gNXjE_7XYMaywZECaJvmQAg");
+        GooglePlaceCalls.fetchFollowing(this, convertLatLngToStringUrl(location), RADIUS, TYPE, String.valueOf(R.string.google_maps_key));
     }
 
     // 2 - Configure the SwipeRefreshLayout
@@ -110,13 +114,13 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
         }
     }
 
-    private void insertRestaurantInFireStore(){
+    private void insertParticipationInFireStore(){
         allRestaurant(results);
         for(Restaurant restaurant : restaurants)
-            getRestaurantCollection().document(restaurant.getIdPlace()).get().addOnCompleteListener(task -> {
+            getParticipationCollection().document(restaurant.getIdPlace()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     if (!task.getResult().exists()) {
-                        createRestaurant(restaurant.getIdPlace(), restaurant.getName());
+                        createParticipation(restaurant.getIdPlace(), restaurant.getName(), null);
                     }
                 }
             });

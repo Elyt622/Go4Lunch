@@ -2,7 +2,6 @@ package com.elytevolution.go4lunch.view.fragment;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,24 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elytevolution.go4lunch.R;
-import com.elytevolution.go4lunch.event.PrintPlaceForUser;
 import com.elytevolution.go4lunch.model.User;
 import com.elytevolution.go4lunch.view.adapter.WorkmateListAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
-import static com.elytevolution.go4lunch.api.RestaurantHelper.getRestaurantCollection;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 
 public class WorkmateFragment extends Fragment {
@@ -86,10 +76,10 @@ public class WorkmateFragment extends Fragment {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             if(!document.getId().equals(currentUser.getUid()))
                             users.add(new User(document.getString("uid"),
-                                    document.getString("firstName"),
-                                    document.getString("lastName"),
+                                    document.getString("displayName"),
                                     document.getString("email"),
-                                    document.getString("urlPicture")));
+                                    document.getString("urlPicture"),
+                                    document.getString("idPlace")));
                         }
                         updateUI();
                     } else {
