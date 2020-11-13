@@ -137,7 +137,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
     private void getDetailsPlaceLocation(String idPlace) {
 
         // Initialize the SDK
-        Places.initialize(getApplicationContext(), String.valueOf(R.string.google_maps_key));
+        Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
 
         // Create a new PlacesClient instance
         PlacesClient placesClient = Places.createClient(this);

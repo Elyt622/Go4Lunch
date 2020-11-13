@@ -30,7 +30,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
 
     private static final String TAG = "ListFragment";
 
-    private static final String RADIUS = "550";
+    private static final String RADIUS = "600";
 
     private static final String TYPE = "restaurant";
 
@@ -89,7 +89,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
 
     // Execute HTTP request and update UI
     private void executeHttpRequestWithRetrofit(){
-        GooglePlaceCalls.fetchFollowing(this, convertLatLngToStringUrl(location), RADIUS, TYPE, String.valueOf(R.string.google_maps_key));
+        GooglePlaceCalls.fetchFollowing(this, convertLatLngToStringUrl(location), RADIUS, TYPE, getString(R.string.google_maps_key));
     }
 
     // 2 - Configure the SwipeRefreshLayout
