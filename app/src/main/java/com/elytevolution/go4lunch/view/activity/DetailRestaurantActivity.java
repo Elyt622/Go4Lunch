@@ -149,15 +149,29 @@ public class DetailRestaurantActivity extends AppCompatActivity {
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(idPlace, placeFields);
 
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                    place = response.getPlace();
-                    textViewName.setText(place.getName());
-                    textViewAddress.setText(place.getAddress());
-                    if (place.getPhotoMetadatas() != null){
-                        String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
-                                + place.getPhotoMetadatas().get(0).zza()
-                                + "&key="+R.string.google_maps_key;
-                        Glide.with(DetailRestaurantActivity.this).load(imgUrl).into(imageViewRestaurant);
-                    }
+            place = response.getPlace();
+            if(place.getName().length() > 25){
+                String phrase = place.getName().substring(0, 25)+"...";
+                textViewName.setText(phrase);
+            }
+            else {
+                textViewName.setText(place.getName());
+            }
+
+            if(place.getAddress().length() > 50){
+                String phrase = place.getAddress().substring(0, 50)+"...";
+                textViewAddress.setText(phrase);
+            }
+            else {
+                textViewAddress.setText(place.getAddress());
+            }
+
+            if (place.getPhotoMetadatas() != null && !place.getPhotoMetadatas().isEmpty()){
+                String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
+                        + place.getPhotoMetadatas().get(0).zza()
+                        + "&key="+getString(R.string.google_maps_key);
+                Glide.with(DetailRestaurantActivity.this).load(imgUrl).into(imageViewRestaurant);
+            }
 
             imageViewCall.setOnClickListener(v -> {
                 String mobileNumber = place.getPhoneNumber();

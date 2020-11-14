@@ -1,6 +1,7 @@
 package com.elytevolution.go4lunch.view.adapter;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +25,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
         private List<NearBySearch.Results> results;
 
-        private LatLng myLocation;
+        private LatLng location;
 
-        public RestaurantListAdapter(List<NearBySearch.Results> results, LatLng location){
-            myLocation = location;
+        private String key;
+
+        public RestaurantListAdapter(List<NearBySearch.Results> results, LatLng location, String key){
+            this.location = location;
             this.results = results;
+            this.key = key;
         }
 
     @NonNull
@@ -56,12 +60,14 @@ import androidx.recyclerview.widget.RecyclerView;
         }else {
             holder.textViewAddress.setText(results.get(position).getVicinity());
         }
+        Log.d("TAG", "Test1 = "+ position);
 
         if(results.get(position).getPhotos() != null) {
             String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
                     +results.get(position).getPhotos().get(0).getPhoto_reference()
-                    +"&key="+R.string.google_maps_key;
-            Glide.with(holder.itemView.getContext()).load(imgUrl).centerCrop().into(holder.imageViewRestaurant);
+                    +"&key="+key;
+            Log.d("TAG", "Test2 = "+ position);
+           Glide.with(holder.itemView.getContext()).load(imgUrl).centerCrop().into(holder.imageViewRestaurant);
         }
 
         if (results.get(position).getOpening_hours() != null) {
@@ -96,7 +102,7 @@ import androidx.recyclerview.widget.RecyclerView;
             holder.imageViewRate3.setVisibility(View.INVISIBLE);
         }
 
-        int distance = (int) (distFrom(myLocation.latitude, myLocation.longitude, results.get(position).getGeometry().getLocation().getLat(), results.get(position).getGeometry().getLocation().getLng())*1000);
+        int distance = (int) (distFrom(location.latitude, location.longitude, results.get(position).getGeometry().getLocation().getLat(), results.get(position).getGeometry().getLocation().getLng())*1000);
         holder.textViewDistance.setText(distance+"m");
 
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {

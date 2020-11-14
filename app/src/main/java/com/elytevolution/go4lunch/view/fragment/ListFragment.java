@@ -60,7 +60,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
         swipeRefreshLayout = view.findViewById(R.id.swipe_fragment_list);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_fragment_list);
 
-        adapter = new RestaurantListAdapter(results, location);
+        adapter = new RestaurantListAdapter(results, location, getString(R.string.google_maps_key));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
@@ -116,7 +116,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
 
     private void insertParticipationInFireStore(){
         allRestaurant(results);
-        for(Restaurant restaurant : restaurants)
+        for(Restaurant restaurant : restaurants) {
             getParticipationCollection().document(restaurant.getIdPlace()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     if (!task.getResult().exists()) {
@@ -124,5 +124,6 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
                     }
                 }
             });
+        }
     }
 }
