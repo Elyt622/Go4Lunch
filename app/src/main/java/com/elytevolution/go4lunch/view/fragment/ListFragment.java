@@ -19,11 +19,13 @@ import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
 import com.elytevolution.go4lunch.view.adapter.RestaurantListAdapter;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.elytevolution.go4lunch.api.ParticipationHelper.createParticipation;
+import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipation;
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
 
 public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks{
@@ -43,6 +45,8 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
     private LatLng location;
 
     private List<Restaurant> restaurants = new ArrayList<>();
+
+    private int participation;
 
     public ListFragment(LatLng location) {
         this.location = location;
@@ -69,9 +73,9 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
     }
 
     @Override
-    public void onResponse(@Nullable NearBySearch tests) {
-        if (tests != null) {
-            updateUI(tests.getResults());
+    public void onResponse(@Nullable NearBySearch results) {
+        if (results != null) {
+            updateUI(results.getResults());
             insertParticipationInFireStore();
         } else {
             Log.d(TAG, "RESPONSE IS NULL");
@@ -109,19 +113,46 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
     }
 
     private void listAllRestaurant(List<NearBySearch.Results> results){
-        String address, photoRef;
+        String idPlace, name, address, photoRef;
         Boolean currentOpen;
-        Double rating;
+        double rating, lgt, lat;
 
         for(NearBySearch.Results result: results){
+            idPlace = result.getPlace_id();
+            name = result.getName();
             currentOpen = result.getOpening_hours() == null ? null : result.getOpening_hours().getOpen_now();
             address = result.getVicinity();
             photoRef = result.getPhotos() == null ? null : result.getPhotos().get(0).getPhoto_reference();
             rating = result.getRating();
-            restaurants.add(new Restaurant(result.getPlace_id(), result.getName(), address,
-                    currentOpen, result.getGeometry().getLocation().getLng(),
-                    result.getGeometry().getLocation().getLat(), 2, rating, photoRef));
+            lgt = result.getGeometry().getLocation().getLng();
+            lat = result.getGeometry().getLocation().getLat();
+            participationToRestaurant(result.getPlace_id());
+
+            restaurants.add(new Restaurant(idPlace, name, address, currentOpen, lgt,
+                    lat, participation, rating, photoRef));
         }
+    }
+
+    private void participationToRestaurant(String idPlace){
+        getParticipation(idPlace).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                List<String> list = (ArrayList<String>) document.get("uid");
+                participation = list == null ? 0 : list.size();
+                getRestaurantWithId(idPlace).setParticipation(participation);
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private Restaurant getRestaurantWithId(String idPlace){
+        int index;
+        for (index = 0; index < restaurants.size(); index++){
+            if(restaurants.get(index).getIdPlace().equals(idPlace)){
+                break;
+            }
+        }
+        return restaurants.get(index);
     }
 
     private void insertParticipationInFireStore(){

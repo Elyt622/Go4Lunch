@@ -75,4 +75,8 @@ public class Restaurant {
     public String getPhotoRef() {
         return photoRef;
     }
+
+    public void setParticipation(int participation) {
+        this.participation = participation;
+    }
 }

@@ -50,8 +50,8 @@ import androidx.recyclerview.widget.RecyclerView;
         printPhotoRef(holder.imageViewRestaurant, restaurants.get(position).getPhotoRef());
         printCurrentOpen(holder.textViewOpen, restaurants.get(position).isCurrentOpen());
 
-        holder.textViewVote.setText("("+restaurants.get(position).getParticipation()+")");
-        holder.imageViewVote.setImageResource(R.drawable.baseline_person_black_18);
+        printParticipants(restaurants.get(position).getParticipation(), holder.textViewVote, holder.imageViewVote);
+
         printStarsRating(restaurants.get(position).getRating(), holder.imageViewRate1, holder.imageViewRate2, holder.imageViewRate3);
 
         int distance = (int) (distFrom(location.latitude, location.longitude, restaurants.get(position).getLat(), restaurants.get(position).getLgt())*1000);
@@ -62,6 +62,18 @@ import androidx.recyclerview.widget.RecyclerView;
             intent.putExtra("ID", restaurants.get(position).getIdPlace());
             v.getContext().startActivity(intent);
         });
+    }
+
+    private void printParticipants(int participants, TextView textViewVote, ImageView imageViewVote){
+        imageViewVote.setImageResource(R.drawable.baseline_person_black_18);
+        if(participants != 0) {
+            textViewVote.setText("(" +participants+ ")");
+            imageViewVote.setVisibility(View.VISIBLE);
+        }
+        else {
+            textViewVote.setText("");
+            imageViewVote.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void printCurrentOpen(TextView textViewOpen, Boolean isCurrentOpen){
