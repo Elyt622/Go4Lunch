@@ -60,7 +60,7 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
         swipeRefreshLayout = view.findViewById(R.id.swipe_fragment_list);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_fragment_list);
 
-        adapter = new RestaurantListAdapter(results, location, getString(R.string.google_maps_key));
+        adapter = new RestaurantListAdapter(restaurants, location, getString(R.string.google_maps_key));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
@@ -102,20 +102,30 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
     }
 
     private void updateUI(List<NearBySearch.Results> results) {
-        this.results.clear();
-        this.results.addAll(results);
+        restaurants.clear();
+        listAllRestaurant(results);
         adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    private void allRestaurant(List<NearBySearch.Results> results){
+    private void listAllRestaurant(List<NearBySearch.Results> results){
+        String address, photoRef;
+        Boolean currentOpen;
+        Double rating;
+
         for(NearBySearch.Results result: results){
-            restaurants.add(new Restaurant(result.getPlace_id(), result.getName()));
+            currentOpen = result.getOpening_hours() == null ? null : result.getOpening_hours().getOpen_now();
+            address = result.getVicinity();
+            photoRef = result.getPhotos() == null ? null : result.getPhotos().get(0).getPhoto_reference();
+            rating = result.getRating();
+            restaurants.add(new Restaurant(result.getPlace_id(), result.getName(), address,
+                    currentOpen, result.getGeometry().getLocation().getLng(),
+                    result.getGeometry().getLocation().getLat(), 2, rating, photoRef));
         }
     }
 
     private void insertParticipationInFireStore(){
-        allRestaurant(results);
+        listAllRestaurant(results);
         for(Restaurant restaurant : restaurants) {
             getParticipationCollection().document(restaurant.getIdPlace()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {

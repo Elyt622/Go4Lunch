@@ -53,7 +53,6 @@
         android:layout_width="wrap_content"
         android:layout_height="19dp"
         android:layout_marginEnd="4dp"
-        android:text="(3)"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/image_view_vote_restaurant"
         app:layout_constraintEnd_toStartOf="@+id/image_view_restaurant"
@@ -75,7 +74,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:src="@android:drawable/btn_star_big_on"
-        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/image_view_restaurant"
         app:layout_constraintTop_toBottomOf="@+id/image_view_vote_restaurant" />
 
@@ -85,7 +83,6 @@
         android:layout_height="21dp"
         android:layout_marginEnd="2dp"
         android:src="@android:drawable/btn_star_big_on"
-        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/image_view_rate_restaurant1"
         app:layout_constraintTop_toTopOf="@+id/image_view_rate_restaurant1" />
 
@@ -95,7 +92,6 @@
         android:layout_height="21dp"
         android:layout_marginEnd="1dp"
         android:src="@android:drawable/btn_star_big_on"
-        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/image_view_rate_restaurant2"
         app:layout_constraintTop_toTopOf="@+id/image_view_rate_restaurant2" />
 

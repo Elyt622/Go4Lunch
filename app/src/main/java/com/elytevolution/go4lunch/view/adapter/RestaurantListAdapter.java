@@ -1,7 +1,6 @@
 package com.elytevolution.go4lunch.view.adapter;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.elytevolution.go4lunch.R;
-import com.elytevolution.go4lunch.model.NearBySearch;
+import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.view.activity.DetailRestaurantActivity;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -23,15 +22,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
     public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RecyclerViewHolder> {
 
-        private List<NearBySearch.Results> results;
+        private List<Restaurant> restaurants;
 
         private LatLng location;
 
         private String key;
 
-        public RestaurantListAdapter(List<NearBySearch.Results> results, LatLng location, String key){
+        public RestaurantListAdapter(List<Restaurant> restaurants, LatLng location, String key){
             this.location = location;
-            this.results = results;
+            this.restaurants = restaurants;
             this.key = key;
         }
 
@@ -45,75 +44,85 @@ import androidx.recyclerview.widget.RecyclerView;
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
 
-        if(results.get(position).getName().length() > 25){
-            String phrase = results.get(position).getName().substring(0, 25)+"...";
-            holder.textViewName.setText(phrase);
-        }
-        else {
-            holder.textViewName.setText(results.get(position).getName());
+        printTextRestaurant(holder.textViewName, restaurants.get(position).getName(),25);
+        printTextRestaurant(holder.textViewAddress, restaurants.get(position).getAddress(), 30);
 
-        }
+        printPhotoRef(holder.imageViewRestaurant, restaurants.get(position).getPhotoRef());
+        printCurrentOpen(holder.textViewOpen, restaurants.get(position).isCurrentOpen());
 
-        if(results.get(position).getVicinity().length() > 30){
-            String phrase = results.get(position).getVicinity().substring(0, 30)+"...";
-            holder.textViewAddress.setText(phrase);
-        }else {
-            holder.textViewAddress.setText(results.get(position).getVicinity());
-        }
-        Log.d("TAG", "Test1 = "+ position);
-
-        if(results.get(position).getPhotos() != null) {
-            String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
-                    +results.get(position).getPhotos().get(0).getPhoto_reference()
-                    +"&key="+key;
-            Log.d("TAG", "Test2 = "+ position);
-           Glide.with(holder.itemView.getContext()).load(imgUrl).centerCrop().into(holder.imageViewRestaurant);
-        }
-
-        if (results.get(position).getOpening_hours() != null) {
-            if (results.get(position).getOpening_hours().getOpen_now()) {
-                holder.textViewOpen.setText("Currently open");
-                holder.textViewOpen.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.open));
-            } else {
-                holder.textViewOpen.setText("Currently close");
-                holder.textViewOpen.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.close));
-            }
-        }
-
+        holder.textViewVote.setText("("+restaurants.get(position).getParticipation()+")");
         holder.imageViewVote.setImageResource(R.drawable.baseline_person_black_18);
+        printStarsRating(restaurants.get(position).getRating(), holder.imageViewRate1, holder.imageViewRate2, holder.imageViewRate3);
 
-        if(results.get(position).getRating() > 3){
-            if (results.get(position).getRating() < 4){
-                holder.imageViewRate1.setVisibility(View.VISIBLE);
-            }
-            if(results.get(position).getRating() < 4.5 && results.get(position).getRating() >= 4){
-                holder.imageViewRate1.setVisibility(View.VISIBLE);
-                holder.imageViewRate2.setVisibility(View.VISIBLE);
-            }
-            if(results.get(position).getRating() >= 4.5){
-                holder.imageViewRate1.setVisibility(View.VISIBLE);
-                holder.imageViewRate2.setVisibility(View.VISIBLE);
-                holder.imageViewRate3.setVisibility(View.VISIBLE);
-            }
-        }
-        else {
-            holder.imageViewRate1.setVisibility(View.INVISIBLE);
-            holder.imageViewRate2.setVisibility(View.INVISIBLE);
-            holder.imageViewRate3.setVisibility(View.INVISIBLE);
-        }
-
-        int distance = (int) (distFrom(location.latitude, location.longitude, results.get(position).getGeometry().getLocation().getLat(), results.get(position).getGeometry().getLocation().getLng())*1000);
+        int distance = (int) (distFrom(location.latitude, location.longitude, restaurants.get(position).getLat(), restaurants.get(position).getLgt())*1000);
         holder.textViewDistance.setText(distance+"m");
 
-        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), DetailRestaurantActivity.class);
-                intent.putExtra("ID", results.get(position).getPlace_id());
-                v.getContext().startActivity(intent);
-            }
+        holder.constraintLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), DetailRestaurantActivity.class);
+            intent.putExtra("ID", restaurants.get(position).getIdPlace());
+            v.getContext().startActivity(intent);
         });
+    }
 
+    private void printCurrentOpen(TextView textViewOpen, Boolean isCurrentOpen){
+        if (isCurrentOpen != null) {
+            if (isCurrentOpen) {
+                textViewOpen.setText("Currently open");
+                textViewOpen.setTextColor(ContextCompat.getColor(textViewOpen.getContext(), R.color.open));
+            } else {
+                textViewOpen.setText("Currently close");
+                textViewOpen.setTextColor(ContextCompat.getColor(textViewOpen.getContext(), R.color.close));
+            }
+        }
+        else {
+            textViewOpen.setText("");
+        }
+    }
+
+    private void printPhotoRef(ImageView imageView, String photoRef){
+        if(photoRef != null) {
+            String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
+                    +photoRef
+                    +"&key="+key;
+            Glide.with(imageView.getContext()).load(imgUrl).centerCrop().into(imageView);
+        }else {
+            Glide.with(imageView.getContext()).clear(imageView);
+        }
+    }
+
+    private void printTextRestaurant(TextView textView, String textToPrint, int size){
+            if (textToPrint != null) {
+                if (textToPrint.length() > size) {
+                    String phrase = textToPrint.substring(0, size) + "...";
+                    textView.setText(phrase);
+                } else {
+                    textView.setText(textToPrint);
+                }
+            }else{
+                textView.setText("");
+            }
+    }
+
+    private void printStarsRating(Double rate, ImageView imageViewRate1, ImageView imageViewRate2, ImageView imageViewRate3){
+        if (rate > 3.0) {
+            if (rate < 4.0) {
+                imageViewRate1.setVisibility(View.VISIBLE);
+                imageViewRate2.setVisibility(View.INVISIBLE);
+                imageViewRate3.setVisibility(View.INVISIBLE);
+            } else if (rate < 4.5 && rate >= 4.0) {
+                imageViewRate1.setVisibility(View.VISIBLE);
+                imageViewRate2.setVisibility(View.VISIBLE);
+                imageViewRate3.setVisibility(View.INVISIBLE);
+            } else if (rate >= 4.5) {
+                imageViewRate1.setVisibility(View.VISIBLE);
+                imageViewRate2.setVisibility(View.VISIBLE);
+                imageViewRate3.setVisibility(View.VISIBLE);
+            }
+        } else{
+            imageViewRate1.setVisibility(View.INVISIBLE);
+            imageViewRate2.setVisibility(View.INVISIBLE);
+            imageViewRate3.setVisibility(View.INVISIBLE);
+        }
     }
 
     private double distFrom(double lat1, double lng1, double lat2, double lng2) {
@@ -130,7 +139,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
     @Override
     public int getItemCount() {
-        return results.size();
+        return restaurants.size();
     }
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
@@ -151,6 +160,7 @@ import androidx.recyclerview.widget.RecyclerView;
             textViewAddress = itemView.findViewById(R.id.text_view_address_type_restaurant);
             textViewOpen = itemView.findViewById(R.id.text_view_open_restaurant);
             textViewDistance = itemView.findViewById(R.id.text_view_distance_restaurant);
+            textViewVote = itemView.findViewById(R.id.text_view_vote_restaurant);
 
             constraintLayout = itemView.findViewById(R.id.constraint_layout_item);
 
