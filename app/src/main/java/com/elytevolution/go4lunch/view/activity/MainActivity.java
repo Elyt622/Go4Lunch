@@ -17,16 +17,25 @@ import android.view.View;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.databinding.ActivityMainBinding;
 import com.elytevolution.go4lunch.view.adapter.ViewPagerFragmentAdapter;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static com.elytevolution.go4lunch.api.UserHelper.createUser;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
@@ -48,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
         configureViewPagerAndTabLayout();
+        configureAutocompleteSearch();
+
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(!isLogged()){
             finish();
@@ -60,7 +71,35 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }
+    }
+
+    private void configureAutocompleteSearch(){
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.google_maps_key), Locale.FRANCE);
         }
+        // Specify the types of place data to return.
+        if (autocompleteFragment != null) {
+            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        }
+
+        // Set up a PlaceSelectionListener to handle the response.
+        if (autocompleteFragment != null) {
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                @Override
+                public void onPlaceSelected(@NotNull Place place) {
+                    Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                }
+
+                @Override
+                public void onError(@NonNull Status status) {
+                    Log.i(TAG, "An error occurred: " + status);
+                }
+            });
+        }
+    }
 
     private boolean isLogged(){
         return FirebaseAuth.getInstance().getCurrentUser() != null;
