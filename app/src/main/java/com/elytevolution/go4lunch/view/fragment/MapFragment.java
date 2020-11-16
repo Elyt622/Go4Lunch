@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,11 +23,17 @@ import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipation;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GooglePlaceCalls.Callbacks, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener {
@@ -88,10 +96,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
 
     private void addMarkerOnMap(GoogleMap map){
         for (NearBySearch.Results result : tests) {
+            String idPlace = result.getPlace_id();
             double lat = result.getGeometry().getLocation().getLat();
             double lgt = result.getGeometry().getLocation().getLng();
             LatLng latLng = new LatLng(lat, lgt);
-            map.addMarker(new MarkerOptions().position(latLng).title(result.getName()));
+            getParticipation(idPlace).addOnSuccessListener(documentSnapshot -> {
+                List<String> participants = (ArrayList) documentSnapshot.get("uid");
+                if (participants != null) {
+                    if(participants.size() != 0) {
+                        map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    }
+                    else {
+                        map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                    }
+                }
+                else {
+                    map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                }
+            });
         }
     }
 
