@@ -1,14 +1,7 @@
 package com.elytevolution.go4lunch.view.fragment;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,15 +16,17 @@ import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipation;
 
@@ -44,7 +39,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
 
     private static final String TYPE = "restaurant";
 
-    private final List<NearBySearch.Results> tests = new ArrayList<>();
+    private final List<NearBySearch.Results> results = new ArrayList<>();
 
     private LatLng location;
 
@@ -95,24 +90,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
     }
 
     private void addMarkerOnMap(GoogleMap map){
-        for (NearBySearch.Results result : tests) {
+        for (NearBySearch.Results result : results) {
             String idPlace = result.getPlace_id();
             double lat = result.getGeometry().getLocation().getLat();
             double lgt = result.getGeometry().getLocation().getLng();
             LatLng latLng = new LatLng(lat, lgt);
             getParticipation(idPlace).addOnSuccessListener(documentSnapshot -> {
                 List<String> participants = (ArrayList) documentSnapshot.get("uid");
-                if (participants != null) {
-                    if(participants.size() != 0) {
+                if (participants != null && participants.size() != 0) {
                         map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                    }
-                    else {
+                    }else {
                         map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                     }
-                }
-                else {
-                    map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-                }
             });
         }
     }
@@ -120,7 +109,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
     @Override
     public void onResponse(@Nullable NearBySearch results) {
         if(results != null) {
-            tests.addAll(results.getResults());
+            this.results.addAll(results.getResults());
             mapFragment.getMapAsync(this);
         }
     }
@@ -135,8 +124,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
     public boolean onMyLocationButtonClick() {
         Toast.makeText(getContext(), "My location", Toast.LENGTH_SHORT)
                 .show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
         return false;
     }
 
@@ -144,5 +131,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
     public void onMyLocationClick(@NonNull Location location) {
         Toast.makeText(getContext(), "Current location:\n" + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_LONG)
                 .show();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapFragment.getMapAsync(this);
     }
 }

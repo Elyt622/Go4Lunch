@@ -1,10 +1,5 @@
 package com.elytevolution.go4lunch.view.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -19,8 +14,6 @@ import com.elytevolution.go4lunch.databinding.ActivityMainBinding;
 import com.elytevolution.go4lunch.view.adapter.ViewPagerFragmentAdapter;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -28,7 +21,6 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +28,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import static com.elytevolution.go4lunch.api.UserHelper.createUser;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
@@ -66,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             if (currentUser != null) {
                 getUsersCollection().document(currentUser.getUid()).get().addOnCompleteListener(task -> {
                     if(!task.getResult().exists()){
-                        createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()), null);
+                        createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()), "");
                     }
                 });
             }

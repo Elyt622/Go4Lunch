@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.User;
 
@@ -34,7 +35,7 @@ public class DetailRestaurantListAdapter extends RecyclerView.Adapter<DetailRest
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         holder.textViewUser.setText(users.get(position).getDisplayName()+" is joining!");
 
-        Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).into(holder.imageViewUser);
+        Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).apply(RequestOptions.circleCropTransform()).into(holder.imageViewUser);
     }
 
     @Override

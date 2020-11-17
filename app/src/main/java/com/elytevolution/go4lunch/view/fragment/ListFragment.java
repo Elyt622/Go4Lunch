@@ -1,13 +1,6 @@
 package com.elytevolution.go4lunch.view.fragment;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +16,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import static com.elytevolution.go4lunch.api.ParticipationHelper.createParticipation;
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipation;
@@ -166,5 +165,11 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
                 }
             });
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        executeHttpRequestWithRetrofit();
     }
 }

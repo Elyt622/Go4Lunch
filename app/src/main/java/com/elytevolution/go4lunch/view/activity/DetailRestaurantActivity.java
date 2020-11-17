@@ -1,15 +1,10 @@
 package com.elytevolution.go4lunch.view.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +17,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -29,15 +25,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.elytevolution.go4lunch.api.ParticipationHelper.createParticipation;
-import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipation;
+import static com.elytevolution.go4lunch.api.ParticipationHelper.updateParticipation;
+import static com.elytevolution.go4lunch.api.UserHelper.getUser;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
+import static com.elytevolution.go4lunch.api.UserHelper.updateUserIdPlace;
 
 public class DetailRestaurantActivity extends AppCompatActivity {
 
     private static String TAG = "DetailActivity";
 
     private FirebaseUser currentUser;
+
+    private boolean participate;
 
     private String idPlace;
 
@@ -47,9 +51,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
 
     private DetailRestaurantListAdapter adapter;
 
-    private ImageView imageViewRestaurant, imageViewCall, imageViewLike, imageViewWebsite, imageViewFavorite;
-
-    private ImageButton participateButton;
+    private ImageView imageViewRestaurant, imageViewCall, imageViewLike, imageViewWebsite, imageViewFavorite, participateButton;
 
     private List<String> usersIdParticipation = new ArrayList<>();
 
@@ -59,13 +61,14 @@ public class DetailRestaurantActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_restaurant);
-
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(getIntent() != null){
             idPlace = getIntent().getStringExtra("ID");
         }
 
         getDetailsPlaceLocation(idPlace);
         getUsersIdParticipation(idPlace);
+
         imageViewRestaurant = findViewById(R.id.image_view_restaurant_detail_activity);
         imageViewCall = findViewById(R.id.image_view_call_detail_activity);
         imageViewLike = findViewById(R.id.image_view_like_detail_activity);
@@ -87,12 +90,45 @@ public class DetailRestaurantActivity extends AppCompatActivity {
         imageViewWebsite.setImageResource(R.drawable.ic_public_18px);
         imageViewLike.setImageResource(R.drawable.ic_star_rate_18px);
 
+        configButtonParticipation();
+
         participateButton.setOnClickListener(v -> {
-            // if participation not activated
-                // if participation exist update user
-                // else create participation
-            //else
-                // delete user in participation
+            getParticipation(idPlace).addOnSuccessListener(documentSnapshot -> {
+                List<String> list = (ArrayList) documentSnapshot.get("uid");
+                if (list == null) {
+                    list = new ArrayList<>();
+                }
+                if (!participate) {
+                    list.add(currentUser.getUid());
+                    getUser(currentUser.getUid()).addOnSuccessListener(document -> {
+                        String currentIdPlace = document.getString("idPlace");
+                        if (currentIdPlace != null) {
+                            if (!currentIdPlace.isEmpty()) {
+                                getParticipation(currentIdPlace).addOnSuccessListener(document1 -> {
+                                    List<String> list1 = (ArrayList) document1.get("uid");
+                                    if (list1 == null) {
+                                        list1 = new ArrayList<>();
+                                    }
+                                    list1 = removeCurrentUserWith(list1);
+                                    updateParticipation(currentIdPlace, list1);
+                                    updateUserIdPlace(idPlace, currentUser.getUid());
+                                    configButtonParticipation();
+                                });
+                            } else{
+                                updateUserIdPlace(idPlace, currentUser.getUid());
+                                configButtonParticipation();
+                            }
+                        }
+                    });
+                } else {
+                    list = removeCurrentUserWith(list);
+                    updateUserIdPlace("", currentUser.getUid());
+                }
+                configButtonParticipation();
+                updateParticipation(idPlace, list);
+                usersParticipants.clear();
+                addUserWithIds(list);
+            });
         });
 
         imageViewLike.setOnClickListener(v -> {
@@ -104,21 +140,46 @@ public class DetailRestaurantActivity extends AppCompatActivity {
         });
     }
 
-    private void getUsersIdParticipation(String idPlace){
-        getParticipationCollection().whereEqualTo("idPlace", idPlace).get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                for(QueryDocumentSnapshot document: task.getResult()){
-                    usersIdParticipation = (ArrayList<String>) document.get("uid");
+    private void configButtonParticipation() {
+        getUser(currentUser.getUid()).addOnSuccessListener(documentSnapshot -> {
+            String idPlaceCurrentUser = documentSnapshot.getString("idPlace");
+            if (idPlaceCurrentUser != null) {
+                Log.d("TAG", idPlaceCurrentUser);
+                if (idPlaceCurrentUser.equals(idPlace)) {
+                    participateButton.setImageResource(R.drawable.ic_check_circle_18px);
+                    participate = true;
+                } else {
+                    participateButton.setImageResource(R.drawable.ic_check_circle_outline_black_18dp);
+                    participate = false;
                 }
-                if (usersIdParticipation != null) {
-                    getUserWithId(usersIdParticipation);
-                }
+            } else {
+                participateButton.setImageResource(R.drawable.ic_check_circle_outline_black_18dp);
+                participate = false;
             }
         });
-
     }
 
-    private void getUserWithId(List<String> uIds){
+    private List<String> removeCurrentUserWith(List<String> uIds){
+        List<String> listUser = new ArrayList<>();
+        for(String uid: uIds){
+            if(!uid.equals(currentUser.getUid())){
+                listUser.add(uid);
+            }
+        }
+        return listUser;
+    }
+
+    private void getUsersIdParticipation(String idPlace){
+        getParticipation(idPlace).addOnSuccessListener(document -> {
+            usersIdParticipation = (ArrayList<String>) document.get("uid");
+            if (usersIdParticipation == null) {
+                usersIdParticipation = new ArrayList<>();
+            }
+            addUserWithIds(usersIdParticipation);
+        });
+    }
+
+    private void addUserWithIds(List<String> uIds){
         for(String user : uIds){
             getUsersCollection().whereEqualTo("uid", user).get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
@@ -126,7 +187,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
                         usersParticipants.add(new User(user1.getString("uid"),
                                 user1.getString("displayName"),
                                 user1.getString("email"),
-                                user1.getString("urlPicture"), null));
+                                user1.getString("urlPicture"), ""));
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -150,20 +211,23 @@ public class DetailRestaurantActivity extends AppCompatActivity {
 
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             place = response.getPlace();
-            if(place.getName().length() > 25){
-                String phrase = place.getName().substring(0, 25)+"...";
-                textViewName.setText(phrase);
-            }
-            else {
-                textViewName.setText(place.getName());
+
+            if(place.getName() != null) {
+                if (place.getName().length() > 25) {
+                    String phrase = place.getName().substring(0, 25) + "...";
+                    textViewName.setText(phrase);
+                } else {
+                    textViewName.setText(place.getName());
+                }
             }
 
-            if(place.getAddress().length() > 50){
-                String phrase = place.getAddress().substring(0, 50)+"...";
-                textViewAddress.setText(phrase);
-            }
-            else {
-                textViewAddress.setText(place.getAddress());
+            if(place.getAddress() != null) {
+                if (place.getAddress().length() > 50) {
+                    String phrase = place.getAddress().substring(0, 50) + "...";
+                    textViewAddress.setText(phrase);
+                } else {
+                    textViewAddress.setText(place.getAddress());
+                }
             }
 
             if (place.getPhotoMetadatas() != null && !place.getPhotoMetadatas().isEmpty()){

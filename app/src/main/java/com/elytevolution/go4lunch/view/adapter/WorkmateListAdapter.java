@@ -1,6 +1,5 @@
 package com.elytevolution.go4lunch.view.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.User;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -24,7 +24,7 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
 
     private List<User> users;
 
-    private String idPlace, namePlace;
+    private String namePlace;
 
     public WorkmateListAdapter(@Nullable List<User> users){
         this.users = users;
@@ -43,7 +43,6 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
             if(task.isSuccessful()){
                 for(QueryDocumentSnapshot document: task.getResult()){
                     namePlace = document.getString("namePlace");
-                    Log.d("TAG" , namePlace);
                     holder.textViewUser.setText(users.get(position).getDisplayName() + " want to join " + namePlace);
                 }
                 if(namePlace == null){
@@ -52,7 +51,7 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
                 namePlace=null;
             }
         });
-        Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).into(holder.imageViewUser);
+        Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).apply(RequestOptions.circleCropTransform()).into(holder.imageViewUser);
     }
 
     @Override
