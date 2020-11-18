@@ -128,6 +128,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
                 updateParticipation(idPlace, list);
                 usersParticipants.clear();
                 addUserWithIds(list);
+                adapter.notifyDataSetChanged();
             });
         });
 
@@ -144,7 +145,6 @@ public class DetailRestaurantActivity extends AppCompatActivity {
         getUser(currentUser.getUid()).addOnSuccessListener(documentSnapshot -> {
             String idPlaceCurrentUser = documentSnapshot.getString("idPlace");
             if (idPlaceCurrentUser != null) {
-                Log.d("TAG", idPlaceCurrentUser);
                 if (idPlaceCurrentUser.equals(idPlace)) {
                     participateButton.setImageResource(R.drawable.ic_check_circle_18px);
                     participate = true;
