@@ -29,6 +29,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.elytevolution.go4lunch.api.FavoriteHelper.createFavorite;
+import static com.elytevolution.go4lunch.api.FavoriteHelper.getFavorite;
+import static com.elytevolution.go4lunch.api.FavoriteHelper.updateFavorite;
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipation;
 import static com.elytevolution.go4lunch.api.ParticipationHelper.updateParticipation;
 import static com.elytevolution.go4lunch.api.UserHelper.getUser;
@@ -41,7 +44,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
 
     private FirebaseUser currentUser;
 
-    private boolean participate;
+    private boolean participate, favorite;
 
     private String idPlace;
 
@@ -54,6 +57,8 @@ public class DetailRestaurantActivity extends AppCompatActivity {
     private ImageView imageViewRestaurant, imageViewCall, imageViewLike, imageViewWebsite, imageViewFavorite, participateButton;
 
     private List<String> usersIdParticipation = new ArrayList<>();
+
+    private List<String> favoriteList = new ArrayList<>();
 
     private List<User> usersParticipants = new ArrayList<>();
 
@@ -132,11 +137,34 @@ public class DetailRestaurantActivity extends AppCompatActivity {
             });
         });
 
+        configButtonFavorite();
         imageViewLike.setOnClickListener(v -> {
-            if(imageViewFavorite.getVisibility() == View.VISIBLE) {
-                imageViewFavorite.setVisibility(View.INVISIBLE);
-            }else{
-                imageViewFavorite.setVisibility(View.VISIBLE);
+            if(favorite) {
+                favoriteList.remove(idPlace);
+            }else {
+                favoriteList.add(idPlace);
+            }
+            updateFavorite(favoriteList, currentUser.getUid());
+            configButtonFavorite();
+        });
+    }
+
+    private void configButtonFavorite(){
+        getFavorite(currentUser.getUid()).addOnSuccessListener(documentSnapshot -> {
+            if(!documentSnapshot.exists()){
+                createFavorite(null, currentUser.getUid());
+            }
+            else {
+                favoriteList = (ArrayList) documentSnapshot.get("idPlace");
+                if (favoriteList == null)
+                    favoriteList = new ArrayList<>();
+                if (favoriteList.contains(idPlace)) {
+                    favorite = true;
+                    imageViewFavorite.setVisibility(View.VISIBLE);
+                } else {
+                    favorite = false;
+                    imageViewFavorite.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }

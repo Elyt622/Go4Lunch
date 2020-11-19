@@ -43,7 +43,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:src="@android:drawable/btn_star_big_on"
-            android:visibility="visible"
             app:layout_constraintStart_toEndOf="@+id/text_view_name_detail_activity"
             app:layout_constraintTop_toTopOf="@+id/text_view_name_detail_activity" />
 
