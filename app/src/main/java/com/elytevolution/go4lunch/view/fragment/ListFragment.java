@@ -13,6 +13,8 @@ import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
 import com.elytevolution.go4lunch.view.adapter.RestaurantListAdapter;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import static com.elytevolution.go4lunch.api.ParticipationHelper.createParticipation;
-import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipation;
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
+import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationDocument;
 
 public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks{
 
@@ -133,13 +135,24 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
     }
 
     private void participationToRestaurant(String idPlace){
-        getParticipation(idPlace).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                DocumentSnapshot document = task.getResult();
-                List<String> list = (ArrayList<String>) document.get("uid");
-                participation = list == null ? 0 : list.size();
-                getRestaurantWithId(idPlace).setParticipation(participation);
-                adapter.notifyDataSetChanged();
+        getParticipationDocument(idPlace).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d(TAG, "Current data: " + snapshot.getData());
+                    List<String> list = (ArrayList<String>) snapshot.get("uid");
+                    participation = list == null ? 0 : list.size();
+                    getRestaurantWithId(idPlace).setParticipation(participation);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, "Current data: null");
+                }
             }
         });
     }
@@ -165,11 +178,5 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
                 }
             });
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        executeHttpRequestWithRetrofit();
     }
 }

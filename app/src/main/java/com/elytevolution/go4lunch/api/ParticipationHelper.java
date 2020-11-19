@@ -3,6 +3,7 @@ package com.elytevolution.go4lunch.api;
 import com.elytevolution.go4lunch.model.Participation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,6 +30,10 @@ public class ParticipationHelper {
 
     public static Task<DocumentSnapshot> getParticipation(String idPlace){
         return ParticipationHelper.getParticipationCollection().document(idPlace).get();
+    }
+
+    public static DocumentReference getParticipationDocument(String idPlace){
+        return ParticipationHelper.getParticipationCollection().document(idPlace);
     }
 
     // --- UPDATE ---
