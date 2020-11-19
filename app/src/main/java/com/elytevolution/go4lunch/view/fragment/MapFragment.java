@@ -1,6 +1,7 @@
 package com.elytevolution.go4lunch.view.fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -13,11 +14,13 @@ import android.widget.Toast;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
+import com.elytevolution.go4lunch.view.activity.DetailRestaurantActivity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -76,6 +79,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
             map.setOnMyLocationButtonClickListener(this);
             map.setOnMyLocationClickListener(this);
             addMarkerOnMap(map);
+            map.setOnMarkerClickListener(marker -> {
+                String string = (String) marker.getTag();
+                Intent intent = new Intent(getContext(), DetailRestaurantActivity.class);
+                intent.putExtra("ID", string);
+                getContext().startActivity(intent);
+                return false;
+            });
         }
     }
 
@@ -98,10 +108,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
             getParticipation(idPlace).addOnSuccessListener(documentSnapshot -> {
                 List<String> participants = (ArrayList) documentSnapshot.get("uid");
                 if (participants != null && participants.size() != 0) {
-                        map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                    }else {
-                        map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-                    }
+                    Marker marker = map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    marker.setTag(idPlace);
+                }else {
+                    Marker marker = map.addMarker(new MarkerOptions().position(latLng).title(result.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                    marker.setTag(idPlace);
+                }
             });
         }
     }
