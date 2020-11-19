@@ -1,5 +1,6 @@
 package com.elytevolution.go4lunch.view.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.User;
+import com.elytevolution.go4lunch.view.activity.DetailRestaurantActivity;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
@@ -52,6 +55,16 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
             }
         });
         Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).apply(RequestOptions.circleCropTransform()).into(holder.imageViewUser);
+        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(users.get(position).getIdPlace() != null && !users.get(position).getIdPlace().isEmpty()) {
+                    Intent intent = new Intent(v.getContext(), DetailRestaurantActivity.class);
+                    intent.putExtra("ID", users.get(position).getIdPlace());
+                    v.getContext().startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -62,11 +75,13 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageViewUser;
         private TextView textViewUser;
+        private ConstraintLayout constraintLayout;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewUser = itemView.findViewById(R.id.text_view_user_choose_workmates);
             imageViewUser = itemView.findViewById(R.id.image_view_picture_workmates);
+            constraintLayout = itemView.findViewById(R.id.constraint_layout_user_workmate_list);
         }
     }
 }
