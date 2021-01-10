@@ -1,6 +1,7 @@
 package com.elytevolution.go4lunch.view.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,14 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
-    private List<String> listNameViewPager = new ArrayList<>();
-
-    private List<Integer> listImageViewPager = new ArrayList<>();
-
-    private Toolbar toolbar;
-
-    private NavigationView navigationView;
-
     private DrawerLayout drawer;
 
     private ImageView imageUser;
@@ -64,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseUser currentUser;
 
+    private LatLng currentLocation = null;
+
+    private Button activateLocalizationButton;
+
+    private TextView textLocalization;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,10 +71,23 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        activateLocalizationButton = findViewById(R.id.button_activate_location_main_activity);
+        textLocalization = findViewById(R.id.textview_activate_location_main_activity);
+
+        startLocalization();
+
+        if(!localizationIsEnable()){
+            enableLocalization();
+        }
+        else {
+            textLocalization.setVisibility(View.INVISIBLE);
+            activateLocalizationButton.setVisibility(View.INVISIBLE);
+            configureTabLayout();
+        }
+
         configureNavigationView();
         drawer = findViewById(R.id.activity_main_drawer_layout);
 
-        configureViewPagerAndTabLayout();
         configureToolbar();
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -90,6 +103,10 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }
+    }
+
+    private void enableLocalization(){
+            activateLocalizationButton.setOnClickListener(v -> startLocalization());
     }
 
     public void getInfoUserOnMenuHeader() {
@@ -109,8 +126,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private boolean localizationIsEnable(){
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
     private void configureNavigationView(){
-        navigationView = findViewById(R.id.activity_main_nav_view);
+        NavigationView navigationView = findViewById(R.id.activity_main_nav_view);
         View headerView = navigationView.getHeaderView(0);
         nameUser = headerView.findViewById(R.id.text_view_display_name_header_nav);
         emailUser = headerView.findViewById(R.id.text_view_email_header_nav);
@@ -148,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configureToolbar() {
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -166,9 +188,11 @@ public class MainActivity extends AppCompatActivity {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
-    private void configureViewPagerAndTabLayout() {
-        ViewPager viewPager = binding.mainActivityViewPager;
+    private void configureTabLayout(){
         TabLayout tabLayout = binding.tabLayout;
+
+        List<String> listNameViewPager = new ArrayList<>();
+        List<Integer> listImageViewPager = new ArrayList<>();
 
         listNameViewPager.add("Map View");
         listNameViewPager.add("List View");
@@ -177,10 +201,7 @@ public class MainActivity extends AppCompatActivity {
         listImageViewPager.add(R.drawable.baseline_list_black_18dp);
         listImageViewPager.add(R.drawable.baseline_group_black_18dp);
 
-        LatLng location = startLocate();
-
-        viewPager.setAdapter(new ViewPagerFragmentAdapter(location, getSupportFragmentManager()));
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(configureViewPager());
         for (int icon : listImageViewPager) {
             tabLayout.getTabAt(listImageViewPager.indexOf(icon)).setIcon(icon);
         }
@@ -188,17 +209,25 @@ public class MainActivity extends AppCompatActivity {
             tabLayout.getTabAt(listNameViewPager.indexOf(list)).setText(list);
     }
 
-    private LatLng startLocate() {
-        double lat = 0, lng = 0;
-        LocationManager locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locMan != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Location lastLoc = locMan.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (lastLoc != null) {
-                    lat = lastLoc.getLatitude();
+    private ViewPager configureViewPager() {
+        ViewPager viewPager = binding.mainActivityViewPager;
+        Log.d(TAG, String.valueOf(currentLocation));
+        ViewPagerFragmentAdapter adapter = new ViewPagerFragmentAdapter(currentLocation, getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        return viewPager;
+    }
+
+    private void startLocalization() {
+        double latitude = 0, longitude = 0;
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null) {
+            if (localizationIsEnable()) {
+                @SuppressLint("MissingPermission") Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (lastKnownLocation != null) {
+                    latitude = lastKnownLocation.getLatitude();
                 }
-                if (lastLoc != null) {
-                    lng = lastLoc.getLongitude();
+                if (lastKnownLocation != null) {
+                    longitude = lastKnownLocation.getLongitude();
                 }
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
@@ -206,14 +235,17 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "PERMISSION NOT GRANTED");
         }
-        return new LatLng(lat, lng);
+        currentLocation = new LatLng(latitude, longitude);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100 && (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-            configureViewPagerAndTabLayout();
-        }
+            startLocalization();
+            configureTabLayout();
+            textLocalization.setVisibility(View.INVISIBLE);
+            activateLocalizationButton.setVisibility(View.INVISIBLE);
+         }
     }
 }
