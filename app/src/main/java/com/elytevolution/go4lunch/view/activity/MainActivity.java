@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -41,7 +42,7 @@ import static com.elytevolution.go4lunch.api.UserHelper.createUser;
 import static com.elytevolution.go4lunch.api.UserHelper.getUser;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
@@ -114,7 +115,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nameUser = headerView.findViewById(R.id.text_view_display_name_header_nav);
         emailUser = headerView.findViewById(R.id.text_view_email_header_nav);
         imageUser = headerView.findViewById(R.id.imageview_user_header_nav);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            switch (id){
+                case R.id.activity_main_drawer_lunch:
+                    getUser(currentUser.getUid()).addOnSuccessListener(document -> {
+                        String idPlace = document.getString("idPlace");
+                        if(idPlace != null && !idPlace.equals("")) {
+                            Intent intent = new Intent(getApplicationContext(), DetailRestaurantActivity.class);
+                            intent.putExtra("ID", idPlace);
+                            startActivity(intent);
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "You didn't select a restaurant yet!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    break;
+                case R.id.activity_main_drawer_settings:
+                    Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+                    startActivity(intent);
+                    break;
+                case R.id.activity_main_drawer_logout:
+                    FirebaseAuth.getInstance().signOut();
+                    finish();
+                    break;
+                default:
+                    break;
+            }
+            drawer.closeDrawer(GravityCompat.START);
+            return false;
+        });
     }
 
     private void configureToolbar() {
@@ -129,33 +159,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id){
-            case R.id.activity_main_drawer_lunch:
-                getUser(currentUser.getUid()).addOnSuccessListener(document -> {
-                        String idPlace = document.getString("idPlace");
-                        Intent intent = new Intent(this, DetailRestaurantActivity.class);
-                        intent.putExtra("ID", idPlace);
-                        startActivity(intent);
-                });
-                break;
-            case R.id.activity_main_drawer_settings:
-                Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
-                startActivity(intent);
-                break;
-            case R.id.activity_main_drawer_logout:
-                FirebaseAuth.getInstance().signOut();
-                finish();
-                break;
-            default:
-                break;
-        }
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
