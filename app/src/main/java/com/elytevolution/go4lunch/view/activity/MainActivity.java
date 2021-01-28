@@ -22,16 +22,29 @@ import com.bumptech.glide.request.RequestOptions;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.databinding.ActivityMainBinding;
 import com.elytevolution.go4lunch.view.adapter.ViewPagerFragmentAdapter;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -48,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 123;
+
     private ActivityMainBinding binding;
 
     private DrawerLayout drawer;
@@ -63,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
     private Button activateLocalizationButton;
 
     private TextView textLocalization;
+
+    private double latitude, longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 drawer.openDrawer(GravityCompat.START);
                 return true;
+            case R.id.action_search:
+                configureAutocompleteSearch();
         }
         return true;
     }
@@ -129,6 +148,48 @@ public class MainActivity extends AppCompatActivity {
     private boolean localizationIsEnable(){
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void configureAutocompleteSearch() {
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.google_maps_key), Locale.FRANCE);
+        }
+
+        RectangularBounds bounds = RectangularBounds.newInstance(
+                new LatLng(latitude - 0.007, longitude - 0.007),
+                new LatLng(latitude + 0.007, longitude + 0.007));
+
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.TYPES);
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                .setLocationRestriction(bounds)
+                .setCountries(Collections.singletonList("FR")).setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .build(this);
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE && data != null) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                if(place.getTypes().contains(Place.Type.RESTAURANT)) {
+                    Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getTypes());
+                    Intent intent = new Intent(this, DetailRestaurantActivity.class);
+                    intent.putExtra("ID", place.getId());
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "This is not a restaurant", Toast.LENGTH_LONG).show();
+                }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                Log.i(TAG, "The user canceled the operation");
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void configureNavigationView(){
@@ -159,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.activity_main_drawer_logout:
                     FirebaseAuth.getInstance().signOut();
+                    LoginManager.getInstance().logOut();
                     finish();
                     break;
                 default:
@@ -218,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startLocalization() {
-        double latitude = 0, longitude = 0;
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null) {
             if (localizationIsEnable()) {
