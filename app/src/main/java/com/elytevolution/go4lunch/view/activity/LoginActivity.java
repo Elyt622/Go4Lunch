@@ -1,7 +1,5 @@
 package com.elytevolution.go4lunch.view.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,13 +7,11 @@ import android.view.View;
 
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.databinding.ActivityLoginBinding;
-
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -29,11 +25,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import static com.elytevolution.go4lunch.api.UserHelper.createUser;
+import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final int GOOGLE_SIGN_IN = 123;
-
-    private static final int FACEBOOK_SIGN_IN = 124;
 
     private static final String TAG = "LoginActivity";
 
@@ -152,14 +151,22 @@ public class LoginActivity extends AppCompatActivity {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-                // ...
             }
+        }
+        else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
     private void updateUI(FirebaseUser user) {
         if(user != null) {
+            getUsersCollection().document(user.getEmail()).get().addOnCompleteListener(task -> {
+                if (!task.getResult().exists()) {
+                    createUser(user.getUid(), user.getDisplayName(), user.getEmail(), String.valueOf(user.getPhotoUrl()), "");
+                }
+            });
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         }
     }
 

@@ -53,9 +53,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import static com.elytevolution.go4lunch.api.UserHelper.createUser;
 import static com.elytevolution.go4lunch.api.UserHelper.getUser;
-import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -112,13 +110,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
         } else {
             getInfoUserOnMenuHeader();
-            if (currentUser != null) {
-                getUsersCollection().document(currentUser.getUid()).get().addOnCompleteListener(task -> {
-                    if (!task.getResult().exists()) {
-                        createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()), "");
-                    }
-                });
-            }
         }
     }
 
