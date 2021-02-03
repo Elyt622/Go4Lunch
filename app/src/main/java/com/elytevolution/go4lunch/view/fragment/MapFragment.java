@@ -44,7 +44,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleP
 
     private final List<NearBySearch.Results> results = new ArrayList<>();
 
-    private LatLng location;
+    private final LatLng location;
 
     private SupportMapFragment mapFragment;
 

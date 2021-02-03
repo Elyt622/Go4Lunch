@@ -43,9 +43,9 @@ public class ListFragment extends Fragment implements GooglePlaceCalls.Callbacks
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private LatLng location;
+    private final LatLng location;
 
-    private List<Restaurant> restaurants = new ArrayList<>();
+    private final List<Restaurant> restaurants = new ArrayList<>();
 
     private int participation;
 
