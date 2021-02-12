@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
     public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RecyclerViewHolder> {
 
-        private List<Restaurant> restaurants;
+        private final List<Restaurant> restaurants;
 
-        private LatLng location;
+        private final LatLng location;
 
-        private String key;
+        private final String key;
 
         public RestaurantListAdapter(List<Restaurant> restaurants, LatLng location, String key){
             this.location = location;
@@ -55,7 +55,9 @@ import androidx.recyclerview.widget.RecyclerView;
         printStarsRating(restaurants.get(position).getRating(), holder.imageViewRate1, holder.imageViewRate2, holder.imageViewRate3);
 
         int distance = (int) (distFrom(location.latitude, location.longitude, restaurants.get(position).getLat(), restaurants.get(position).getLgt())*1000);
-        holder.textViewDistance.setText(distance+"m");
+
+        String distanceToPrint = (distance+"m");
+        holder.textViewDistance.setText(distanceToPrint);
 
         holder.constraintLayout.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), DetailRestaurantActivity.class);
@@ -67,7 +69,8 @@ import androidx.recyclerview.widget.RecyclerView;
     private void printParticipants(int participants, TextView textViewVote, ImageView imageViewVote){
         imageViewVote.setImageResource(R.drawable.baseline_person_black_18);
         if(participants != 0) {
-            textViewVote.setText("(" +participants+ ")");
+            String participantsToPrint = ("(" +participants+ ")");
+            textViewVote.setText(participantsToPrint);
             imageViewVote.setVisibility(View.VISIBLE);
         }
         else {
@@ -79,10 +82,10 @@ import androidx.recyclerview.widget.RecyclerView;
     private void printCurrentOpen(TextView textViewOpen, Boolean isCurrentOpen){
         if (isCurrentOpen != null) {
             if (isCurrentOpen) {
-                textViewOpen.setText("Currently open");
+                textViewOpen.setText(R.string.currently_open);
                 textViewOpen.setTextColor(ContextCompat.getColor(textViewOpen.getContext(), R.color.open));
             } else {
-                textViewOpen.setText("Currently close");
+                textViewOpen.setText(R.string.currently_close);
                 textViewOpen.setTextColor(ContextCompat.getColor(textViewOpen.getContext(), R.color.close));
             }
         }
@@ -156,9 +159,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView textViewName, textViewAddress, textViewOpen, textViewDistance, textViewVote;
-        private ImageView imageViewRestaurant, imageViewVote, imageViewRate1, imageViewRate2, imageViewRate3;
-        private ConstraintLayout constraintLayout;
+        private final TextView textViewName;
+        private final TextView textViewAddress;
+        private final TextView textViewOpen;
+        private final TextView textViewDistance;
+        private final TextView textViewVote;
+        private final ImageView imageViewRestaurant;
+        private final ImageView imageViewVote;
+        private final ImageView imageViewRate1;
+        private final ImageView imageViewRate2;
+        private final ImageView imageViewRate3;
+        private final ConstraintLayout constraintLayout;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);

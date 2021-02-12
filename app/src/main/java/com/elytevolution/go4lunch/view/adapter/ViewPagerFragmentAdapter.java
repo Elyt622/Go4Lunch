@@ -12,13 +12,10 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 public class ViewPagerFragmentAdapter extends FragmentPagerAdapter {
 
-    private FragmentManager fm;
-
-    private LatLng location;
+    private final LatLng location;
 
     public ViewPagerFragmentAdapter(LatLng location, @NonNull FragmentManager fragmentManager) {
         super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        this.fm = fragmentManager;
         this.location = location;
     }
 

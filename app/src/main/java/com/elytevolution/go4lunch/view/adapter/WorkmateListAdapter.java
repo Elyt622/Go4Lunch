@@ -25,9 +25,9 @@ import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipatio
 
 public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapter.RecyclerViewHolder> {
 
-    private List<User> users;
+    private final List<User> users;
 
-    private String namePlace;
+    private String namePlace, messageJoin, messageNoChoice;
 
     public WorkmateListAdapter(@Nullable List<User> users){
         this.users = users;
@@ -37,45 +37,51 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
     @Override
     public WorkmateListAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item, parent, false);
+
+        messageJoin = view.getResources().getString(R.string.restaurant_message_join);
+        messageNoChoice = view.getResources().getString(R.string.restaurant_message_no_choice);
+
         return new RecyclerViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull WorkmateListAdapter.RecyclerViewHolder holder, int position) {
-        getParticipationCollection().whereArrayContains("uid", users.get(position).getUid()).get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                for(QueryDocumentSnapshot document: task.getResult()){
-                    namePlace = document.getString("namePlace");
-                    holder.textViewUser.setText(users.get(position).getDisplayName() + " want to join " + namePlace);
+        if (users != null) {
+            getParticipationCollection().whereArrayContains("uid", users.get(position).getUid()).get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot document: task.getResult()){
+                        namePlace = document.getString("namePlace");
+                        String messageToPrint = (users.get(position).getDisplayName() + " " + messageJoin + " " + namePlace);
+                        holder.textViewUser.setText(messageToPrint);
+                    }
+                    if(namePlace == null){
+                        String messageToPrint = (users.get(position).getDisplayName() + " " + messageNoChoice);
+                        holder.textViewUser.setText(messageToPrint);
+                    }
+                    namePlace=null;
                 }
-                if(namePlace == null){
-                    holder.textViewUser.setText(users.get(position).getDisplayName() + " hasn't decided yet!");
-                }
-                namePlace=null;
-            }
-        });
-        Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).apply(RequestOptions.circleCropTransform()).into(holder.imageViewUser);
-        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(users.get(position).getIdPlace() != null && !users.get(position).getIdPlace().isEmpty()) {
-                    Intent intent = new Intent(v.getContext(), DetailRestaurantActivity.class);
-                    intent.putExtra("ID", users.get(position).getIdPlace());
-                    v.getContext().startActivity(intent);
-                }
+            });
+            Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).apply(RequestOptions.circleCropTransform()).into(holder.imageViewUser);
+        }
+
+        holder.constraintLayout.setOnClickListener(v -> {
+            if (users != null && users.get(position).getIdPlace() != null && !users.get(position).getIdPlace().isEmpty()) {
+                Intent intent = new Intent(v.getContext(), DetailRestaurantActivity.class);
+                intent.putExtra("ID", users.get(position).getIdPlace());
+                v.getContext().startActivity(intent);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return users != null ? users.size() : 0;
     }
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageViewUser;
-        private TextView textViewUser;
-        private ConstraintLayout constraintLayout;
+        private final ImageView imageViewUser;
+        private final TextView textViewUser;
+        private final ConstraintLayout constraintLayout;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
