@@ -1,34 +1,28 @@
 package com.elytevolution.go4lunch.view.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.User;
+import com.elytevolution.go4lunch.presenter.WorkmatePresenter;
 import com.elytevolution.go4lunch.view.adapter.WorkmateListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class WorkmateFragment extends Fragment {
+public class WorkmateFragment extends Fragment implements WorkmatePresenter.View{
 
-    private static final String TAG = "WorkmateFragment";
-
-    private List<User> users = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
 
     private WorkmateListAdapter adapter;
 
@@ -36,8 +30,10 @@ public class WorkmateFragment extends Fragment {
 
     private FirebaseUser currentUser;
 
+    private WorkmatePresenter presenter;
+
     public WorkmateFragment() {
-        // Required empty public constructor
+
     }
 
     public static WorkmateFragment newInstance() {
@@ -53,50 +49,44 @@ public class WorkmateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_workmates, container, false);
+
+        presenter = new WorkmatePresenter(this);
+
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_users_workmates);
         swipeRefreshLayout = view.findViewById(R.id.swipe_workmate_fragment);
 
-        adapter = new WorkmateListAdapter(users);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        configureAdapter(recyclerView);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         users.clear();
-        getAllUsers();
+        presenter.getAllUsers(currentUser, users);
         configureSwipeRefreshLayout();
         return view;
     }
 
-    private void getAllUsers(){
-        getUsersCollection()
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            if(!document.getId().equals(currentUser.getUid()))
-                            users.add(new User(document.getString("uid"),
-                                    document.getString("displayName"),
-                                    document.getString("email"),
-                                    document.getString("urlPicture"),
-                                    document.getString("idPlace")));
-                        }
-                        updateUI();
-                    } else {
-                        Log.w(TAG, "Error getting documents.", task.getException());
-                    }
-                });
+    private void configureAdapter(RecyclerView recyclerView){
+        adapter = new WorkmateListAdapter(users);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void configureSwipeRefreshLayout(){
         swipeRefreshLayout.setOnRefreshListener(() -> {
             users.clear();
-            getAllUsers();
+            presenter.getAllUsers(currentUser, users);
         });
     }
 
-    private void updateUI() {
+    @Override
+    public void updateUI() {
         adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 }
