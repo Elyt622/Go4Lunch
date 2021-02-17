@@ -21,7 +21,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.databinding.ActivityMainBinding;
-import com.elytevolution.go4lunch.view.adapter.ViewPagerFragmentAdapter;
+import com.elytevolution.go4lunch.presenter.MainPresenter;
+import com.elytevolution.go4lunch.view.adapter.ViewPagerAdapter;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
@@ -55,7 +56,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import static com.elytevolution.go4lunch.api.UserHelper.getUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainPresenter.View {
 
     private static final String TAG = "MainActivity";
 
@@ -79,12 +80,16 @@ public class MainActivity extends AppCompatActivity {
 
     private double latitude, longitude;
 
+    private MainPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
+        presenter = new MainPresenter(this);
 
         activateLocalizationButton = findViewById(R.id.button_activate_location_main_activity);
         textLocalization = findViewById(R.id.textview_activate_location_main_activity);
@@ -127,10 +132,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch(itemId) {
-            case android.R.id.home:
+            case (android.R.id.home):
                 drawer.openDrawer(GravityCompat.START);
                 return true;
-            case R.id.action_search:
+            case (R.id.action_search):
                 configureAutocompleteSearch();
         }
         return true;
@@ -165,12 +170,12 @@ public class MainActivity extends AppCompatActivity {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 if(place.getTypes().contains(Place.Type.RESTAURANT)) {
                     Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getTypes());
-                    Intent intent = new Intent(this, DetailRestaurantActivity.class);
+                    Intent intent = new Intent(this, DetailsActivity.class);
                     intent.putExtra("ID", place.getId());
                     startActivity(intent);
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "This is not a restaurant", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "It's not a restaurant", Toast.LENGTH_LONG).show();
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -192,11 +197,11 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             switch (id){
-                case R.id.activity_main_drawer_lunch:
+                case (R.id.activity_main_drawer_lunch):
                     getUser(currentUser.getUid()).addOnSuccessListener(document -> {
                         String idPlace = document.getString("idPlace");
                         if(idPlace != null && !idPlace.equals("")) {
-                            Intent intent = new Intent(getApplicationContext(), DetailRestaurantActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
                             intent.putExtra("ID", idPlace);
                             startActivity(intent);
                         }
@@ -205,11 +210,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     break;
-                case R.id.activity_main_drawer_settings:
+                case (R.id.activity_main_drawer_settings):
                     Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
                     startActivity(intent);
                     break;
-                case R.id.activity_main_drawer_logout:
+                case (R.id.activity_main_drawer_logout):
                     FirebaseAuth.getInstance().signOut();
                     LoginManager.getInstance().logOut();
                     finish();
@@ -227,8 +232,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_18dp);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_18dp);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -265,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager configureViewPager() {
         ViewPager viewPager = binding.mainActivityViewPager;
         Log.d(TAG, String.valueOf(currentLocation));
-        ViewPagerFragmentAdapter adapter = new ViewPagerFragmentAdapter(currentLocation, getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(currentLocation, getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         return viewPager;
     }

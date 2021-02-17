@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.User;
 import com.elytevolution.go4lunch.presenter.WorkmatePresenter;
-import com.elytevolution.go4lunch.view.adapter.WorkmateListAdapter;
-import com.google.firebase.auth.FirebaseAuth;
+import com.elytevolution.go4lunch.view.adapter.WorkmateAdapter;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
 
     private final List<User> users = new ArrayList<>();
 
-    private WorkmateListAdapter adapter;
+    private WorkmateAdapter adapter;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -32,9 +31,7 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
 
     private WorkmatePresenter presenter;
 
-    public WorkmateFragment() {
-
-    }
+    public WorkmateFragment() { }
 
     public static WorkmateFragment newInstance() {
         return new WorkmateFragment();
@@ -57,23 +54,23 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
 
         configureAdapter(recyclerView);
 
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser = presenter.getCurrentUser();
 
-        users.clear();
+        presenter.clearListUser(users);
         presenter.getAllUsers(currentUser, users);
         configureSwipeRefreshLayout();
         return view;
     }
 
     private void configureAdapter(RecyclerView recyclerView){
-        adapter = new WorkmateListAdapter(users);
+        adapter = new WorkmateAdapter(users);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void configureSwipeRefreshLayout(){
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            users.clear();
+            presenter.clearListUser(users);
             presenter.getAllUsers(currentUser, users);
         });
     }

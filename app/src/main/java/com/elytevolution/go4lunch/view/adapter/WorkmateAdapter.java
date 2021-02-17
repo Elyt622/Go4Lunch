@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.User;
-import com.elytevolution.go4lunch.view.activity.DetailRestaurantActivity;
+import com.elytevolution.go4lunch.view.activity.DetailsActivity;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.List;
@@ -23,19 +23,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
 
-public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapter.RecyclerViewHolder> {
+public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.RecyclerViewHolder> {
 
     private final List<User> users;
 
     private String namePlace, messageJoin, messageNoChoice;
 
-    public WorkmateListAdapter(@Nullable List<User> users){
+    public WorkmateAdapter(@Nullable List<User> users){
         this.users = users;
     }
 
     @NonNull
     @Override
-    public WorkmateListAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WorkmateAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item, parent, false);
 
         messageJoin = view.getResources().getString(R.string.restaurant_message_join);
@@ -45,7 +45,7 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WorkmateListAdapter.RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WorkmateAdapter.RecyclerViewHolder holder, int position) {
         if (users != null) {
             getParticipationCollection().whereArrayContains("uid", users.get(position).getUid()).get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
@@ -66,7 +66,7 @@ public class WorkmateListAdapter extends RecyclerView.Adapter<WorkmateListAdapte
 
         holder.constraintLayout.setOnClickListener(v -> {
             if (users != null && users.get(position).getIdPlace() != null && !users.get(position).getIdPlace().isEmpty()) {
-                Intent intent = new Intent(v.getContext(), DetailRestaurantActivity.class);
+                Intent intent = new Intent(v.getContext(), DetailsActivity.class);
                 intent.putExtra("ID", users.get(position).getIdPlace());
                 v.getContext().startActivity(intent);
             }

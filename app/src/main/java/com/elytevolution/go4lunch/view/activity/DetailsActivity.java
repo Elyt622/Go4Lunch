@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.User;
-import com.elytevolution.go4lunch.view.adapter.DetailRestaurantListAdapter;
+import com.elytevolution.go4lunch.view.adapter.DetailsAdapter;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -38,9 +38,9 @@ import static com.elytevolution.go4lunch.api.UserHelper.getUser;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 import static com.elytevolution.go4lunch.api.UserHelper.updateUserIdPlace;
 
-public class DetailRestaurantActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity {
 
-    private static String TAG = "DetailActivity";
+    private static final String TAG = "DetailActivity";
 
     private FirebaseUser currentUser;
 
@@ -52,7 +52,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
 
     private TextView textViewName, textViewAddress;
 
-    private DetailRestaurantListAdapter adapter;
+    private DetailsAdapter adapter;
 
     private ImageView imageViewRestaurant, imageViewCall, imageViewLike, imageViewWebsite, imageViewFavorite, participateButton;
 
@@ -60,7 +60,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
 
     private List<String> favoriteList = new ArrayList<>();
 
-    private List<User> usersParticipants = new ArrayList<>();
+    private final List<User> usersParticipants = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_users_detail_activity);
 
-        adapter = new DetailRestaurantListAdapter(usersParticipants);
+        adapter = new DetailsAdapter(usersParticipants);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -262,7 +262,7 @@ public class DetailRestaurantActivity extends AppCompatActivity {
                 String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
                         + place.getPhotoMetadatas().get(0).zza()
                         + "&key="+getString(R.string.google_maps_key);
-                Glide.with(DetailRestaurantActivity.this).load(imgUrl).into(imageViewRestaurant);
+                Glide.with(DetailsActivity.this).load(imgUrl).into(imageViewRestaurant);
             }
 
             imageViewCall.setOnClickListener(v -> {

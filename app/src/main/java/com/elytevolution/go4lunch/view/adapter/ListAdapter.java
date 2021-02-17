@@ -10,7 +10,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.Restaurant;
-import com.elytevolution.go4lunch.view.activity.DetailRestaurantActivity;
+import com.elytevolution.go4lunch.presenter.ListPresenter;
+import com.elytevolution.go4lunch.view.activity.DetailsActivity;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-    public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RecyclerViewHolder> {
+    public class ListAdapter extends RecyclerView.Adapter<ListAdapter.RecyclerViewHolder> {
 
         private final List<Restaurant> restaurants;
 
@@ -28,15 +29,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
         private final String key;
 
-        public RestaurantListAdapter(List<Restaurant> restaurants, LatLng location, String key){
+        private ListPresenter presenter;
+
+        public ListAdapter(List<Restaurant> restaurants, LatLng location, String key, ListPresenter presenter){
             this.location = location;
             this.restaurants = restaurants;
             this.key = key;
+            this.presenter = presenter;
         }
 
     @NonNull
     @Override
-    public RestaurantListAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ListAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.restaurant_item, parent, false);
         return new RecyclerViewHolder(view);
     }
@@ -60,7 +64,7 @@ import androidx.recyclerview.widget.RecyclerView;
         holder.textViewDistance.setText(distanceToPrint);
 
         holder.constraintLayout.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), DetailRestaurantActivity.class);
+            Intent intent = new Intent(v.getContext(), DetailsActivity.class);
             intent.putExtra("ID", restaurants.get(position).getIdPlace());
             v.getContext().startActivity(intent);
         });

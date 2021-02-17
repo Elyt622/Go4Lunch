@@ -9,12 +9,14 @@ import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.presenter.ListPresenter;
-import com.elytevolution.go4lunch.view.adapter.RestaurantListAdapter;
+import com.elytevolution.go4lunch.view.adapter.ListAdapter;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +28,7 @@ public class ListFragment extends Fragment implements ListPresenter.View{
 
     private static final String TYPE = "restaurant";
 
-    private RestaurantListAdapter adapter;
+    private ListAdapter adapter;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -45,6 +47,13 @@ public class ListFragment extends Fragment implements ListPresenter.View{
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        presenter = new ListPresenter(this, restaurants);
+        presenter.executeHttpRequestWithRetrofit(getString(R.string.google_maps_key), location, RADIUS, TYPE);
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
@@ -52,17 +61,14 @@ public class ListFragment extends Fragment implements ListPresenter.View{
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_fragment_list);
         swipeRefreshLayout = view.findViewById(R.id.swipe_fragment_list);
 
-        presenter = new ListPresenter(this, restaurants);
-        presenter.executeHttpRequestWithRetrofit(getString(R.string.google_maps_key), location, RADIUS, TYPE);
-
-        configureAdapter(view, recyclerView);
+        configureAdapter(view, recyclerView, presenter);
         configureSwipeRefreshLayout();
 
         return view;
     }
 
-    private void configureAdapter(View view, RecyclerView recyclerView){
-        adapter = new RestaurantListAdapter(restaurants, location, getString(R.string.google_maps_key));
+    private void configureAdapter(View view, RecyclerView recyclerView, ListPresenter presenter){
+        adapter = new ListAdapter(restaurants, location, getString(R.string.google_maps_key), presenter);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
     }

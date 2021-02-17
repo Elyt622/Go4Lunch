@@ -10,11 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-public class ViewPagerFragmentAdapter extends FragmentPagerAdapter {
+public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private final LatLng location;
 
-    public ViewPagerFragmentAdapter(LatLng location, @NonNull FragmentManager fragmentManager) {
+    public ViewPagerAdapter(LatLng location, @NonNull FragmentManager fragmentManager) {
         super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.location = location;
     }

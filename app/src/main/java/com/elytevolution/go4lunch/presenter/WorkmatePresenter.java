@@ -3,6 +3,7 @@ package com.elytevolution.go4lunch.presenter;
 import android.util.Log;
 
 import com.elytevolution.go4lunch.model.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -21,9 +22,7 @@ public class WorkmatePresenter {
     }
 
     public void getAllUsers(FirebaseUser currentUser, List<User> users){
-        getUsersCollection()
-                .get()
-                .addOnCompleteListener(task -> {
+        getUsersCollection().get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             if(!document.getId().equals(currentUser.getUid()))
@@ -38,6 +37,14 @@ public class WorkmatePresenter {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
                 });
+    }
+
+    public FirebaseUser getCurrentUser(){
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    public void clearListUser(List<User> users){
+        users.clear();
     }
 
     public void onDestroy(){

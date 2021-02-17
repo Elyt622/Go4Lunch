@@ -16,13 +16,13 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DetailRestaurantListAdapter extends RecyclerView.Adapter<DetailRestaurantListAdapter.RecyclerViewHolder> {
+public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.RecyclerViewHolder> {
 
     private final List<User> users;
 
     private String joiningToPrint;
 
-    public DetailRestaurantListAdapter(List<User> users){
+    public DetailsAdapter(List<User> users){
         this.users = users;
     }
 
@@ -31,7 +31,7 @@ public class DetailRestaurantListAdapter extends RecyclerView.Adapter<DetailRest
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_detail_restaurant, parent, false);
 
-        joiningToPrint = parent.getResources().getString(R.string.isjoining);
+        joiningToPrint = parent.getResources().getString(R.string.is_joining);
 
         return new RecyclerViewHolder(view);
     }

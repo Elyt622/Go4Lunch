@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.presenter.MapPresenter;
-import com.elytevolution.go4lunch.view.activity.DetailRestaurantActivity;
+import com.elytevolution.go4lunch.view.activity.DetailsActivity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -49,14 +49,18 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
         return (new MapFragment(location));
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter = new MapPresenter(this);
+        presenter.executeHttpRequestWithRetrofit(getString(R.string.google_maps_key), location, RADIUS, TYPE);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.support_map);
-
-        presenter = new MapPresenter(this);
-        presenter.executeHttpRequestWithRetrofit(getString(R.string.google_maps_key), location, RADIUS, TYPE);
 
         if (mapFragment != null) updateMap(results);
 
@@ -76,7 +80,7 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
 
             googleMap.setOnMarkerClickListener(marker -> {
                 String string = (String) marker.getTag();
-                Intent intent = new Intent(getContext(), DetailRestaurantActivity.class);
+                Intent intent = new Intent(getContext(), DetailsActivity.class);
                 intent.putExtra("ID", string);
                 if(getContext() != null) getContext().startActivity(intent);
                 return false;
