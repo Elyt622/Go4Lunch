@@ -38,6 +38,8 @@ public class ListFragment extends Fragment implements ListPresenter.View{
 
     private ListPresenter presenter;
 
+    private RecyclerView recyclerView;
+
     public ListFragment(LatLng location) {
         this.location = location;
      }
@@ -48,8 +50,12 @@ public class ListFragment extends Fragment implements ListPresenter.View{
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        presenter = new ListPresenter(this, restaurants);
+        presenter = new ListPresenter(this, restaurants, location, getString(R.string.google_maps_key));
         presenter.executeHttpRequestWithRetrofit(getString(R.string.google_maps_key), location, RADIUS, TYPE);
+
+        configureAdapter(view, recyclerView, presenter);
+        configureSwipeRefreshLayout();
+
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -58,17 +64,14 @@ public class ListFragment extends Fragment implements ListPresenter.View{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_fragment_list);
+        recyclerView = view.findViewById(R.id.recycler_view_fragment_list);
         swipeRefreshLayout = view.findViewById(R.id.swipe_fragment_list);
-
-        configureAdapter(view, recyclerView, presenter);
-        configureSwipeRefreshLayout();
 
         return view;
     }
 
     private void configureAdapter(View view, RecyclerView recyclerView, ListPresenter presenter){
-        adapter = new ListAdapter(restaurants, location, getString(R.string.google_maps_key), presenter);
+        adapter = new ListAdapter(presenter);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
     }

@@ -9,12 +9,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.elytevolution.go4lunch.R;
-import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.presenter.ListPresenter;
 import com.elytevolution.go4lunch.view.activity.DetailsActivity;
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -23,18 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
     public class ListAdapter extends RecyclerView.Adapter<ListAdapter.RecyclerViewHolder> {
 
-        private final List<Restaurant> restaurants;
+        private final ListPresenter presenter;
 
-        private final LatLng location;
-
-        private final String key;
-
-        private ListPresenter presenter;
-
-        public ListAdapter(List<Restaurant> restaurants, LatLng location, String key, ListPresenter presenter){
-            this.location = location;
-            this.restaurants = restaurants;
-            this.key = key;
+        public ListAdapter(ListPresenter presenter){
             this.presenter = presenter;
         }
 
@@ -42,35 +29,36 @@ import androidx.recyclerview.widget.RecyclerView;
     @Override
     public ListAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.restaurant_item, parent, false);
+
         return new RecyclerViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
 
-        printTextRestaurant(holder.textViewName, restaurants.get(position).getName(),25);
-        printTextRestaurant(holder.textViewAddress, restaurants.get(position).getAddress(), 30);
+        showTextRestaurant(holder.textViewName, presenter.getName(position),25);
+        showTextRestaurant(holder.textViewAddress, presenter.getAddress(position), 30);
 
-        printPhotoRef(holder.imageViewRestaurant, restaurants.get(position).getPhotoRef());
-        printCurrentOpen(holder.textViewOpen, restaurants.get(position).isCurrentOpen());
+        showPhotoReference(holder.imageViewRestaurant, presenter.getPhotoReference(position));
+        showCurrentOpen(holder.textViewOpen, presenter.getOpenRestaurant(position));
 
-        printParticipants(restaurants.get(position).getParticipation(), holder.textViewVote, holder.imageViewVote);
+        showParticipants(presenter.getParticipants(position), holder.textViewVote, holder.imageViewVote);
 
-        printStarsRating(restaurants.get(position).getRating(), holder.imageViewRate1, holder.imageViewRate2, holder.imageViewRate3);
+        showStarsRating(presenter.getRating(position), holder.imageViewRate1, holder.imageViewRate2, holder.imageViewRate3);
 
-        int distance = (int) (distFrom(location.latitude, location.longitude, restaurants.get(position).getLat(), restaurants.get(position).getLgt())*1000);
+        int distance = (int) (presenter.distFrom(presenter.getCurrentLocation().latitude, presenter.getCurrentLocation().longitude, presenter.getRestaurantLocation(position).latitude, presenter.getRestaurantLocation(position).longitude)*1000);
 
         String distanceToPrint = (distance+"m");
         holder.textViewDistance.setText(distanceToPrint);
 
         holder.constraintLayout.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), DetailsActivity.class);
-            intent.putExtra("ID", restaurants.get(position).getIdPlace());
+            intent.putExtra("ID", presenter.getRestaurantId(position));
             v.getContext().startActivity(intent);
         });
     }
 
-    private void printParticipants(int participants, TextView textViewVote, ImageView imageViewVote){
+    private void showParticipants(int participants, TextView textViewVote, ImageView imageViewVote){
         imageViewVote.setImageResource(R.drawable.baseline_person_black_18);
         if(participants != 0) {
             String participantsToPrint = ("(" +participants+ ")");
@@ -83,7 +71,7 @@ import androidx.recyclerview.widget.RecyclerView;
         }
     }
 
-    private void printCurrentOpen(TextView textViewOpen, Boolean isCurrentOpen){
+    private void showCurrentOpen(TextView textViewOpen, Boolean isCurrentOpen){
         if (isCurrentOpen != null) {
             if (isCurrentOpen) {
                 textViewOpen.setText(R.string.currently_open);
@@ -98,18 +86,18 @@ import androidx.recyclerview.widget.RecyclerView;
         }
     }
 
-    private void printPhotoRef(ImageView imageView, String photoRef){
+    private void showPhotoReference(ImageView imageView, String photoRef){
         if(photoRef != null) {
             String imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
                     +photoRef
-                    +"&key="+key;
+                    +"&key="+presenter.getGoogleKey();
             Glide.with(imageView.getContext()).load(imgUrl).centerCrop().into(imageView);
         }else {
             Glide.with(imageView.getContext()).clear(imageView);
         }
     }
 
-    private void printTextRestaurant(TextView textView, String textToPrint, int size){
+    private void showTextRestaurant(TextView textView, String textToPrint, int size){
             if (textToPrint != null) {
                 if (textToPrint.length() > size) {
                     String phrase = textToPrint.substring(0, size) + "...";
@@ -122,7 +110,7 @@ import androidx.recyclerview.widget.RecyclerView;
             }
     }
 
-    private void printStarsRating(Double rate, ImageView imageViewRate1, ImageView imageViewRate2, ImageView imageViewRate3){
+    private void showStarsRating(Double rate, ImageView imageViewRate1, ImageView imageViewRate2, ImageView imageViewRate3){
         if (rate > 3.0) {
             if (rate < 4.0) {
                 imageViewRate1.setVisibility(View.VISIBLE);
@@ -144,35 +132,15 @@ import androidx.recyclerview.widget.RecyclerView;
         }
     }
 
-    private double distFrom(double lat1, double lng1, double lat2, double lng2) {
-            double earthRadius = 3958.75;
-            double dLat = Math.toRadians(lat2-lat1);
-            double dLng = Math.toRadians(lng2-lng1);
-            double sindLat = Math.sin(dLat / 2);
-            double sindLng = Math.sin(dLng / 2);
-            double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-                    * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
-            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return earthRadius * c;
-        }
-
     @Override
     public int getItemCount() {
-        return restaurants.size();
+        return presenter.getSizeRestaurant();
     }
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView textViewName;
-        private final TextView textViewAddress;
-        private final TextView textViewOpen;
-        private final TextView textViewDistance;
-        private final TextView textViewVote;
-        private final ImageView imageViewRestaurant;
-        private final ImageView imageViewVote;
-        private final ImageView imageViewRate1;
-        private final ImageView imageViewRate2;
-        private final ImageView imageViewRate3;
+        private final TextView textViewName, textViewAddress, textViewOpen, textViewDistance, textViewVote;
+        private final ImageView imageViewRestaurant, imageViewVote, imageViewRate1, imageViewRate2, imageViewRate3;
         private final ConstraintLayout constraintLayout;
 
         public RecyclerViewHolder(@NonNull View itemView) {

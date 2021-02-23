@@ -28,9 +28,15 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
 
     private final List<NearBySearch.Results> results = new ArrayList<>();
 
-    public ListPresenter(View view, List<Restaurant> restaurants){
+    private final String key;
+
+    private final LatLng currentLocation;
+
+    public ListPresenter(View view, List<Restaurant> restaurants, LatLng currentLocation, String key){
         this.view = view;
         this.restaurants = restaurants;
+        this.currentLocation = currentLocation;
+        this.key = key;
     }
 
     public void getAllRestaurant(List<NearBySearch.Results> results){
@@ -114,6 +120,62 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
         }
     }
 
+    public String getName(int position) {
+        return restaurants.get(position).getName();
+    }
+
+    public String getAddress(int position) {
+        return restaurants.get(position).getAddress();
+    }
+
+    public int getSizeRestaurant() {
+        return restaurants.size();
+    }
+
+    public String getPhotoReference(int position) {
+        return restaurants.get(position).getPhotoRef();
+    }
+
+    public Boolean getOpenRestaurant(int position) {
+        return restaurants.get(position).isCurrentOpen();
+    }
+
+    public int getParticipants(int position) {
+        return restaurants.get(position).getParticipation();
+    }
+
+    public Double getRating(int position) {
+        return restaurants.get(position).getRating();
+    }
+
+    public LatLng getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public LatLng getRestaurantLocation(int position) {
+        return new LatLng(restaurants.get(position).getLat(), restaurants.get(position).getLgt());
+    }
+
+    public String getRestaurantId(int position) {
+        return restaurants.get(position).getIdPlace();
+    }
+
+    public String getGoogleKey() {
+        return key;
+    }
+
+    public double distFrom(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 3958.75;
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double sinLat = Math.sin(dLat / 2);
+        double sinLng = Math.sin(dLng / 2);
+        double a = Math.pow(sinLat, 2) + Math.pow(sinLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return earthRadius * c;
+    }
+
     @Override
     public void onFailure() {
         Log.d(TAG, "FAILURE");
@@ -126,5 +188,6 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
     public interface View{
         void updateAdapter();
         void updateUI(List<NearBySearch.Results> results);
+
     }
 }
