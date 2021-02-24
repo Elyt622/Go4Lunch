@@ -10,14 +10,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.elytevolution.go4lunch.R;
-import com.elytevolution.go4lunch.model.User;
+import com.elytevolution.go4lunch.presenter.WorkmatePresenter;
 import com.elytevolution.go4lunch.view.activity.DetailsActivity;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,12 +22,10 @@ import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipatio
 
 public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.RecyclerViewHolder> {
 
-    private final List<User> users;
+    private final WorkmatePresenter presenter;
 
-    private String namePlace, messageJoin, messageNoChoice;
-
-    public WorkmateAdapter(@Nullable List<User> users){
-        this.users = users;
+    public WorkmateAdapter(WorkmatePresenter presenter){
+        this.presenter = presenter;
     }
 
     @NonNull
@@ -38,36 +33,33 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
     public WorkmateAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item, parent, false);
 
-        messageJoin = view.getResources().getString(R.string.restaurant_message_join);
-        messageNoChoice = view.getResources().getString(R.string.restaurant_message_no_choice);
-
         return new RecyclerViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull WorkmateAdapter.RecyclerViewHolder holder, int position) {
-        if (users != null) {
-            getParticipationCollection().whereArrayContains("uid", users.get(position).getUid()).get().addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document: task.getResult()){
+
+        getParticipationCollection().whereArrayContains("uid", presenter.getUserId(position)).get().addOnCompleteListener(task -> {
+            if (!presenter.getPlaceId(position).isEmpty()) {
+                String namePlace;
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
                         namePlace = document.getString("namePlace");
-                        String messageToPrint = (users.get(position).getDisplayName() + " " + messageJoin + " " + namePlace);
-                        holder.textViewUser.setText(messageToPrint);
+                        holder.textViewUser.setText(presenter.getUserName(position) + " " + "want to join" + " " + namePlace);
                     }
-                    if(namePlace == null){
-                        String messageToPrint = (users.get(position).getDisplayName() + " " + messageNoChoice);
-                        holder.textViewUser.setText(messageToPrint);
-                    }
-                    namePlace=null;
                 }
-            });
-            Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).apply(RequestOptions.circleCropTransform()).into(holder.imageViewUser);
-        }
+            }
+            else {
+                holder.textViewUser.setText(presenter.getUserName(position) + " " + "has not decided yet!");
+            }
+        });
+
+        Glide.with(holder.itemView).load(presenter.getUrlPicture(position)).apply(RequestOptions.circleCropTransform()).into(holder.imageViewUser);
 
         holder.constraintLayout.setOnClickListener(v -> {
-            if (users != null && users.get(position).getIdPlace() != null && !users.get(position).getIdPlace().isEmpty()) {
+            if (presenter.getPlaceId(position) != null && !presenter.getPlaceId(position).isEmpty()) {
                 Intent intent = new Intent(v.getContext(), DetailsActivity.class);
-                intent.putExtra("ID", users.get(position).getIdPlace());
+                intent.putExtra("ID", presenter.getPlaceId(position));
                 v.getContext().startActivity(intent);
             }
         });
@@ -75,7 +67,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
 
     @Override
     public int getItemCount() {
-        return users != null ? users.size() : 0;
+        return presenter.getUserListSize();
     }
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {

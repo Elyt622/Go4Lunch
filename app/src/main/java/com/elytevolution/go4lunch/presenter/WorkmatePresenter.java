@@ -17,11 +17,17 @@ public class WorkmatePresenter {
 
     private WorkmatePresenter.View view;
 
-    public WorkmatePresenter(WorkmatePresenter.View view){
+    private final List<User> users;
+
+    private String messageToPrint;
+
+    public WorkmatePresenter(WorkmatePresenter.View view, List<User> users){
         this.view = view;
+        this.users = users;
     }
 
-    public void getAllUsers(FirebaseUser currentUser, List<User> users){
+    public void getAllUsers(FirebaseUser currentUser){
+        clearListUser();
         getUsersCollection().get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
@@ -39,12 +45,32 @@ public class WorkmatePresenter {
                 });
     }
 
-    public FirebaseUser getCurrentUser(){
-        return FirebaseAuth.getInstance().getCurrentUser();
+    public String getUserId(int position) {
+        return users.get(position).getUid();
     }
 
-    public void clearListUser(List<User> users){
+    public String getUserName(int position) {
+        return users.get(position).getDisplayName();
+    }
+
+    public String getUrlPicture(int position) {
+        return users.get(position).getUrlPicture();
+    }
+
+    public String getPlaceId(int position) {
+        return users.get(position).getIdPlace();
+    }
+
+    public int getUserListSize() {
+        return users.size();
+    }
+
+    public void clearListUser(){
         users.clear();
+    }
+
+    public FirebaseUser initCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 
     public void onDestroy(){

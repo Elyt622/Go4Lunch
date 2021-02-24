@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +33,8 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
 
     private WorkmatePresenter presenter;
 
+    private RecyclerView recyclerView;
+
     public WorkmateFragment() { }
 
     public static WorkmateFragment newInstance() {
@@ -43,35 +47,37 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        configureAdapter();
+
+        configureSwipeRefreshLayout();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_workmates, container, false);
 
-        presenter = new WorkmatePresenter(this);
-
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_users_workmates);
+        recyclerView = view.findViewById(R.id.recycler_view_users_workmates);
         swipeRefreshLayout = view.findViewById(R.id.swipe_workmate_fragment);
 
-        configureAdapter(recyclerView);
-
-        currentUser = presenter.getCurrentUser();
-
-        presenter.clearListUser(users);
-        presenter.getAllUsers(currentUser, users);
-        configureSwipeRefreshLayout();
+        presenter = new WorkmatePresenter(this, users);
+        currentUser = presenter.initCurrentUser();
+        presenter.getAllUsers(currentUser);
         return view;
     }
 
-    private void configureAdapter(RecyclerView recyclerView){
-        adapter = new WorkmateAdapter(users);
+    private void configureAdapter(){
+        adapter = new WorkmateAdapter(presenter);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void configureSwipeRefreshLayout(){
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            presenter.clearListUser(users);
-            presenter.getAllUsers(currentUser, users);
+            presenter.getAllUsers(currentUser);
         });
     }
 
