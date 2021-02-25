@@ -75,7 +75,7 @@ public class ListFragment extends Fragment implements ListPresenter.View{
     }
 
     @Override
-    public void updateAdapter() {
+    public void updateRecyclerView() {
         adapter.notifyDataSetChanged();
     }
 

@@ -30,7 +30,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
 
     private final List<Restaurant> restaurants = new ArrayList<>();
 
-    private final List<NearBySearch.Results> results = new ArrayList<>();
+    private final List<NearBySearch.Results> requestNearBySearch = new ArrayList<>();
 
     private final String key;
 
@@ -49,7 +49,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
         Boolean currentOpen;
         double rating, longitude, latitude;
 
-        for(NearBySearch.Results result: results){
+        for(NearBySearch.Results result: requestNearBySearch){
             idPlace = result.getPlace_id();
             name = result.getName();
             currentOpen = result.getOpening_hours() == null ? null : result.getOpening_hours().getOpen_now();
@@ -76,7 +76,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
                 List<String> list = (ArrayList<String>) snapshot.get("uid");
                 participation = list == null ? 0 : list.size();
                 getRestaurantWithId(idPlace).setParticipation(participation);
-                view.updateAdapter();
+                view.updateRecyclerView();
             } else {
                 Log.d(TAG, "Current data: null");
             }
@@ -110,14 +110,15 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
         return (latLng.latitude + "," + latLng.longitude);
     }
 
-    // Execute HTTP request and update UI
     public void executeHttpRequestWithRetrofit(String googleApiKey, LatLng location, String RADIUS, String TYPE){
         GooglePlaceCalls.fetchFollowing(this, convertLatLngToStringUrl(location), RADIUS, TYPE, googleApiKey);
     }
 
     @Override
     public void onResponse(@Nullable NearBySearch results) {
+        requestNearBySearch.clear();
         if (results != null) {
+            requestNearBySearch.addAll(results.getResults());
             view.updateUI();
             insertParticipationInFireStore();
         } else {
@@ -195,7 +196,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
     }
 
     public interface View{
-        void updateAdapter();
+        void updateRecyclerView();
         void updateUI();
 
     }
