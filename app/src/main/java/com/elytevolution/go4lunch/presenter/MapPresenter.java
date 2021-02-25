@@ -1,7 +1,6 @@
 package com.elytevolution.go4lunch.presenter;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
@@ -22,12 +21,22 @@ public class MapPresenter implements GooglePlaceCalls.Callbacks{
 
     private static final String TAG = "MapPresenter";
 
+    private static final String RADIUS = "600";
+
+    private static final String TYPE = "restaurant";
+
+    private final String key;
+
+    private final LatLng location;
+
     private MapPresenter.View view;
 
     private final List<NearBySearch.Results> results = new ArrayList<>();
 
-    public MapPresenter(View view){
+    public MapPresenter(View view, String key, LatLng location){
         this.view = view;
+        this.key = key;
+        this.location = location;
     }
 
     public void addMarkerOnMap(GoogleMap map){
@@ -56,7 +65,7 @@ public class MapPresenter implements GooglePlaceCalls.Callbacks{
     public void onResponse(@Nullable NearBySearch result) {
         if(result != null) {
             results.addAll(result.getResults());
-            view.updateMap(this.results);
+            view.updateMap();
         }
     }
 
@@ -73,16 +82,9 @@ public class MapPresenter implements GooglePlaceCalls.Callbacks{
         return (latLng.latitude + "," + latLng.longitude);
     }
 
-    public void onMyLocationButtonClick(GoogleMap googleMap){
-        googleMap.setOnMyLocationButtonClickListener(() -> {
-            view.showToastMessage("My location", Toast.LENGTH_SHORT);
-            return false;
-        });
-    }
+    public void onCreate() { executeHttpRequestWithRetrofit(key, location, RADIUS, TYPE); }
 
-    public void onMyLocationClick(GoogleMap googleMap){
-        googleMap.setOnMyLocationClickListener(location -> view.showToastMessage("Current location:\n" + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_LONG));
-    }
+    public void onStart() { view.updateMap(); }
 
     public void onDestroy(){
         view = null;
@@ -90,6 +92,6 @@ public class MapPresenter implements GooglePlaceCalls.Callbacks{
 
     public interface View {
         void showToastMessage(String message, int duration);
-        void updateMap(List<NearBySearch.Results> results);
+        void updateMap();
     }
 }

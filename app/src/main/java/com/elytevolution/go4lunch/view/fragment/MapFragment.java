@@ -11,16 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.elytevolution.go4lunch.R;
-import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.presenter.MapPresenter;
 import com.elytevolution.go4lunch.view.activity.DetailsActivity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,17 +25,11 @@ import androidx.fragment.app.Fragment;
 
 public class MapFragment extends Fragment implements MapPresenter.View, OnMapReadyCallback {
 
-    private static final String RADIUS = "600";
-
-    private static final String TYPE = "restaurant";
-
     private final LatLng location;
 
     private SupportMapFragment mapFragment;
 
     private MapPresenter presenter;
-
-    private final List<NearBySearch.Results> results = new ArrayList<>();
 
     public MapFragment(LatLng location) {
         this.location = location;
@@ -52,8 +42,8 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter = new MapPresenter(this);
-        presenter.executeHttpRequestWithRetrofit(getString(R.string.google_maps_key), location, RADIUS, TYPE);
+        presenter = new MapPresenter(this, getString(R.string.google_maps_key), location);
+        presenter.onCreate();
     }
 
     @Nullable
@@ -62,8 +52,7 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.support_map);
 
-        if (mapFragment != null) updateMap(results);
-
+        if (mapFragment != null) updateMap();
 
         return view;
     }
@@ -74,15 +63,15 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
         if(permissionIsEnable()) {
 
             googleMap.setMyLocationEnabled(true);
-            presenter.onMyLocationButtonClick(googleMap);
-            presenter.onMyLocationClick(googleMap);
+            onMyLocationButtonClick(googleMap);
+            onMyLocationClick(googleMap);
             presenter.addMarkerOnMap(googleMap);
 
             googleMap.setOnMarkerClickListener(marker -> {
                 String string = (String) marker.getTag();
                 Intent intent = new Intent(getContext(), DetailsActivity.class);
                 intent.putExtra("ID", string);
-                if(getContext() != null) getContext().startActivity(intent);
+                if(this != null) this.startActivity(intent);
                 return false;
             });
         }
@@ -97,10 +86,15 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
         return false;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateMap(results);
+    public void onMyLocationButtonClick(GoogleMap googleMap){
+        googleMap.setOnMyLocationButtonClickListener(() -> {
+            showToastMessage("My location", Toast.LENGTH_SHORT);
+            return false;
+        });
+    }
+
+    public void onMyLocationClick(GoogleMap googleMap){
+        googleMap.setOnMyLocationClickListener(location -> showToastMessage("Current location:\n" + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_LONG));
     }
 
     @Override
@@ -109,8 +103,14 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
     }
 
     @Override
-    public void updateMap(List<NearBySearch.Results> results) {
+    public void updateMap() {
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.onStart();
     }
 
     @Override
