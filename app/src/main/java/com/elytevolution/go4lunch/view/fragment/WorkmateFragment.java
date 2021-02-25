@@ -6,13 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elytevolution.go4lunch.R;
-import com.elytevolution.go4lunch.model.User;
 import com.elytevolution.go4lunch.presenter.WorkmatePresenter;
 import com.elytevolution.go4lunch.view.adapter.WorkmateAdapter;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,13 +18,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class WorkmateFragment extends Fragment implements WorkmatePresenter.View{
 
-    private final List<User> users = new ArrayList<>();
-
     private WorkmateAdapter adapter;
 
     private SwipeRefreshLayout swipeRefreshLayout;
-
-    private FirebaseUser currentUser;
 
     private WorkmatePresenter presenter;
 
@@ -50,8 +41,10 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        configureAdapter();
+        presenter = new WorkmatePresenter(this);
+        presenter.onCreate();
 
+        configureAdapter();
         configureSwipeRefreshLayout();
     }
 
@@ -63,9 +56,6 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
         recyclerView = view.findViewById(R.id.recycler_view_users_workmates);
         swipeRefreshLayout = view.findViewById(R.id.swipe_workmate_fragment);
 
-        presenter = new WorkmatePresenter(this, users);
-        currentUser = presenter.initCurrentUser();
-        presenter.getAllUsers(currentUser);
         return view;
     }
 
@@ -76,9 +66,7 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
     }
 
     private void configureSwipeRefreshLayout(){
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            presenter.getAllUsers(currentUser);
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> presenter.getAllUsers());
     }
 
     @Override

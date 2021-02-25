@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
@@ -17,16 +18,15 @@ public class WorkmatePresenter {
 
     private WorkmatePresenter.View view;
 
-    private final List<User> users;
+    private final List<User> users = new ArrayList<>();
 
-    private String messageToPrint;
+    private FirebaseUser currentUser;
 
-    public WorkmatePresenter(WorkmatePresenter.View view, List<User> users){
+    public WorkmatePresenter(WorkmatePresenter.View view){
         this.view = view;
-        this.users = users;
     }
 
-    public void getAllUsers(FirebaseUser currentUser){
+    public void getAllUsers(){
         clearListUser();
         getUsersCollection().get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -69,8 +69,13 @@ public class WorkmatePresenter {
         users.clear();
     }
 
-    public FirebaseUser initCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
+    public void initCurrentUser() {
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    public void onCreate(){
+        initCurrentUser();
+        getAllUsers();
     }
 
     public void onDestroy(){
