@@ -48,7 +48,7 @@ public class DetailsPresenter {
 
     private final List<User> usersParticipants = new ArrayList<>();
 
-    DetailsPresenter.View view;
+    private final DetailsPresenter.View view;
 
     public DetailsPresenter(DetailsPresenter.View view, String idPlace, String key){
         this.view = view;

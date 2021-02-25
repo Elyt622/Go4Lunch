@@ -75,15 +75,13 @@ public class ListFragment extends Fragment implements ListPresenter.View{
     }
 
     @Override
-    public void updateRecyclerView() {
+    public void notifyDataSetChanged() {
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void updateUI() {
-        presenter.getAllRestaurant();
-        adapter.notifyDataSetChanged();
-        swipeRefreshLayout.setRefreshing(false);
+    public void setRefreshing(boolean refreshing) {
+        swipeRefreshLayout.setRefreshing(refreshing);
     }
 
     @Override

@@ -63,6 +63,8 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
             restaurants.add(new Restaurant(idPlace, name, address, currentOpen, longitude,
                     latitude, participation, rating, photoRef));
         }
+        view.notifyDataSetChanged();
+        view.setRefreshing(false);
     }
 
     private void getParticipationToRestaurant(String idPlace){
@@ -76,7 +78,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
                 List<String> list = (ArrayList<String>) snapshot.get("uid");
                 participation = list == null ? 0 : list.size();
                 getRestaurantWithId(idPlace).setParticipation(participation);
-                view.updateRecyclerView();
+                view.notifyDataSetChanged();
             } else {
                 Log.d(TAG, "Current data: null");
             }
@@ -119,11 +121,16 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
         requestNearBySearch.clear();
         if (results != null) {
             requestNearBySearch.addAll(results.getResults());
-            view.updateUI();
+            getAllRestaurant();
             insertParticipationInFireStore();
         } else {
             Log.d(TAG, "RESPONSE IS NULL");
         }
+    }
+
+    @Override
+    public void onFailure() {
+        Log.d(TAG, "FAILURE");
     }
 
     public String getName(int position) {
@@ -182,11 +189,6 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
         return earthRadius * c;
     }
 
-    @Override
-    public void onFailure() {
-        Log.d(TAG, "FAILURE");
-    }
-
     public void onCreate(){
         executeHttpRequestWithRetrofit(key, currentLocation, RADIUS, TYPE);
     }
@@ -196,8 +198,8 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
     }
 
     public interface View{
-        void updateRecyclerView();
-        void updateUI();
+        void notifyDataSetChanged();
+        void setRefreshing(boolean refreshing);
 
     }
 }
