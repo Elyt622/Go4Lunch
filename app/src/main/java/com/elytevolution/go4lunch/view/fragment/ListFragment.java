@@ -6,14 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elytevolution.go4lunch.R;
-import com.elytevolution.go4lunch.model.NearBySearch;
-import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.presenter.ListPresenter;
 import com.elytevolution.go4lunch.view.adapter.ListAdapter;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,8 +27,6 @@ public class ListFragment extends Fragment implements ListPresenter.View{
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private final List<Restaurant> restaurants = new ArrayList<>();
-
     private final LatLng location;
 
     private ListPresenter presenter;
@@ -50,8 +43,8 @@ public class ListFragment extends Fragment implements ListPresenter.View{
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        presenter = new ListPresenter(this, restaurants, location, getString(R.string.google_maps_key));
-        presenter.executeHttpRequestWithRetrofit(getString(R.string.google_maps_key), location, RADIUS, TYPE);
+        presenter = new ListPresenter(this, location, getString(R.string.google_maps_key));
+        presenter.onCreate();
 
         configureAdapter(view, recyclerView, presenter);
         configureSwipeRefreshLayout();
@@ -87,9 +80,8 @@ public class ListFragment extends Fragment implements ListPresenter.View{
     }
 
     @Override
-    public void updateUI(List<NearBySearch.Results> results) {
-        restaurants.clear();
-        presenter.getAllRestaurant(results);
+    public void updateUI() {
+        presenter.getAllRestaurant();
         adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
     }

@@ -20,11 +20,15 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
 
     private static final String TAG = "ListPresenter";
 
+    private static final String RADIUS = "600";
+
+    private static final String TYPE = "restaurant";
+
     private ListPresenter.View view;
 
     private int participation;
 
-    private final List<Restaurant> restaurants;
+    private final List<Restaurant> restaurants = new ArrayList<>();
 
     private final List<NearBySearch.Results> results = new ArrayList<>();
 
@@ -32,14 +36,15 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
 
     private final LatLng currentLocation;
 
-    public ListPresenter(View view, List<Restaurant> restaurants, LatLng currentLocation, String key){
+    public ListPresenter(View view, LatLng currentLocation, String key){
         this.view = view;
-        this.restaurants = restaurants;
         this.currentLocation = currentLocation;
         this.key = key;
     }
 
-    public void getAllRestaurant(List<NearBySearch.Results> results){
+    public void getAllRestaurant(){
+        restaurants.clear();
+
         String idPlace, name, address, photoRef;
         Boolean currentOpen;
         double rating, longitude, latitude;
@@ -89,7 +94,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
     }
 
     public void insertParticipationInFireStore(){
-        getAllRestaurant(results);
+        getAllRestaurant();
         for(Restaurant restaurant : restaurants) {
             getParticipationCollection().document(restaurant.getIdPlace()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -113,7 +118,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
     @Override
     public void onResponse(@Nullable NearBySearch results) {
         if (results != null) {
-            view.updateUI(results.getResults());
+            view.updateUI();
             insertParticipationInFireStore();
         } else {
             Log.d(TAG, "RESPONSE IS NULL");
@@ -181,13 +186,17 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
         Log.d(TAG, "FAILURE");
     }
 
+    public void onCreate(){
+        executeHttpRequestWithRetrofit(key, currentLocation, RADIUS, TYPE);
+    }
+
     public void onDestroy(){
         this.view = null;
     }
 
     public interface View{
         void updateAdapter();
-        void updateUI(List<NearBySearch.Results> results);
+        void updateUI();
 
     }
 }
