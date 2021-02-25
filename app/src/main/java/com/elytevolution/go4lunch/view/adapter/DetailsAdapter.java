@@ -9,22 +9,18 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.elytevolution.go4lunch.R;
-import com.elytevolution.go4lunch.model.User;
-
-import java.util.List;
+import com.elytevolution.go4lunch.presenter.DetailsPresenter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.RecyclerViewHolder> {
 
-    private final List<User> users;
-
     private String joiningToPrint;
 
-    public DetailsAdapter(List<User> users){
-        this.users = users;
-    }
+    private final DetailsPresenter presenter;
+
+    public DetailsAdapter(DetailsPresenter presenter){ this.presenter = presenter; }
 
     @NonNull
     @Override
@@ -39,18 +35,15 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.Recycler
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
 
-        String messageToPrint = (users.get(position).getDisplayName() + " " + joiningToPrint);
-        holder.textViewUser.setText(messageToPrint);
+        holder.textViewUser.setText(presenter.showUserIsJoining(position, joiningToPrint));
 
-        Glide.with(holder.itemView).load(users.get(position).getUrlPicture()).apply(RequestOptions.circleCropTransform()).into(holder.imageViewUser);
+        Glide.with(holder.itemView).load(presenter.getUrlPicture(position)).apply(RequestOptions.circleCropTransform()).into(holder.imageViewUser);
     }
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return presenter.getListParticipantSize();
     }
-
-
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
