@@ -33,10 +33,6 @@ import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity implements MainPresenter.View {
 
-    private static final String TAG = "MainActivity";
-
-    private ActivityMainBinding binding;
-
     private DrawerLayout drawer;
 
     private ImageView imageUser;
@@ -56,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        com.elytevolution.go4lunch.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 

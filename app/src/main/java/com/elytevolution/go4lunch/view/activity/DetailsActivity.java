@@ -59,18 +59,14 @@ public class DetailsActivity extends AppCompatActivity implements DetailsPresent
         imageViewLike.setImageResource(R.drawable.ic_star_rate_18px);
 
         presenter.configButtonParticipation();
-        participateButton.setOnClickListener(v -> { presenter.updatePart(); });
+        participateButton.setOnClickListener(v -> presenter.updatePart());
 
         presenter.configButtonFavorite();
-        imageViewLike.setOnClickListener(v -> { presenter.updateFavoriteList(); });
+        imageViewLike.setOnClickListener(v -> presenter.updateFavoriteList());
 
-        imageViewCall.setOnClickListener(v -> {
-            startActivity(presenter.navigateToCallIntent());
-        });
+        imageViewCall.setOnClickListener(v -> startActivity(presenter.navigateToCallIntent()));
 
-        imageViewWebsite.setOnClickListener(v -> {
-            startActivity(presenter.navigateToWebsiteIntent());
-        });
+        imageViewWebsite.setOnClickListener(v -> startActivity(presenter.navigateToWebsiteIntent()));
     }
 
     private void configureRecyclerView(){

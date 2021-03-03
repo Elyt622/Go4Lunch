@@ -9,5 +9,6 @@
     <string name="restaurant_message_no_choice">has not decided yet!</string>
     <string name="currently_close">Currently close</string>
     <string name="currently_open">Currently open</string>
-    <string name="isjoining">is joining!</string>
+    <string name="is_joining">is joining!</string>
+    <string name="app_title">Go4Lunch</string>
 </resources>
