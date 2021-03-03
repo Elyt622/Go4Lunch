@@ -48,12 +48,15 @@ public class DetailsPresenter {
 
     private final List<User> usersParticipants = new ArrayList<>();
 
-    private final DetailsPresenter.View view;
+    private DetailsPresenter.View view;
 
-    public DetailsPresenter(DetailsPresenter.View view, String idPlace, String key){
+    private Activity activity;
+
+    public DetailsPresenter(DetailsPresenter.View view, String idPlace, String key, Activity activity){
         this.view = view;
         this.idPlace = idPlace;
         this.key = key;
+        this.activity = activity;
     }
 
     public void updatePart(){
@@ -170,7 +173,7 @@ public class DetailsPresenter {
         }
     }
 
-    private void getDetailsPlaceLocation(Activity activity) {
+    private void getDetailsPlaceLocation() {
         Places.initialize(activity, key);
 
         PlacesClient placesClient = Places.createClient(activity);
@@ -246,10 +249,15 @@ public class DetailsPresenter {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void onStart(Activity activity){
+    public void onStart() {
         initCurrentUser();
-        getDetailsPlaceLocation(activity);
+        getDetailsPlaceLocation();
         getUsersIdParticipation();
+    }
+
+    public void onDestroy() {
+        view = null;
+        activity = null;
     }
 
     public String showUserIsJoining(int position, String joiningToPrint) {

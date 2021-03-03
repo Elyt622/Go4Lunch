@@ -17,8 +17,8 @@ public class SplashActivity extends AppCompatActivity implements SplashPresenter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        presenter = new SplashPresenter(this);
-        presenter.onCreate(this);
+        presenter = new SplashPresenter(this, this);
+        presenter.onCreate();
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SplashActivity extends AppCompatActivity implements SplashPresenter
     @Override
     protected void onStart() {
         super.onStart();
-        presenter.onStart(this);
+        presenter.onStart();
     }
 
     @Override

@@ -36,8 +36,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsPresent
             idPlace = getIntent().getStringExtra("ID");
         }
 
-        presenter = new DetailsPresenter(this, idPlace, getString(R.string.google_api_key));
-        presenter.onStart(this);
+        presenter = new DetailsPresenter(this, idPlace, getString(R.string.google_api_key), this);
+        presenter.onStart();
 
         imageViewRestaurant = findViewById(R.id.image_view_restaurant_detail_activity);
         ImageView imageViewCall = findViewById(R.id.image_view_call_detail_activity);
@@ -115,5 +115,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailsPresent
         adapter.notifyDataSetChanged();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
 }

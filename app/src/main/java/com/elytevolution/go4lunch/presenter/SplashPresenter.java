@@ -15,11 +15,14 @@ public class SplashPresenter {
 
     private FirebaseUser currentUser;
 
-    public SplashPresenter(SplashPresenter.View view) {
+    private Activity activity;
+
+    public SplashPresenter(SplashPresenter.View view, Activity activity) {
         this.view = view;
+        this.activity = activity;
     }
 
-    public void configureSplashScreen(Activity activity){
+    public void configureSplashScreen(){
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             Intent intent;
@@ -36,18 +39,19 @@ public class SplashPresenter {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void onStart(Activity activity){
+    public void onStart(){
         initCurrentUser();
-        configureSplashScreen(activity);
+        configureSplashScreen();
     }
 
-    public void onCreate(Activity activity){
+    public void onCreate(){
         initCurrentUser();
-        configureSplashScreen(activity);
+        configureSplashScreen();
     }
 
     public void onDestroy() {
         view = null;
+        activity = null;
     }
 
     public interface View {

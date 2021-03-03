@@ -33,17 +33,17 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
 
         googleLoginButton.setSize(SignInButton.SIZE_STANDARD);
 
-        presenter = new LoginPresenter(this);
+        presenter = new LoginPresenter(this, this);
         presenter.onCreate();
 
-        googleLoginButton.setOnClickListener(v -> presenter.configureAuthGoogle(this, getString(R.string.default_web_client_id)));
-        facebookLoginButton.setOnClickListener(v -> presenter.configureAuthFacebook(facebookLoginButton,this));
+        googleLoginButton.setOnClickListener(v -> presenter.configureAuthGoogle(getString(R.string.default_web_client_id)));
+        facebookLoginButton.setOnClickListener(v -> presenter.configureAuthFacebook(facebookLoginButton));
      }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        presenter.handleResponseAfterSignIn(this, resultCode, requestCode, data);
+        presenter.handleResponseAfterSignIn(resultCode, requestCode, data);
     }
 
     public void navigateToMainActivity() {

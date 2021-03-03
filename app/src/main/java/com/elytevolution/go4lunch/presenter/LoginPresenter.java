@@ -42,18 +42,21 @@ public class LoginPresenter {
 
     private CallbackManager callbackManager;
 
-    public LoginPresenter(LoginPresenter.View view) {
+    private Activity activity;
+
+    public LoginPresenter(LoginPresenter.View view, Activity activity) {
         this.view = view;
+        this.activity = activity;
     }
 
-    public void handleResponseAfterSignIn(Activity activity, int resultCode, int requestCode, Intent data){
+    public void handleResponseAfterSignIn(int resultCode, int requestCode, Intent data){
         if (requestCode == GOOGLE_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-                firebaseAuthWithGoogle(activity, account.getIdToken());
+                firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -64,7 +67,7 @@ public class LoginPresenter {
         }
     }
 
-    public void firebaseAuthWithGoogle(Activity activity, String idToken) {
+    public void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
@@ -80,7 +83,7 @@ public class LoginPresenter {
                 });
     }
 
-    public void firebaseAuthWithFacebook(Activity activity, String idToken) {
+    public void firebaseAuthWithFacebook(String idToken) {
         AuthCredential credential = FacebookAuthProvider.getCredential(idToken);
         auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
@@ -98,14 +101,14 @@ public class LoginPresenter {
                 });
     }
 
-    public void configureAuthFacebook(LoginButton facebookLoginButton, Activity activity) {
+    public void configureAuthFacebook(LoginButton facebookLoginButton) {
         callbackManager = CallbackManager.Factory.create();
         facebookLoginButton.setPermissions("email", "public_profile");
         facebookLoginButton.registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        firebaseAuthWithFacebook(activity, loginResult.getAccessToken().getToken());
+                        firebaseAuthWithFacebook(loginResult.getAccessToken().getToken());
                     }
 
                     @Override
@@ -120,7 +123,7 @@ public class LoginPresenter {
                 });
     }
 
-    public void configureAuthGoogle(Activity activity, String idWebClient){
+    public void configureAuthGoogle(String idWebClient){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(idWebClient)
                 .requestEmail()
@@ -165,7 +168,8 @@ public class LoginPresenter {
     }
 
     public void onDestroy(){
-        this.view = null;
+        view = null;
+        activity = null;
     }
 
     public interface View {
