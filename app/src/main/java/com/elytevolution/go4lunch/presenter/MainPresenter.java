@@ -12,9 +12,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.view.activity.DetailsActivity;
-import com.elytevolution.go4lunch.view.adapter.ViewPagerAdapter;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
@@ -25,19 +23,15 @@ import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -109,37 +103,11 @@ public class MainPresenter {
         activity.startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
-    public ViewPager configureViewPager(ViewPager viewPager, FragmentManager fragmentManager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(currentLocation, fragmentManager);
-        viewPager.setAdapter(adapter);
-        return viewPager;
-    }
-
-    private void configureTabLayout(TabLayout tabLayout, ViewPager viewPager, FragmentManager fragmentManager){
-
-        List<String> listNameViewPager = new ArrayList<>();
-        List<Integer> listImageViewPager = new ArrayList<>();
-
-        listNameViewPager.add("Map View");
-        listNameViewPager.add("List View");
-        listNameViewPager.add("Workmates");
-        listImageViewPager.add(R.drawable.baseline_map_black_18dp);
-        listImageViewPager.add(R.drawable.baseline_list_black_18dp);
-        listImageViewPager.add(R.drawable.baseline_group_black_18dp);
-
-        tabLayout.setupWithViewPager(configureViewPager(viewPager, fragmentManager));
-        for (int icon : listImageViewPager) {
-            tabLayout.getTabAt(listImageViewPager.indexOf(icon)).setIcon(icon);
-        }
-        for (String list : listNameViewPager)
-            tabLayout.getTabAt(listNameViewPager.indexOf(list)).setText(list);
-    }
-
-    public void configureActivity(TabLayout tabLayout, ViewPager viewpager, FragmentManager fragmentManager) {
+    public void configureActivity() {
         if (localizationIsEnable()) {
             view.setVisibilityLocalizationText(0);
             view.setVisibilityButtonActivateLocalization(0);
-            configureTabLayout(tabLayout, viewpager, fragmentManager);
+            view.configureTabLayout();
         }
     }
 
@@ -187,13 +155,17 @@ public class MainPresenter {
         view.setProfilePicture(currentUser.getPhotoUrl());
     }
 
-    public void setPermissions(int requestCode, int[] grantResults, TabLayout tabLayout, ViewPager viewpager, FragmentManager fragmentManager) {
+    public void setPermissions(int requestCode, int[] grantResults) {
         if (requestCode == 100 && (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
             startLocalization();
-            configureTabLayout(tabLayout, viewpager, fragmentManager);
+            view.configureTabLayout();
             view.setVisibilityButtonActivateLocalization(0);
             view.setVisibilityLocalizationText(0);
         }
+    }
+
+    public LatLng getCurrentLocation() {
+        return currentLocation;
     }
 
     // Action click
@@ -225,11 +197,11 @@ public class MainPresenter {
 
     // Activity Cycle
 
-    public void onCreate(TabLayout tabLayout, ViewPager viewpager, FragmentManager fragmentManager) {
+    public void onCreate() {
         initUser();
         userIsLogged();
         startLocalization();
-        configureActivity(tabLayout, viewpager, fragmentManager);
+        configureActivity();
     }
 
     public void onDestroy() {
@@ -245,5 +217,6 @@ public class MainPresenter {
         void setEmail(String email);
         void setVisibilityLocalizationText(int visibility);
         void setVisibilityButtonActivateLocalization(int visibility);
+        void configureTabLayout();
     }
 }

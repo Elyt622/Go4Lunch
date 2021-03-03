@@ -15,8 +15,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.databinding.ActivityMainBinding;
 import com.elytevolution.go4lunch.presenter.MainPresenter;
+import com.elytevolution.go4lunch.view.adapter.ViewPagerAdapter;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         drawer = findViewById(R.id.activity_main_drawer_layout);
         navigationView = findViewById(R.id.activity_main_nav_view);
 
-        presenter.onCreate(tabLayout, viewPager, getSupportFragmentManager());
+        presenter.onCreate();
 
         activateLocalizationButton.setOnClickListener(v -> presenter.startLocalization());
 
@@ -133,6 +137,31 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         }
     }
 
+    public ViewPager configureViewPager() {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(presenter.getCurrentLocation(), getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        return viewPager;
+    }
+
+    public void configureTabLayout(){
+        List<String> listNameViewPager = new ArrayList<>();
+        List<Integer> listImageViewPager = new ArrayList<>();
+
+        listNameViewPager.add("Map View");
+        listNameViewPager.add("List View");
+        listNameViewPager.add("Workmates");
+        listImageViewPager.add(R.drawable.baseline_map_black_18dp);
+        listImageViewPager.add(R.drawable.baseline_list_black_18dp);
+        listImageViewPager.add(R.drawable.baseline_group_black_18dp);
+
+        tabLayout.setupWithViewPager(configureViewPager());
+        for (int icon : listImageViewPager) {
+            tabLayout.getTabAt(listImageViewPager.indexOf(icon)).setIcon(icon);
+        }
+        for (String list : listNameViewPager)
+            tabLayout.getTabAt(listNameViewPager.indexOf(list)).setText(list);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
@@ -142,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        presenter.setPermissions(requestCode, grantResults, tabLayout, viewPager, getSupportFragmentManager());
+        presenter.setPermissions(requestCode, grantResults);
     }
 
     @Override
