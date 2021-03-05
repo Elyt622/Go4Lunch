@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -22,13 +23,20 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import static com.elytevolution.go4lunch.api.UserHelper.createUser;
 import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 
 public class LoginPresenter {
 
-    private static final int GOOGLE_SIGN_IN = 123;
+    public static final int GOOGLE_SIGN_IN = 123;
 
     private static final String TAG = "LoginPresenter";
 
@@ -44,9 +52,12 @@ public class LoginPresenter {
 
     private Activity activity;
 
-    public LoginPresenter(LoginPresenter.View view, Activity activity) {
+    private final TwitterLoginButton twitterLoginButton;
+
+    public LoginPresenter(LoginPresenter.View view, Activity activity, TwitterLoginButton twitterLoginButton) {
         this.view = view;
         this.activity = activity;
+        this.twitterLoginButton = twitterLoginButton;
     }
 
     public void handleResponseAfterSignIn(int resultCode, int requestCode, Intent data){
@@ -62,7 +73,10 @@ public class LoginPresenter {
                 Log.w(TAG, "Google sign in failed", e);
             }
         }
-        else {
+        else if(requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE){
+            twitterLoginButton.onActivityResult(requestCode, resultCode, data);
+        }
+        else if(requestCode == FacebookSdk.getCallbackRequestCodeOffset()){
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -71,13 +85,11 @@ public class LoginPresenter {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success");
                         currentUser = auth.getCurrentUser();
                         createNewUser();
                         if (currentUser != null) {view.navigateToMainActivity();}
                     } else {
-                        // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                     }
                 });
@@ -87,13 +99,11 @@ public class LoginPresenter {
         AuthCredential credential = FacebookAuthProvider.getCredential(idToken);
         auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success");
                         currentUser = auth.getCurrentUser();
                         createNewUser();
                         if (currentUser != null) {view.navigateToMainActivity();}
                     } else {
-                        // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         view.showToast( "This email already exists with an other account", Toast.LENGTH_LONG);
                         LoginManager.getInstance().logOut();
@@ -137,6 +147,32 @@ public class LoginPresenter {
         view.navigateToLoginGoogleScreen(signInIntent);
     }
 
+    private void configAuthTwitter() {
+        twitterLoginButton.setCallback(new Callback<TwitterSession>() {
+            @Override
+            public void success(Result<TwitterSession> result) {
+                signInToFirebaseWithTwitterSession(result.data);
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                Log.d(TAG, "Twitter Authentication Failure");
+            }
+        });
+    }
+
+    private void signInToFirebaseWithTwitterSession(TwitterSession session){
+        AuthCredential credential = TwitterAuthProvider.getCredential(session.getAuthToken().token,
+                session.getAuthToken().secret);
+        auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
+            if(task.isSuccessful()) {
+                currentUser = task.getResult().getUser();
+                createNewUser();
+                if (currentUser != null) { view.navigateToMainActivity(); }
+            }
+        });
+    }
+
     public void createNewUser() {
         if(currentUser != null) {
             getUsersCollection().document(currentUser.getEmail()).get().addOnCompleteListener(task -> {
@@ -147,24 +183,13 @@ public class LoginPresenter {
         }
     }
 
-    public void initCurrentUser() {
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
-    }
-
     public void initFirebaseAuth() {
         auth = FirebaseAuth.getInstance();
     }
 
     public void onCreate() {
         initFirebaseAuth();
-        initCurrentUser();
-        if (currentUser != null) {view.navigateToMainActivity();}
-    }
-
-    public void onStart() {
-        initFirebaseAuth();
-        initCurrentUser();
-        if (currentUser != null) {view.navigateToMainActivity();}
+        configAuthTwitter();
     }
 
     public void onDestroy(){

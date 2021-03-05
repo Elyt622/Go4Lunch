@@ -39,11 +39,6 @@ public class SplashPresenter {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void onStart(){
-        initCurrentUser();
-        configureSplashScreen();
-    }
-
     public void onCreate(){
         initCurrentUser();
         configureSplashScreen();

@@ -3,6 +3,8 @@
     <string name="app_name">Go4Lunch</string>
     <string name="facebook_application_id" translatable="false">2626477007572234</string>
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb420763051691337</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">6IuzLp8OfhxCvC4VmDoWM4eH8</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">E5qg3dpVEZIbo6QZPZV9yKbfSRbgnFrEmj24dFTYI9Uv64HLfg</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="restaurant_message_join">want to join</string>

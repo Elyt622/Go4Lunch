@@ -2,6 +2,7 @@ package com.elytevolution.go4lunch.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -10,12 +11,17 @@ import com.elytevolution.go4lunch.databinding.ActivityLoginBinding;
 import com.elytevolution.go4lunch.presenter.LoginPresenter;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
+import com.twitter.sdk.android.core.DefaultLogger;
+import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterConfig;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class LoginActivity extends AppCompatActivity implements LoginPresenter.View{
+import static com.elytevolution.go4lunch.presenter.LoginPresenter.GOOGLE_SIGN_IN;
 
-    private static final int GOOGLE_SIGN_IN = 123;
+public class LoginActivity extends AppCompatActivity implements LoginPresenter.View{
 
     private LoginButton facebookLoginButton;
 
@@ -24,16 +30,25 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        TwitterConfig config = new TwitterConfig.Builder(this)
+                .logger(new DefaultLogger(Log.DEBUG))
+                .twitterAuthConfig(new TwitterAuthConfig(getString(R.string.com_twitter_sdk_android_CONSUMER_KEY), getString(R.string.com_twitter_sdk_android_CONSUMER_SECRET)))
+                .debug(true)
+                .build();
+        Twitter.initialize(config);
+
         ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
+        TwitterLoginButton twitterLoginButton = binding.twitterLoginButton;
         facebookLoginButton = binding.loginButton;
         SignInButton googleLoginButton = binding.signInButton;
 
-        googleLoginButton.setSize(SignInButton.SIZE_STANDARD);
+        googleLoginButton.setStyle(SignInButton.SIZE_WIDE, SignInButton.COLOR_AUTO);
 
-        presenter = new LoginPresenter(this, this);
+        presenter = new LoginPresenter(this, this, twitterLoginButton);
         presenter.onCreate();
 
         googleLoginButton.setOnClickListener(v -> presenter.configureAuthGoogle(getString(R.string.default_web_client_id)));
@@ -59,12 +74,6 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
     @Override
     public void navigateToLoginGoogleScreen(Intent intent) {
         startActivityForResult(intent, GOOGLE_SIGN_IN);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        presenter.onStart();
     }
 
     @Override

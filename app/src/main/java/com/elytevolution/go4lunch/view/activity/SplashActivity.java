@@ -28,12 +28,6 @@ public class SplashActivity extends AppCompatActivity implements SplashPresenter
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        presenter.onStart();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
