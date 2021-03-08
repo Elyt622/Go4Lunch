@@ -81,6 +81,20 @@ public class LoginPresenter {
         }
     }
 
+    public void signInWithEmailAndPassword(String email, String password) {
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(activity, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInWithEmail:success");
+                        currentUser = auth.getCurrentUser();
+                        view.navigateToMainActivity();
+                    } else {
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(activity, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     public void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
