@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elytevolution.go4lunch.R;
@@ -27,11 +28,11 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
 
     private LoginButton facebookLoginButton;
 
-    private Button loginButton;
-
     private EditText editTextEmail, editTextPassword;
 
     private LoginPresenter presenter;
+
+    private TextView textViewSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +52,21 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
         TwitterLoginButton twitterLoginButton = binding.twitterLoginButton;
         facebookLoginButton = binding.loginButton;
         SignInButton googleLoginButton = binding.signInButton;
-        loginButton = binding.buttonLoginLoginActivity;
+        Button loginButton = binding.buttonLoginLoginActivity;
         editTextEmail = binding.editTextEmailLoginActivity;
         editTextPassword = binding.editTextPasswordLoginActivity;
+        textViewSignUp = binding.textViewSignupLoginActivity;
 
         googleLoginButton.setStyle(SignInButton.SIZE_WIDE, SignInButton.COLOR_AUTO);
 
         presenter = new LoginPresenter(this, this, twitterLoginButton);
         presenter.onCreate();
 
-
-
         googleLoginButton.setOnClickListener(v -> presenter.configureAuthGoogle(getString(R.string.default_web_client_id)));
         facebookLoginButton.setOnClickListener(v -> presenter.configureAuthFacebook(facebookLoginButton));
         loginButton.setOnClickListener(v -> presenter.signInWithEmailAndPassword(editTextEmail.getText().toString(), editTextPassword.getText().toString()));
-     }
+        textViewSignUp.setOnClickListener(v -> startActivity(new Intent(this, SignUpActivity.class)));
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
