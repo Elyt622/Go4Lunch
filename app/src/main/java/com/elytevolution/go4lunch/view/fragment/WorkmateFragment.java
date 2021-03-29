@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elytevolution.go4lunch.R;
+import com.elytevolution.go4lunch.di.DI;
 import com.elytevolution.go4lunch.presenter.WorkmatePresenter;
 import com.elytevolution.go4lunch.view.adapter.WorkmateAdapter;
 
@@ -26,7 +27,7 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
 
     private RecyclerView recyclerView;
 
-    public WorkmateFragment() { }
+    public WorkmateFragment() {  }
 
     public static WorkmateFragment newInstance() {
         return new WorkmateFragment();
@@ -40,8 +41,7 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        presenter = new WorkmatePresenter(this);
+        presenter = new WorkmatePresenter(this, DI.getNewInstanceApiService());
         presenter.onCreate();
 
         configureAdapter();

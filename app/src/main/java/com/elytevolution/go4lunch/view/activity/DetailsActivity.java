@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.elytevolution.go4lunch.R;
+import com.elytevolution.go4lunch.di.DI;
 import com.elytevolution.go4lunch.presenter.DetailsPresenter;
 import com.elytevolution.go4lunch.view.adapter.DetailsAdapter;
 
@@ -36,7 +37,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsPresent
             idPlace = getIntent().getStringExtra("ID");
         }
 
-        presenter = new DetailsPresenter(this, idPlace, getString(R.string.google_api_key), this);
+        presenter = new DetailsPresenter(this, idPlace, getString(R.string.google_api_key), this, DI.getNewInstanceApiService());
         presenter.onStart();
 
         imageViewRestaurant = findViewById(R.id.image_view_restaurant_detail_activity);

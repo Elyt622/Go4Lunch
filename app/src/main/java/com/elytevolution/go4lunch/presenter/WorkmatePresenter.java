@@ -1,16 +1,13 @@
 package com.elytevolution.go4lunch.presenter;
 
-import android.util.Log;
-
+import com.elytevolution.go4lunch.api.UserApi;
+import com.elytevolution.go4lunch.api.UserLiveApi;
 import com.elytevolution.go4lunch.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
 
 public class WorkmatePresenter {
 
@@ -22,51 +19,49 @@ public class WorkmatePresenter {
 
     private FirebaseUser currentUser;
 
-    public WorkmatePresenter(WorkmatePresenter.View view){
+    private final UserApi userApi;
+
+    public WorkmatePresenter(WorkmatePresenter.View view, UserApi userApi){
         this.view = view;
+        this.userApi = userApi;
     }
 
     public void getAllUsers(){
         clearListUser();
-        getUsersCollection().get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            if(!document.getId().equals(currentUser.getUid()))
-                                users.add(new User(document.getString("uid"),
-                                        document.getString("displayName"),
-                                        document.getString("email"),
-                                        document.getString("urlPicture"),
-                                        document.getString("idPlace")));
-                        }
-                        view.updateUI();
-                    } else {
-                        Log.w(TAG, "Error getting documents.", task.getException());
-                    }
-                });
+        userApi.getUserList(new UserLiveApi.UserListResponse() {
+            @Override
+            public void onSuccess(List<User> userList) {
+                for(User user : userList) {
+                    if (!user.getUid().equals(currentUser.getUid()))
+                    users.add(user);
+                }
+                view.updateUI();
+            }
+        });
     }
 
     public String getUserId(int position) {
-        return users.get(position).getUid();
+        return userApi.getUserId(position, users);
     }
 
     public String getUserName(int position) {
-        return users.get(position).getDisplayName();
+        return userApi.getUserName(position, users);
     }
 
     public String getUrlPicture(int position) {
-        return users.get(position).getUrlPicture();
+        return userApi.getUrlPicture(position, users);
     }
 
     public String getPlaceId(int position) {
-        return users.get(position).getIdPlace();
+        return userApi.getPlaceId(position, users);
     }
 
     public int getUserListSize() {
-        return users.size();
+        return userApi.getUserListSize(users);
     }
 
     public void clearListUser(){
-        users.clear();
+        userApi.clearListUser(users);
     }
 
     public void initCurrentUser() {

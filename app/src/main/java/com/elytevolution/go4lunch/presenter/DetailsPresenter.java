@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import com.elytevolution.go4lunch.api.UserApi;
 import com.elytevolution.go4lunch.model.User;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.Places;
@@ -52,11 +53,14 @@ public class DetailsPresenter {
 
     private Activity activity;
 
-    public DetailsPresenter(DetailsPresenter.View view, String idPlace, String key, Activity activity){
+    private final UserApi userApi;
+
+    public DetailsPresenter(DetailsPresenter.View view, String idPlace, String key, Activity activity, UserApi userApi){
         this.view = view;
         this.idPlace = idPlace;
         this.key = key;
         this.activity = activity;
+        this.userApi = userApi;
     }
 
     public void updatePart(){
@@ -76,7 +80,7 @@ public class DetailsPresenter {
                                 if (list1 == null) {
                                     list1 = new ArrayList<>();
                                 }
-                                list1 = removeCurrentUserWith(list1);
+                                list1 = userApi.removeCurrentUserWithId(list1, currentUser);
                                 updateParticipation(currentIdPlace, list1);
                                 updateUserIdPlace(idPlace, currentUser.getUid());
                                 configButtonParticipation();
@@ -88,7 +92,7 @@ public class DetailsPresenter {
                     }
                 });
             } else {
-                list = removeCurrentUserWith(list);
+                list = userApi.removeCurrentUserWithId(list, currentUser);
                 updateUserIdPlace("", currentUser.getUid());
             }
             configButtonParticipation();
@@ -137,7 +141,7 @@ public class DetailsPresenter {
         });
     }
 
-    private List<String> removeCurrentUserWith(List<String> uIds){
+    /*public List<String> removeCurrentUserWithId(List<String> uIds){
         List<String> listUser = new ArrayList<>();
         for(String uid: uIds){
             if(!uid.equals(currentUser.getUid())){
@@ -145,7 +149,7 @@ public class DetailsPresenter {
             }
         }
         return listUser;
-    }
+    }*/
 
     private void getUsersIdParticipation(){
         getParticipation(idPlace).addOnSuccessListener(document -> {
