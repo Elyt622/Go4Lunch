@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
+import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.getParticipationCollection;
 
 public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.RecyclerViewHolder> {
 

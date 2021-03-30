@@ -1,4 +1,4 @@
-package com.elytevolution.go4lunch.api;
+package com.elytevolution.go4lunch.firestorerequest;
 
 import com.elytevolution.go4lunch.model.Favorite;
 import com.google.android.gms.tasks.Task;

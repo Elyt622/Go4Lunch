@@ -31,8 +31,8 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
-import static com.elytevolution.go4lunch.api.UserHelper.createUser;
-import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.createUser;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.getUsersCollection;
 
 public class LoginPresenter {
 

@@ -35,7 +35,7 @@ import androidx.core.app.ActivityCompat;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
-import static com.elytevolution.go4lunch.api.UserHelper.getUser;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.getUser;
 
 public class MainPresenter {
 

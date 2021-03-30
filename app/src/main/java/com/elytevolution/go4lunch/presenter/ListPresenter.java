@@ -12,9 +12,9 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 
-import static com.elytevolution.go4lunch.api.ParticipationHelper.createParticipation;
-import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationCollection;
-import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipationDocument;
+import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.createParticipation;
+import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.getParticipationCollection;
+import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.getParticipationDocument;
 
 public class ListPresenter implements GooglePlaceCalls.Callbacks {
 

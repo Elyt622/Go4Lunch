@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static android.content.ContentValues.TAG;
-import static com.elytevolution.go4lunch.api.UserHelper.createUser;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.createUser;
 
 public class SignUpPresenter {
 

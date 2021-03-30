@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.elytevolution.go4lunch.api.FavoriteHelper.createFavorite;
-import static com.elytevolution.go4lunch.api.FavoriteHelper.getFavorite;
-import static com.elytevolution.go4lunch.api.FavoriteHelper.updateFavorite;
-import static com.elytevolution.go4lunch.api.ParticipationHelper.getParticipation;
-import static com.elytevolution.go4lunch.api.ParticipationHelper.updateParticipation;
-import static com.elytevolution.go4lunch.api.UserHelper.getUser;
-import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
-import static com.elytevolution.go4lunch.api.UserHelper.updateUserIdPlace;
+import static com.elytevolution.go4lunch.firestorerequest.FavoriteHelper.createFavorite;
+import static com.elytevolution.go4lunch.firestorerequest.FavoriteHelper.getFavorite;
+import static com.elytevolution.go4lunch.firestorerequest.FavoriteHelper.updateFavorite;
+import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.getParticipation;
+import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.updateParticipation;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.getUser;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.getUsersCollection;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.updateUserIdPlace;
 
 public class DetailsPresenter {
 

@@ -9,7 +9,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.elytevolution.go4lunch.api.UserHelper.getUsersCollection;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.getUsersCollection;
 
 public class UserLiveApi implements UserApi {
 
