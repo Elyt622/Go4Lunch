@@ -15,7 +15,7 @@ public class WorkmatePresenter {
 
     private WorkmatePresenter.View view;
 
-    private final List<User> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     private FirebaseUser currentUser;
 
@@ -26,8 +26,12 @@ public class WorkmatePresenter {
         this.userApi = userApi;
     }
 
+    public void setUserList(List<User> users) {
+        this.users = users;
+    }
+
     public void getAllUsers(){
-        clearListUser();
+        users.clear();
         userApi.getUserList(new UserLiveApi.UserListResponse() {
             @Override
             public void onSuccess(List<User> userList) {
@@ -41,27 +45,23 @@ public class WorkmatePresenter {
     }
 
     public String getUserId(int position) {
-        return userApi.getUserId(position, users);
+        return users.get(position).getUid();
     }
 
     public String getUserName(int position) {
-        return userApi.getUserName(position, users);
+        return users.get(position).getDisplayName();
     }
 
     public String getUrlPicture(int position) {
-        return userApi.getUrlPicture(position, users);
+        return users.get(position).getUrlPicture();
     }
 
     public String getPlaceId(int position) {
-        return userApi.getPlaceId(position, users);
+        return users.get(position).getIdPlace();
     }
 
     public int getUserListSize() {
-        return userApi.getUserListSize(users);
-    }
-
-    public void clearListUser(){
-        userApi.clearListUser(users);
+        return users.size();
     }
 
     public void initCurrentUser() {

@@ -11,18 +11,6 @@ public interface UserApi {
 
      void getUserList(UserLiveApi.UserListResponse userListResponse);
 
-     String getUserId(int position, List<User> users);
-
-     String getUserName(int position, List<User> users);
-
-     String getUrlPicture(int position, List<User> users);
-
-     String getPlaceId(int position, List<User> users);
-
-     int getUserListSize(List<User> users);
-
-     void clearListUser(List<User> users);
-
      //DetailsPresenter function
 
      List<String> removeCurrentUserWithId(List<String> uIds, FirebaseUser currentUser);

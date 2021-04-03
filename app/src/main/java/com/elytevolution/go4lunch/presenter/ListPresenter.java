@@ -2,6 +2,9 @@ package com.elytevolution.go4lunch.presenter;
 
 import android.util.Log;
 
+import com.elytevolution.go4lunch.api.ParticipantsApi;
+import com.elytevolution.go4lunch.api.ParticipantsLiveApi;
+import com.elytevolution.go4lunch.api.RestaurantApi;
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
@@ -14,7 +17,6 @@ import androidx.annotation.Nullable;
 
 import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.createParticipation;
 import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.getParticipationCollection;
-import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.getParticipationDocument;
 
 public class ListPresenter implements GooglePlaceCalls.Callbacks {
 
@@ -26,9 +28,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
 
     private ListPresenter.View view;
 
-    private int participation;
-
-    private final List<Restaurant> restaurants = new ArrayList<>();
+    private List<Restaurant> restaurants = new ArrayList<>();
 
     private final List<NearBySearch.Results> requestNearBySearch = new ArrayList<>();
 
@@ -36,67 +36,46 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
 
     private final LatLng currentLocation;
 
-    public ListPresenter(View view, LatLng currentLocation, String key){
+    private final RestaurantApi restaurantApi;
+
+    public void setListRestaurant(List<Restaurant> restaurants){
+        this.restaurants = restaurants;
+    }
+
+    public ListPresenter(View view, LatLng currentLocation, String key, RestaurantApi restaurantApi){
         this.view = view;
         this.currentLocation = currentLocation;
         this.key = key;
+        this.restaurantApi = restaurantApi;
     }
 
     public void getAllRestaurant(){
         restaurants.clear();
-
-        String idPlace, name, address, photoRef;
-        Boolean currentOpen;
-        double rating, longitude, latitude;
-
-        for(NearBySearch.Results result: requestNearBySearch){
-            idPlace = result.getPlace_id();
-            name = result.getName();
-            currentOpen = result.getOpening_hours() == null ? null : result.getOpening_hours().getOpen_now();
-            address = result.getVicinity();
-            photoRef = result.getPhotos() == null ? null : result.getPhotos().get(0).getPhoto_reference();
-            rating = result.getRating();
-            longitude = result.getGeometry().getLocation().getLng();
-            latitude = result.getGeometry().getLocation().getLat();
-            getParticipationToRestaurant(result.getPlace_id());
-
-            restaurants.add(new Restaurant(idPlace, name, address, currentOpen, longitude,
-                    latitude, participation, rating, photoRef));
-        }
-        view.notifyDataSetChanged();
-        view.setRefreshing(false);
-    }
-
-    private void getParticipationToRestaurant(String idPlace){
-        getParticipationDocument(idPlace).addSnapshotListener((snapshot, e) -> {
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e);
-                return;
-            }
-            if (snapshot != null && snapshot.exists()) {
-                Log.d(TAG, "Current data: " + snapshot.getData());
-                List<String> list = (ArrayList<String>) snapshot.get("uid");
-                participation = list == null ? 0 : list.size();
-                getRestaurantWithId(idPlace).setParticipation(participation);
+        restaurantApi.getRestaurantList(requestNearBySearch, new RestaurantApi.RestaurantListResponse() {
+            @Override
+            public void onSuccess(List<Restaurant> restaurantList) {
+                restaurants = restaurantList;
+                getAllParticipants();
                 view.notifyDataSetChanged();
-            } else {
-                Log.d(TAG, "Current data: null");
+                view.setRefreshing(false);
             }
         });
     }
 
-    private Restaurant getRestaurantWithId(String idPlace){
-        int index;
-        for (index = 0; index < restaurants.size(); index++){
-            if(restaurants.get(index).getIdPlace().equals(idPlace)){
-                break;
-            }
+    public void getAllParticipants(){
+        ParticipantsApi participantsApi = new ParticipantsLiveApi();
+        for (Restaurant restaurant : restaurants) {
+            participantsApi.getParticipants(restaurant.getIdPlace(), new ParticipantsApi.ParticipantsResponse() {
+                @Override
+                public void onSuccess(int participants) {
+                    restaurant.setParticipation(participants);
+                    view.notifyDataSetChanged();
+                }
+            });
         }
-        return restaurants.get(index);
     }
 
     public void insertParticipationInFireStore(){
-        getAllRestaurant();
         for(Restaurant restaurant : restaurants) {
             getParticipationCollection().document(restaurant.getIdPlace()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -197,9 +176,12 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
         this.view = null;
     }
 
+    public void onStart() {
+        view.notifyDataSetChanged();
+    }
+
     public interface View{
         void notifyDataSetChanged();
         void setRefreshing(boolean refreshing);
-
     }
 }

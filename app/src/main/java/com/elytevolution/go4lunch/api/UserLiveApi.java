@@ -33,30 +33,6 @@ public class UserLiveApi implements UserApi {
         });
     }
 
-    public String getUserId(int position, List<User> users) {
-        return users.get(position).getUid();
-    }
-
-    public String getUserName(int position, List<User> users) {
-        return users.get(position).getDisplayName();
-    }
-
-    public String getUrlPicture(int position, List<User> users) {
-        return users.get(position).getUrlPicture();
-    }
-
-    public String getPlaceId(int position, List<User> users) {
-        return users.get(position).getIdPlace();
-    }
-
-    public int getUserListSize(List<User> users) {
-        return users.size();
-    }
-
-    public void clearListUser(List<User> users){
-        users.clear();
-    }
-
     public List<String> removeCurrentUserWithId(List<String> uIds, FirebaseUser currentUser){
         List<String> listUser = new ArrayList<>();
         for(String uid: uIds){
