@@ -1,7 +1,7 @@
 package com.elytevolution.go4lunch.presenter;
 
-import com.elytevolution.go4lunch.api.UserApi;
-import com.elytevolution.go4lunch.api.UserLiveApi;
+import com.elytevolution.go4lunch.api.Go4LunchApi;
+import com.elytevolution.go4lunch.api.Go4LunchLiveApi;
 import com.elytevolution.go4lunch.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,11 +19,11 @@ public class WorkmatePresenter {
 
     private FirebaseUser currentUser;
 
-    private final UserApi userApi;
+    private final Go4LunchApi go4LunchApi;
 
-    public WorkmatePresenter(WorkmatePresenter.View view, UserApi userApi){
+    public WorkmatePresenter(WorkmatePresenter.View view, Go4LunchApi go4LunchApi){
         this.view = view;
-        this.userApi = userApi;
+        this.go4LunchApi = go4LunchApi;
     }
 
     public void setUserList(List<User> users) {
@@ -32,7 +32,7 @@ public class WorkmatePresenter {
 
     public void getAllUsers(){
         users.clear();
-        userApi.getUserList(new UserLiveApi.UserListResponse() {
+        go4LunchApi.getUserList(new Go4LunchLiveApi.UserListResponse() {
             @Override
             public void onSuccess(List<User> userList) {
                 for(User user : userList) {

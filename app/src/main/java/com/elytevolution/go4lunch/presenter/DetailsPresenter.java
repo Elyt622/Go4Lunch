@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-import com.elytevolution.go4lunch.api.UserApi;
+import com.elytevolution.go4lunch.api.Go4LunchApi;
 import com.elytevolution.go4lunch.model.User;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.Places;
@@ -53,14 +53,14 @@ public class DetailsPresenter {
 
     private Activity activity;
 
-    private final UserApi userApi;
+    private final Go4LunchApi go4LunchApi;
 
-    public DetailsPresenter(DetailsPresenter.View view, String idPlace, String key, Activity activity, UserApi userApi){
+    public DetailsPresenter(DetailsPresenter.View view, String idPlace, String key, Activity activity, Go4LunchApi go4LunchApi){
         this.view = view;
         this.idPlace = idPlace;
         this.key = key;
         this.activity = activity;
-        this.userApi = userApi;
+        this.go4LunchApi = go4LunchApi;
     }
 
     public void updatePart(){
@@ -80,7 +80,7 @@ public class DetailsPresenter {
                                 if (list1 == null) {
                                     list1 = new ArrayList<>();
                                 }
-                                list1 = userApi.removeCurrentUserWithId(list1, currentUser);
+                                list1 = go4LunchApi.removeCurrentUserWithId(list1, currentUser);
                                 updateParticipation(currentIdPlace, list1);
                                 updateUserIdPlace(idPlace, currentUser.getUid());
                                 configButtonParticipation();
@@ -92,7 +92,7 @@ public class DetailsPresenter {
                     }
                 });
             } else {
-                list = userApi.removeCurrentUserWithId(list, currentUser);
+                list = go4LunchApi.removeCurrentUserWithId(list, currentUser);
                 updateUserIdPlace("", currentUser.getUid());
             }
             configButtonParticipation();

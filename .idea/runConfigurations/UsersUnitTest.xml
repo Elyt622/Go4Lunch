@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="UnitTest" type="AndroidJUnit" factoryName="Android JUnit" nameIsGenerated="true">
+  <configuration default="false" name="UsersUnitTest" type="AndroidJUnit" factoryName="Android JUnit" nameIsGenerated="true">
     <module name="Go4Lunch.app" />
     <shortenClasspath name="MANIFEST" />
     <useClassPathOnly />
@@ -10,7 +10,7 @@
       </pattern>
     </extension>
     <option name="PACKAGE_NAME" value="com.elytevolution.go4lunch" />
-    <option name="MAIN_CLASS_NAME" value="com.elytevolution.go4lunch.UnitTest" />
+    <option name="MAIN_CLASS_NAME" value="com.elytevolution.go4lunch.UsersUnitTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <option name="PARAMETERS" value="" />

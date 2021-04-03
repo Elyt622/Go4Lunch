@@ -1,16 +1,16 @@
 package com.elytevolution.go4lunch.di;
 
-import com.elytevolution.go4lunch.api.UserApi;
-import com.elytevolution.go4lunch.api.UserLiveApi;
+import com.elytevolution.go4lunch.api.Go4LunchApi;
+import com.elytevolution.go4lunch.api.Go4LunchLiveApi;
 
 public class DI {
-    UserApi service = new UserLiveApi();
+    Go4LunchApi service = new Go4LunchLiveApi();
 
-    public UserApi getService() {
+    public Go4LunchApi getService() {
         return service;
     }
 
-    public static UserApi getNewInstanceApiService() {
-        return new UserLiveApi();
+    public static Go4LunchApi getNewInstanceApiService() {
+        return new Go4LunchLiveApi();
     }
 }

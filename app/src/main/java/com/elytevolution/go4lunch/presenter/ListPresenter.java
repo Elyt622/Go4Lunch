@@ -2,9 +2,8 @@ package com.elytevolution.go4lunch.presenter;
 
 import android.util.Log;
 
-import com.elytevolution.go4lunch.api.ParticipantsApi;
-import com.elytevolution.go4lunch.api.ParticipantsLiveApi;
-import com.elytevolution.go4lunch.api.RestaurantApi;
+import com.elytevolution.go4lunch.api.Go4LunchApi;
+import com.elytevolution.go4lunch.api.Go4LunchLiveApi;
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
@@ -36,22 +35,22 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
 
     private final LatLng currentLocation;
 
-    private final RestaurantApi restaurantApi;
+    private final Go4LunchApi go4LunchApi;
 
     public void setListRestaurant(List<Restaurant> restaurants){
         this.restaurants = restaurants;
     }
 
-    public ListPresenter(View view, LatLng currentLocation, String key, RestaurantApi restaurantApi){
+    public ListPresenter(View view, LatLng currentLocation, String key, Go4LunchApi go4LunchApi){
         this.view = view;
         this.currentLocation = currentLocation;
         this.key = key;
-        this.restaurantApi = restaurantApi;
+        this.go4LunchApi = go4LunchApi;
     }
 
     public void getAllRestaurant(){
         restaurants.clear();
-        restaurantApi.getRestaurantList(requestNearBySearch, new RestaurantApi.RestaurantListResponse() {
+        go4LunchApi.getRestaurantList(requestNearBySearch, new Go4LunchLiveApi.RestaurantListResponse() {
             @Override
             public void onSuccess(List<Restaurant> restaurantList) {
                 restaurants = restaurantList;
@@ -63,9 +62,8 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
     }
 
     public void getAllParticipants(){
-        ParticipantsApi participantsApi = new ParticipantsLiveApi();
         for (Restaurant restaurant : restaurants) {
-            participantsApi.getParticipants(restaurant.getIdPlace(), new ParticipantsApi.ParticipantsResponse() {
+            go4LunchApi.getParticipants(restaurant.getIdPlace(), new Go4LunchLiveApi.ParticipantsResponse() {
                 @Override
                 public void onSuccess(int participants) {
                     restaurant.setParticipation(participants);

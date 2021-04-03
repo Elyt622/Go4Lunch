@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elytevolution.go4lunch.R;
-import com.elytevolution.go4lunch.api.RestaurantLiveApi;
+import com.elytevolution.go4lunch.di.DI;
 import com.elytevolution.go4lunch.presenter.ListPresenter;
 import com.elytevolution.go4lunch.view.adapter.ListAdapter;
 import com.google.android.gms.maps.model.LatLng;
@@ -44,7 +44,7 @@ public class ListFragment extends Fragment implements ListPresenter.View{
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        presenter = new ListPresenter(this, location, getString(R.string.google_maps_key), new RestaurantLiveApi());
+        presenter = new ListPresenter(this, location, getString(R.string.google_maps_key), DI.getNewInstanceApiService());
         presenter.onCreate();
 
         configureAdapter(view, recyclerView, presenter);
