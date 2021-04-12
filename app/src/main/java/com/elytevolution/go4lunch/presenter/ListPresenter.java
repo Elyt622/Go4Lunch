@@ -37,10 +37,6 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
 
     private final Go4LunchApi go4LunchApi;
 
-    public void setListRestaurant(List<Restaurant> restaurants){
-        this.restaurants = restaurants;
-    }
-
     public ListPresenter(View view, LatLng currentLocation, String key, Go4LunchApi go4LunchApi){
         this.view = view;
         this.currentLocation = currentLocation;
@@ -55,8 +51,8 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
             public void onSuccess(List<Restaurant> restaurantList) {
                 restaurants = restaurantList;
                 getAllParticipants();
-                view.notifyDataSetChanged();
-                view.setRefreshing(false);
+                if(view != null) view.notifyDataSetChanged();
+                if(view != null) view.setRefreshing(false);
             }
         });
     }
@@ -67,7 +63,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
                 @Override
                 public void onSuccess(int participants) {
                     restaurant.setParticipation(participants);
-                    view.notifyDataSetChanged();
+                    if(view != null) view.notifyDataSetChanged();
                 }
             });
         }
@@ -175,7 +171,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
     }
 
     public void onStart() {
-        view.notifyDataSetChanged();
+        if(view != null) view.notifyDataSetChanged();
     }
 
     public interface View{

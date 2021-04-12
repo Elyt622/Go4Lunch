@@ -26,20 +26,15 @@ public class WorkmatePresenter {
         this.go4LunchApi = go4LunchApi;
     }
 
-    public void setUserList(List<User> users) {
-        this.users = users;
-    }
-
-    public void getAllUsers(){
+    public void getAllUsers(String uid){
         users.clear();
         go4LunchApi.getUserList(new Go4LunchLiveApi.UserListResponse() {
             @Override
             public void onSuccess(List<User> userList) {
                 for(User user : userList) {
-                    if (!user.getUid().equals(currentUser.getUid()))
-                    users.add(user);
+                    if (!user.getUid().equals(uid)) users.add(user);
                 }
-                view.updateUI();
+                if (view != null) view.updateUI();
             }
         });
     }
@@ -68,9 +63,13 @@ public class WorkmatePresenter {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    public String getCurrentUserId() {
+        return currentUser.getUid();
+    }
+
     public void onCreate(){
         initCurrentUser();
-        getAllUsers();
+        getAllUsers(getCurrentUserId());
     }
 
     public void onDestroy(){

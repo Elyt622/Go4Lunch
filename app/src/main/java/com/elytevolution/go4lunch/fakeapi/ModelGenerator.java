@@ -11,8 +11,9 @@ import java.util.List;
 
 public class ModelGenerator {
 
+    public static User CURRENT = new User("1", "Yohan", "yohan.bernole@gmail.com", "", "1");
+
     public static List<User> USERS = Arrays.asList(
-            new User("1", "Yohan", "yohan.bernole@gmail.com", "", "1"),
             new User("2", "Joseph", "joseph.dupond@gmail.com", "", "2"),
             new User("3", "Nathan", "nathan.truc@gmail.com", "", "3"),
             new User("4", "Céline", "céline.nom@gmail.com", "", "4"),

@@ -80,7 +80,7 @@ public class DetailsPresenter {
                                 if (list1 == null) {
                                     list1 = new ArrayList<>();
                                 }
-                                list1 = go4LunchApi.removeCurrentUserWithId(list1, currentUser);
+                                list1 = go4LunchApi.removeCurrentUserWithId(list1, currentUser.getUid());
                                 updateParticipation(currentIdPlace, list1);
                                 updateUserIdPlace(idPlace, currentUser.getUid());
                                 configButtonParticipation();
@@ -92,7 +92,7 @@ public class DetailsPresenter {
                     }
                 });
             } else {
-                list = go4LunchApi.removeCurrentUserWithId(list, currentUser);
+                list = go4LunchApi.removeCurrentUserWithId(list, currentUser.getUid());
                 updateUserIdPlace("", currentUser.getUid());
             }
             configButtonParticipation();

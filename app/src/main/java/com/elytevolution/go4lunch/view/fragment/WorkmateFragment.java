@@ -66,7 +66,7 @@ public class WorkmateFragment extends Fragment implements WorkmatePresenter.View
     }
 
     private void configureSwipeRefreshLayout(){
-        swipeRefreshLayout.setOnRefreshListener(() -> presenter.getAllUsers());
+        swipeRefreshLayout.setOnRefreshListener(() -> presenter.getAllUsers(presenter.getCurrentUserId()));
     }
 
     @Override

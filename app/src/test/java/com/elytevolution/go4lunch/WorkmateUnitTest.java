@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class UsersUnitTest {
+public class WorkmateUnitTest {
 
     WorkmatePresenter workmatePresenter;
 
@@ -24,28 +24,20 @@ public class UsersUnitTest {
 
     List<User> users = new ArrayList<>();
 
-    List<User> usersGenerator = ModelGenerator.USERS;
+    User currentUser = ModelGenerator.CURRENT;
 
-    User currentUser;
+    List<User> usersGenerator = ModelGenerator.USERS;
 
     @Before
     public void setup() {
         workmatePresenter = new WorkmatePresenter(null, go4LunchApi);
-        go4LunchApi.getUserList(userList -> users = userList);
-        workmatePresenter.setUserList(users);
-        currentUser = users.get(0);
-    }
-
-    @Test
-    public void getUserListWithSuccess() {
-        assertTrue(users.containsAll(usersGenerator));
+        workmatePresenter.getAllUsers(currentUser.getUid());
     }
 
     @Test
     public void getUIdWithSuccess() {
         String userId1 = workmatePresenter.getUserId(0);
         String userId2 = usersGenerator.get(0).getUid();
-
         assertEquals(userId1, userId2);
     }
 
@@ -67,7 +59,6 @@ public class UsersUnitTest {
     public void getUserListSizeWithSuccess() {
         int size1 = workmatePresenter.getUserListSize();
         int size2 = usersGenerator.size();
-
         assertEquals(size1, size2);
     }
 
@@ -80,13 +71,13 @@ public class UsersUnitTest {
 
     @Test
     public void removeCurrentUserByIdWithSuccess() {
+        users.add(ModelGenerator.CURRENT);
         List<String> uIds = new ArrayList<>();
         for(User user : users){
             uIds.add(user.getUid());
         }
         assertTrue(uIds.contains(currentUser.getUid()));
-        uIds = go4LunchApi.removeCurrentUserWithId(uIds, currentUser);
+        uIds = go4LunchApi.removeCurrentUserWithId(uIds, currentUser.getUid());
         assertFalse(uIds.contains(currentUser.getUid()));
     }
-
 }

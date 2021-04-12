@@ -10,39 +10,22 @@ import com.google.android.gms.maps.model.LatLng;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class RestaurantsUnitTest {
+public class ListUnitTest {
 
     ListPresenter listPresenter;
 
     Go4LunchApi go4LunchApi = new Go4LunchFakeApi();
-
-    List<Restaurant> restaurants = new ArrayList<>();
 
     List<Restaurant> restaurantsGenerator = ModelGenerator.RESTAURANTS;
 
     @Before
     public void setup() {
         listPresenter = new ListPresenter(null, null, null, go4LunchApi);
-        go4LunchApi.getRestaurantList(restaurantList -> restaurants = restaurantList);
-        listPresenter.setListRestaurant(restaurants);
-    }
-
-
-    @Test
-    public void getRestaurantListWithSuccess() {
-        assertTrue(restaurants.containsAll(restaurantsGenerator));
-    }
-
-    @Test
-    public void getRestaurantByIdWithSuccess() {
-        Restaurant restaurant = go4LunchApi.getRestaurantWithId(restaurantsGenerator.get(0).getIdPlace(), restaurantsGenerator);
-        assertEquals(restaurant, restaurantsGenerator.get(0));
+        listPresenter.getAllRestaurant();
     }
 
     @Test
