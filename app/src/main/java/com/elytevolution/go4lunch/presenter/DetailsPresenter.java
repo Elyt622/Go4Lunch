@@ -141,16 +141,6 @@ public class DetailsPresenter {
         });
     }
 
-    /*public List<String> removeCurrentUserWithId(List<String> uIds){
-        List<String> listUser = new ArrayList<>();
-        for(String uid: uIds){
-            if(!uid.equals(currentUser.getUid())){
-                listUser.add(uid);
-            }
-        }
-        return listUser;
-    }*/
-
     private void getUsersIdParticipation(){
         getParticipation(idPlace).addOnSuccessListener(document -> {
             usersIdParticipation = (ArrayList<String>) document.get("uid");

@@ -25,15 +25,15 @@ public class ModelGenerator {
     );
 
     public static List<Participation> PARTICIPATION = Arrays.asList(
-            new Participation("1", "Restaurant 1", Collections.singletonList("1")),
-            new Participation("2", "Restaurant 2", Collections.singletonList("2")),
-            new Participation("3", "Restaurant 3", Collections.singletonList("3")),
-            new Participation("4", "Restaurant 4", Collections.singletonList("4")),
-            new Participation("5", "Restaurant 5", Collections.singletonList("5")),
-            new Participation("6", "Restaurant 6", Collections.singletonList("6")),
-            new Participation("7", "Restaurant 7", Collections.singletonList("7")),
-            new Participation("8", "Restaurant 8", Collections.singletonList("8")),
-            new Participation("9", "Restaurant 9", Collections.singletonList("9"))
+            new Participation("1", "Restaurant 1", Collections.singletonList("1"), "Address"),
+            new Participation("2", "Restaurant 2", Collections.singletonList("2"), "Address"),
+            new Participation("3", "Restaurant 3", Collections.singletonList("3"), "Address"),
+            new Participation("4", "Restaurant 4", Collections.singletonList("4"), "Address"),
+            new Participation("5", "Restaurant 5", Collections.singletonList("5"), "Address"),
+            new Participation("6", "Restaurant 6", Collections.singletonList("6"), "Address"),
+            new Participation("7", "Restaurant 7", Collections.singletonList("7"), "Address"),
+            new Participation("8", "Restaurant 8", Collections.singletonList("8"), "Address"),
+            new Participation("9", "Restaurant 9", Collections.singletonList("9"), "Address")
     );
 
     public static List<Restaurant> RESTAURANTS = Arrays.asList(

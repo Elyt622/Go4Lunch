@@ -74,7 +74,7 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
             getParticipationCollection().document(restaurant.getIdPlace()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     if (!task.getResult().exists()) {
-                        createParticipation(restaurant.getIdPlace(), restaurant.getName(), null);
+                        createParticipation(restaurant.getIdPlace(), restaurant.getName(), null, restaurant.getAddress());
                     }
                 }
             });

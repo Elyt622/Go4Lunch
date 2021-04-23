@@ -8,12 +8,15 @@ public class Participation {
 
     private String namePlace;
 
+    private String addressPlace;
+
     private List<String> uid;
 
-    public Participation(String idPlace, String namePlace, List<String> uid){
+    public Participation(String idPlace, String namePlace, List<String> uid, String addressPlace){
         this.idPlace = idPlace;
         this.namePlace = namePlace;
         this.uid = uid;
+        this.addressPlace = addressPlace;
     }
 
     public String getNamePlace() {
@@ -26,5 +29,9 @@ public class Participation {
 
     public List<String> getUid() {
         return uid;
+    }
+
+    public String getAddressPlace() {
+        return addressPlace;
     }
 }
