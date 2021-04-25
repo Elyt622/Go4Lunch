@@ -13,6 +13,8 @@ public class Favorite {
         this.uid = uid;
     }
 
+    public Favorite(){}
+
     public List<String> getIdPlace() {
         return idPlace;
     }

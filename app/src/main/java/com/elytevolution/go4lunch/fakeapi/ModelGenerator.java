@@ -11,17 +11,17 @@ import java.util.List;
 
 public class ModelGenerator {
 
-    public static User CURRENT = new User("1", "Yohan", "yohan.bernole@gmail.com", "", "1");
+    public static User CURRENT = new User("1", "Yohan", "yohan.bernole@gmail.com", "", "1", "");
 
     public static List<User> USERS = Arrays.asList(
-            new User("2", "Joseph", "joseph.dupond@gmail.com", "", "2"),
-            new User("3", "Nathan", "nathan.truc@gmail.com", "", "3"),
-            new User("4", "Céline", "céline.nom@gmail.com", "", "4"),
-            new User("5", "Yann", "yann.chose@gmail.com", "", "5"),
-            new User("6", "Charlotte", "charlotte.truc@gmail.com", "", "6"),
-            new User("7", "John", "john.doe@gmail.com", "", "7"),
-            new User("8", "Jane", "jane.doe@gmail.com", "", "8"),
-            new User("9", "Franck", "franck.email@gmail.com","", "9")
+            new User("2", "Joseph", "joseph.dupond@gmail.com", "", "2", ""),
+            new User("3", "Nathan", "nathan.truc@gmail.com", "", "3",""),
+            new User("4", "Céline", "céline.nom@gmail.com", "", "4", ""),
+            new User("5", "Yann", "yann.chose@gmail.com", "", "5"," "),
+            new User("6", "Charlotte", "charlotte.truc@gmail.com", "", "6",""),
+            new User("7", "John", "john.doe@gmail.com", "", "7",""),
+            new User("8", "Jane", "jane.doe@gmail.com", "", "8",""),
+            new User("9", "Franck", "franck.email@gmail.com","", "9","")
     );
 
     public static List<Participation> PARTICIPATION = Arrays.asList(

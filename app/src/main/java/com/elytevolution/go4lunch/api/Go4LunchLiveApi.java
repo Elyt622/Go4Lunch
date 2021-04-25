@@ -26,7 +26,8 @@ public class Go4LunchLiveApi implements Go4LunchApi {
                                 document.getString("displayName"),
                                 document.getString("email"),
                                 document.getString("urlPicture"),
-                                document.getString("idPlace")));
+                                document.getString("idPlace"),
+                                document.getString("fcmtoken")));
                 }
                 userListResponse.onSuccess(users);
             } else {

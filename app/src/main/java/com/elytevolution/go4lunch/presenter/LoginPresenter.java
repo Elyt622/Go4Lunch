@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -101,7 +102,7 @@ public class LoginPresenter {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "signInWithCredential:success");
                         currentUser = auth.getCurrentUser();
-                        createNewUser();
+                        getFCMToken();
                         if (currentUser != null) {view.navigateToMainActivity();}
                     } else {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -115,7 +116,7 @@ public class LoginPresenter {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "signInWithCredential:success");
                         currentUser = auth.getCurrentUser();
-                        createNewUser();
+                        getFCMToken();
                         if (currentUser != null) {view.navigateToMainActivity();}
                     } else {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -181,20 +182,26 @@ public class LoginPresenter {
         auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
             if(task.isSuccessful()) {
                 currentUser = task.getResult().getUser();
-                createNewUser();
+                getFCMToken();
                 if (currentUser != null) { view.navigateToMainActivity(); }
             }
         });
     }
 
-    public void createNewUser() {
+    public void createNewUser(String fcmToken) {
         if(currentUser != null) {
             getUsersCollection().document(currentUser.getEmail()).get().addOnCompleteListener(task -> {
                 if (!task.getResult().exists()) {
-                    createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()), "");
+                    createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()), "", fcmToken);
                 }
             });
         }
+    }
+
+    public void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            createNewUser(task.getResult());
+        });
     }
 
     public void initFirebaseAuth() {

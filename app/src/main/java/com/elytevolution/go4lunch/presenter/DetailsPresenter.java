@@ -159,7 +159,8 @@ public class DetailsPresenter {
                         usersParticipants.add(new User(user1.getString("uid"),
                                 user1.getString("displayName"),
                                 user1.getString("email"),
-                                user1.getString("urlPicture"), ""));
+                                user1.getString("urlPicture"), "",
+                                user1.getString("fcmtoken")));
                     }
                     view.updateRecyclerView();
                 }

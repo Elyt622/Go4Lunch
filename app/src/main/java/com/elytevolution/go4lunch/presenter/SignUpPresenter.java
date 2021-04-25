@@ -5,7 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import static android.content.ContentValues.TAG;
 import static com.elytevolution.go4lunch.firestorerequest.UserHelper.createUser;
@@ -18,8 +18,6 @@ public class SignUpPresenter {
 
     private FirebaseAuth auth;
 
-    private FirebaseUser currentUser;
-
     public SignUpPresenter (SignUpPresenter.View view, Activity activity) {
         this.view = view;
         this.activity = activity;
@@ -30,8 +28,7 @@ public class SignUpPresenter {
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "createUserWithEmail:success");
-                        currentUser = auth.getCurrentUser();
-                        createUser(auth.getUid(),firstname + ' ' + lastname, email, null, null);
+                        getFCMToken(email, firstname, lastname);
                         activity.finish();
                     } else {
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -39,6 +36,12 @@ public class SignUpPresenter {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public void getFCMToken(String email, String firstname, String lastname) {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            createUser(auth.getUid(),firstname + ' ' + lastname, email, null, null, task.getResult());
+        });
     }
 
     public void onCreate() {

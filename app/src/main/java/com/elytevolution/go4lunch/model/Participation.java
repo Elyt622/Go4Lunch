@@ -19,6 +19,8 @@ public class Participation {
         this.addressPlace = addressPlace;
     }
 
+    public Participation(){ }
+
     public String getNamePlace() {
         return namePlace;
     }
