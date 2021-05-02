@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
     @NonNull
     @Override
     public ListAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.restaurant_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_restaurant, parent, false);
 
         return new RecyclerViewHolder(view);
     }

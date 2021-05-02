@@ -31,7 +31,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
     @NonNull
     @Override
     public WorkmateAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
 
         return new RecyclerViewHolder(view);
     }
