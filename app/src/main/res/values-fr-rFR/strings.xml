@@ -7,7 +7,6 @@
     <string name="is_joining">a rejoint!</string>
     <string name="app_title">Go4Lunch</string>
     <string name="notification_title">Notification</string>
-    <string name="default_notification_channel_id">Test</string>
     <string name="like_detail_restaurant">J\'AIME</string>
     <string name="website_detail_restaurant">SITE WEB</string>
     <string name="call_detail_restaurant">APPELER</string>
