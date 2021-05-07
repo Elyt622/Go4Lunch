@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.view.activity.DetailsActivity;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.api.Status;
@@ -179,7 +180,7 @@ public class MainPresenter {
                 activity.startActivity(intent);
             }
             else {
-                Toast.makeText(activity, "You didn't select a restaurant yet!", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, activity.getString(R.string.toast_no_choice), Toast.LENGTH_LONG).show();
             }
         });
     }

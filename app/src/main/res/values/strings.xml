@@ -1,12 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="com.google.android.geo.API_KEY">@string/google_maps_key</string>
-    <string name="app_name">Go4Lunch</string>
+    <string name="com.google.android.geo.API_KEY" translatable="false">@string/google_maps_key</string>
+    <string name="app_name" translatable="false">Go4Lunch</string>
     <string name="facebook_application_id" translatable="false">2626477007572234</string>
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb420763051691337</string>
-    <string name="com.twitter.sdk.android.CONSUMER_KEY">6IuzLp8OfhxCvC4VmDoWM4eH8</string>
-    <string name="com.twitter.sdk.android.CONSUMER_SECRET">E5qg3dpVEZIbo6QZPZV9yKbfSRbgnFrEmj24dFTYI9Uv64HLfg</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY" translatable="false">6IuzLp8OfhxCvC4VmDoWM4eH8</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET" translatable="false">E5qg3dpVEZIbo6QZPZV9yKbfSRbgnFrEmj24dFTYI9Uv64HLfg</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="restaurant_message_join">want to join</string>
     <string name="restaurant_message_no_choice">has not decided yet!</string>
     <string name="currently_close">Currently close</string>
@@ -15,4 +15,27 @@
     <string name="app_title">Go4Lunch</string>
     <string name="notification_title">Notification</string>
     <string name="default_notification_channel_id">Test</string>
+    <string name="like_detail_restaurant">LIKE</string>
+    <string name="website_detail_restaurant">WEBSITE</string>
+    <string name="call_detail_restaurant">CALL</string>
+    <string name="log_in_login_activity">Log In</string>
+    <string name="email_login_activity">Email</string>
+    <string name="password_login_activity">Password</string>
+    <string name="or_login_activity">OR</string>
+    <string name="sign_up_login_activity">Sign Up</string>
+    <string name="enable_location_main_activity">You must enable location to use the app</string>
+    <string name="activate_localization_main_activity">Activate your localization</string>
+    <string name="sign_up_signup_activity">Sign Up</string>
+    <string name="firstname_signup_activity">FirstName</string>
+    <string name="lastname_signup_activity">LastName</string>
+    <string name="email_signup_activity">Email</string>
+    <string name="password_signup_activity">Password</string>
+    <string name="intro_splash_activity">Find a nice restaurant and invite your co-workers for lunch!</string>
+    <string name="workmates">WORKMATES</string>
+    <string name="your_lunch_menu">YOUR LUNCH</string>
+    <string name="settings_menu">SETTINGS</string>
+    <string name="logout_menu">LOGOUT</string>
+    <string name="map_tab">MAP VIEW</string>
+    <string name="list_tab">LIST VIEW</string>
+    <string name="toast_no_choice">You didn\'t select a restaurant yet!</string>
 </resources>

@@ -24,6 +24,8 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
 
     private final WorkmatePresenter presenter;
 
+    private String textWantToJoin, textNoDecision;
+
     public WorkmateAdapter(WorkmatePresenter presenter){
         this.presenter = presenter;
     }
@@ -33,6 +35,8 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
     public WorkmateAdapter.RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
 
+        textWantToJoin = parent.getResources().getString(R.string.restaurant_message_join);
+        textNoDecision = parent.getResources().getString(R.string.restaurant_message_no_choice);
         return new RecyclerViewHolder(view);
     }
 
@@ -45,12 +49,12 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         namePlace = document.getString("namePlace");
-                        holder.textViewUser.setText(presenter.getUserName(position) + " " + "want to join" + " " + namePlace);
+                        holder.textViewUser.setText(presenter.getUserName(position)+ " " + textWantToJoin + " " + namePlace);
                     }
                 }
             }
             else {
-                holder.textViewUser.setText(presenter.getUserName(position) + " " + "has not decided yet!");
+                holder.textViewUser.setText(presenter.getUserName(position) + " " + textNoDecision + " ");
             }
         });
 

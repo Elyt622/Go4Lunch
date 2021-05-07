@@ -199,9 +199,7 @@ public class LoginPresenter {
     }
 
     public void getFCMToken() {
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            createNewUser(task.getResult());
-        });
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> createNewUser(task.getResult()));
     }
 
     public void initFirebaseAuth() {

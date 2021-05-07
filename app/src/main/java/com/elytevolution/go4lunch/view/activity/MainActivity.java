@@ -142,10 +142,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public void configureTabLayout(){
         List<String> listNameViewPager = new ArrayList<>();
         List<Integer> listImageViewPager = new ArrayList<>();
-
-        listNameViewPager.add("Map View");
-        listNameViewPager.add("List View");
-        listNameViewPager.add("Workmates");
+        listNameViewPager.add(getString(R.string.map_tab));
+        listNameViewPager.add(getString(R.string.list_tab));
+        listNameViewPager.add(getString(R.string.workmates));
         listImageViewPager.add(R.drawable.baseline_map_black_18dp);
         listImageViewPager.add(R.drawable.baseline_list_black_18dp);
         listImageViewPager.add(R.drawable.baseline_group_black_18dp);

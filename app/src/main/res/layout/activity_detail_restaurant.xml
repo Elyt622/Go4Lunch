@@ -85,7 +85,7 @@
 
         <TextView
             android:id="@+id/text_view_call_detail_activity"
-            android:text="CALL"
+            android:text="@string/call_detail_restaurant"
             android:textColor="@color/colorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
 
         <TextView
             android:id="@+id/text_view_like_detail_activity"
-            android:text="LIKE"
+            android:text="@string/like_detail_restaurant"
             android:textColor="@color/colorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="WEBSITE"
+            android:text="@string/website_detail_restaurant"
             android:textColor="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="@+id/image_view_website_detail_activity"
             app:layout_constraintStart_toStartOf="@+id/image_view_website_detail_activity"

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="restaurant_message_join">rejoint</string>
+    <string name="restaurant_message_no_choice">n\'a pas encore décidé!</string>
+    <string name="currently_close">Actuellement fermé</string>
+    <string name="currently_open">Actuellement ouvert</string>
+    <string name="is_joining">a rejoint!</string>
+    <string name="app_title">Go4Lunch</string>
+    <string name="notification_title">Notification</string>
+    <string name="default_notification_channel_id">Test</string>
+    <string name="like_detail_restaurant">J\'AIME</string>
+    <string name="website_detail_restaurant">SITE WEB</string>
+    <string name="call_detail_restaurant">APPELER</string>
+    <string name="log_in_login_activity">Se connecter</string>
+    <string name="email_login_activity">Email</string>
+    <string name="password_login_activity">Mot de passe</string>
+    <string name="or_login_activity">OU</string>
+    <string name="sign_up_login_activity">S\'inscrire</string>
+    <string name="enable_location_main_activity">Vous devez activer la localisation pour utiliser l\'application</string>
+    <string name="activate_localization_main_activity">Activer votre localisation</string>
+    <string name="sign_up_signup_activity">S\'inscrire</string>
+    <string name="firstname_signup_activity">Prénom</string>
+    <string name="lastname_signup_activity">Nom</string>
+    <string name="email_signup_activity">Email</string>
+    <string name="password_signup_activity">Mot de passe</string>
+    <string name="intro_splash_activity">Trouve un restaurant et invite tes collègues pour déjeuner!</string>
+    <string name="workmates">COLLÈGUES</string>
+    <string name="your_lunch_menu">VOTRE REPAS</string>
+    <string name="settings_menu">PARAMÈTRES</string>
+    <string name="logout_menu">DÉCONNEXION</string>
+    <string name="map_tab">CARTE</string>
+    <string name="list_tab">LISTE</string>
+    <string name="toast_no_choice">Vous n\'avez pas choisi de restaurant!</string>
+</resources>
