@@ -37,6 +37,10 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).update("idPlace", idPlace);
     }
 
+    public static Task<Void> updateUserFcmToken(String fcmToken, String uid) {
+        return UserHelper.getUsersCollection().document(uid).update("fcmToken", fcmToken);
+    }
+
     // --- DELETE ---
 
     public static Task<Void> deleteUser(String uid) {

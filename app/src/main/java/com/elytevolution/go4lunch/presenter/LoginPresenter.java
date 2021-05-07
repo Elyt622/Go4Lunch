@@ -34,6 +34,7 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import static com.elytevolution.go4lunch.firestorerequest.UserHelper.createUser;
 import static com.elytevolution.go4lunch.firestorerequest.UserHelper.getUsersCollection;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.updateUserFcmToken;
 
 public class LoginPresenter {
 
@@ -88,7 +89,8 @@ public class LoginPresenter {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "signInWithEmail:success");
                         currentUser = auth.getCurrentUser();
-                        view.navigateToMainActivity();
+                        getFCMToken();
+                        if (currentUser != null) view.navigateToMainActivity();
                     } else {
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
                         Toast.makeText(activity, "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -103,7 +105,7 @@ public class LoginPresenter {
                         Log.d(TAG, "signInWithCredential:success");
                         currentUser = auth.getCurrentUser();
                         getFCMToken();
-                        if (currentUser != null) {view.navigateToMainActivity();}
+                        if (currentUser != null) view.navigateToMainActivity();
                     } else {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                     }
@@ -117,13 +119,25 @@ public class LoginPresenter {
                         Log.d(TAG, "signInWithCredential:success");
                         currentUser = auth.getCurrentUser();
                         getFCMToken();
-                        if (currentUser != null) {view.navigateToMainActivity();}
+                        if (currentUser != null) view.navigateToMainActivity();
                     } else {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         view.showToast( "This email already exists with an other account", Toast.LENGTH_LONG);
                         LoginManager.getInstance().logOut();
                     }
                 });
+    }
+
+    private void firebaseAuthWithTwitter(TwitterSession session){
+        AuthCredential credential = TwitterAuthProvider.getCredential(session.getAuthToken().token,
+                session.getAuthToken().secret);
+        auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
+            if(task.isSuccessful()) {
+                currentUser = task.getResult().getUser();
+                getFCMToken();
+                if (currentUser != null) view.navigateToMainActivity();
+            }
+        });
     }
 
     public void configureAuthFacebook(LoginButton facebookLoginButton) {
@@ -166,7 +180,7 @@ public class LoginPresenter {
         twitterLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                signInToFirebaseWithTwitterSession(result.data);
+                firebaseAuthWithTwitter(result.data);
             }
 
             @Override
@@ -176,23 +190,14 @@ public class LoginPresenter {
         });
     }
 
-    private void signInToFirebaseWithTwitterSession(TwitterSession session){
-        AuthCredential credential = TwitterAuthProvider.getCredential(session.getAuthToken().token,
-                session.getAuthToken().secret);
-        auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
-            if(task.isSuccessful()) {
-                currentUser = task.getResult().getUser();
-                getFCMToken();
-                if (currentUser != null) { view.navigateToMainActivity(); }
-            }
-        });
-    }
-
     public void createNewUser(String fcmToken) {
-        if(currentUser != null) {
+        if(currentUser != null && currentUser.getEmail() != null) {
             getUsersCollection().document(currentUser.getEmail()).get().addOnCompleteListener(task -> {
                 if (!task.getResult().exists()) {
                     createUser(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getEmail(), String.valueOf(currentUser.getPhotoUrl()), "", fcmToken);
+                }
+                else{
+                    updateUserFcmToken(fcmToken, currentUser.getUid());
                 }
             });
         }
