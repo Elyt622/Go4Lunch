@@ -26,6 +26,8 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
 
     private String textWantToJoin, textNoDecision;
 
+    int textColorNoDecision;
+
     public WorkmateAdapter(WorkmatePresenter presenter){
         this.presenter = presenter;
     }
@@ -37,6 +39,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
 
         textWantToJoin = parent.getResources().getString(R.string.restaurant_message_join);
         textNoDecision = parent.getResources().getString(R.string.restaurant_message_no_choice);
+        textColorNoDecision = parent.getResources().getColor(R.color.quantum_grey400);
         return new RecyclerViewHolder(view);
     }
 
@@ -55,6 +58,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
             }
             else {
                 holder.textViewUser.setText(presenter.getUserName(position) + " " + textNoDecision + " ");
+                holder.textViewUser.setTextColor(textColorNoDecision);
             }
         });
 
