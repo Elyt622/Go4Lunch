@@ -88,7 +88,7 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
 
     public void onMyLocationButtonClick(GoogleMap googleMap){
         googleMap.setOnMyLocationButtonClickListener(() -> {
-            showToastMessage("My location", Toast.LENGTH_SHORT);
+            showToastMessage(getString(R.string.my_location_map_fragment), Toast.LENGTH_SHORT);
             return false;
         });
     }

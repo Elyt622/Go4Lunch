@@ -123,7 +123,7 @@ public class MainPresenter {
                     activity.startActivity(intent);
                 }
                 else{
-                    Toast.makeText(activity, "It's not a restaurant", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, activity.getString(R.string.search_toast_main_activity), Toast.LENGTH_LONG).show();
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);

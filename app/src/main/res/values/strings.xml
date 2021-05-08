@@ -38,4 +38,6 @@
     <string name="map_tab">MAP VIEW</string>
     <string name="list_tab">LIST VIEW</string>
     <string name="toast_no_choice">You didn\'t select a restaurant yet!</string>
+    <string name="search_toast_main_activity">It\'s not a restaurant</string>
+    <string name="my_location_map_fragment">My location</string>
 </resources>

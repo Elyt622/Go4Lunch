@@ -30,4 +30,6 @@
     <string name="map_tab">CARTE</string>
     <string name="list_tab">LISTE</string>
     <string name="toast_no_choice">Vous n\'avez pas choisi de restaurant!</string>
+    <string name="search_toast_main_activity">Ce n\'est pas un restaurant!</string>
+    <string name="my_location_map_fragment">Ma localisation</string>
 </resources>
