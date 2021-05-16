@@ -6,7 +6,7 @@ admin.initializeApp({
   databaseURL: "https://go4lunch-3f2a8.firebaseio.com",
 });
 
-exports.sendNotifications = functions.pubsub.schedule("Every 3 minutes")
+exports.sendNotifications = functions.pubsub.schedule("0 12 * * *")
     .timeZone("Europe/Paris").onRun((context) => {
       const db = admin.firestore();
       functions.logger.log("debug :", Date().valueOf());
