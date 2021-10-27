@@ -56,14 +56,24 @@ firebase deploy --only functions
 ## Application
 <img src="images/1.jpg" alt="Screenshot de l'application]" width="200"/> <img src="images/2.jpg" alt="Screenshot de l'application]" width="200"/> <img src="images/3.jpg" alt="Screenshot de l'application]" width="200"/>
 
+Écran d'accueil qui amène sur l'activité connexion si l'utilisateur n'est pas connecté. Il pourra se connecter ou s'inscrire dans les prochaines activités grâce à Facebook, Twitter, Google ou un simple email/Mot de passe grâce au SDK et à Firebase authentification.
+
 <img src="images/4.jpg" alt="Screenshot de l'application]" width="200"/> <img src="images/5.jpg" alt="Screenshot de l'application]" width="200"/>
+
+Demande d'autorisation de localisation avec l'utilisation des permissions pour localiser l'utilisateur sur la carte et proposer les restaurants alentour. Le bouton en haut à droite permet de zoomer sur la position de l'utilisateur. Une requête retrofit est exécutée pour obtenir les restaurants à proximité avec l'API Google Place. On stocke les résultats dans Firestore. On peut cliquer sur les restaurants affichés sur la carte pour afficher les détails. 
 
 <img src="images/6.jpg" alt="Screenshot de l'application]" width="200"/> <img src="images/7.jpg" alt="Screenshot de l'application]" width="200"/>
 
+Barre de recherche disponible, les résultats retournés sont ceux de la Google Place API, tous les lieux à proximité sont affichés pour une recherche, mais seulement les restaurants sont cliquables. Un toast est utilisé pour afficher un message s'il ne s'agit pas d'un restaurant.
+
 <img src="images/8.jpg" alt="Screenshot de l'application]" width="200"/> <img src="images/9.jpg" alt="Screenshot de l'application]" width="200"/>
 
+Les restaurants sont affichés sous forme de liste avec les informations utiles et les participations. Les collègues sont montrés avec leur participation active. Il y a la possibilité de cliquer sur les restaurants pour afficher les détails ou sur les collègues pour afficher les restaurants auxquels ils participent.
+ 
 <img src="images/10.jpg" alt="Screenshot de l'application]" width="200"/> <img src="images/11.jpg" alt="Screenshot de l'application]" width="200"/> <img src="images/12.jpg" alt="Screenshot de l'application]" width="200"/>
+
+L'écran de détail d'un restaurant affiche les informations de celui-ci puis tous les participants. On peut mettre en favoris un restaurant, l'enlever des favoris, ajouter notre participation et enfin comme on peut le voir ci-dessous consulter le site web ou appeler.
 
 <img src="images/13.jpg" alt="Screenshot de l'application]" width="200"/> <img src="images/14.jpg" alt="Screenshot de l'application]" width="200"/>
 
-
+Et pour finir, grâce au menu nous pouvons afficher notre restaurant sélectionné si nous avons une participation active, voir les paramètres du smartphone ou simplement se déconnecter. 
