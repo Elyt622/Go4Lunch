@@ -1,6 +1,7 @@
 package com.elytevolution.go4lunch.view.adapter;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Recycl
     public void onBindViewHolder(@NonNull WorkmateAdapter.RecyclerViewHolder holder, int position) {
 
         getParticipationCollection().whereArrayContains("uid", presenter.getUserId(position)).get().addOnCompleteListener(task -> {
-            if (!presenter.getPlaceId(position).isEmpty()) {
+            if (presenter.getPlaceId(position) != null && !presenter.getPlaceId(position).isEmpty()) {
                 String namePlace;
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
