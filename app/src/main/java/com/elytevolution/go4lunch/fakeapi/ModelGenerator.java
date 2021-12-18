@@ -38,9 +38,9 @@ public class ModelGenerator {
 
     public static List<Restaurant> RESTAURANTS = Arrays.asList(
             new Restaurant("0", "Restaurant 0", "Address 0", true, 48.5, 3, 2, 3.7, ""),
-            new Restaurant("1", "Restaurant 1", "Address 1", true, 48.5, 3, 2, 3.7, ""),
-            new Restaurant("2", "Restaurant 2", "Address 2", true, 48.5, 3, 2, 3.7, ""),
-            new Restaurant("3", "Restaurant 3", "Address 3", true, 48.5, 3, 2, 3.7, ""),
+            new Restaurant("1", "Restaurant 1", "Address 1", true, 48.5, 3, 2, 1.7, ""),
+            new Restaurant("2", "Restaurant 2", "Address 2", true, 48.5, 3, 2, 4.7, ""),
+            new Restaurant("3", "Restaurant 3", "Address 3", true, 48.5, 3, 2, 4.1, ""),
             new Restaurant("4", "Restaurant 4", "Address 4", true, 48.5, 3, 2, 3.7, ""),
             new Restaurant("5", "Restaurant 5", "Address 5", true, 48.5, 3, 2, 3.7, ""),
             new Restaurant("6", "Restaurant 6", "Address 6", true, 48.5, 3, 2, 3.7, ""),
