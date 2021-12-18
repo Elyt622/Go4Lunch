@@ -76,6 +76,7 @@ public class Restaurant {
         return photoRef;
     }
 
+    // Number of participants
     public void setParticipation(int participation) {
         this.participation = participation;
     }
