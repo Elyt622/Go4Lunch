@@ -62,11 +62,13 @@ public class MainPresenter {
         this.activity = activity;
     }
 
+    // Test location is enable
     private boolean localizationIsEnable(){
         return ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
+    // Activate the location and configure latitude & longitude
     public void startLocalization() {
         LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null) {
@@ -87,6 +89,7 @@ public class MainPresenter {
         currentLocation = new LatLng(latitude, longitude);
     }
 
+    // Search with Google Place API near of user position
     public void configureAutocompleteSearch() {
         if (!Places.isInitialized()) {
             Places.initialize(activity, key, Locale.FRANCE);
@@ -104,6 +107,7 @@ public class MainPresenter {
         activity.startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
+    // Configure activity when location is enable
     public void configureActivity() {
         if (localizationIsEnable()) {
             view.setVisibilityLocalizationText(0);
@@ -151,9 +155,11 @@ public class MainPresenter {
     }
 
     public void getInfoUserOnMenuHeader() {
-        view.setUserName(currentUser.getDisplayName());
-        view.setEmail(currentUser.getEmail());
-        view.setProfilePicture(currentUser.getPhotoUrl());
+        getUser(currentUser.getUid()).addOnSuccessListener(documentSnapshot -> {
+            view.setUserName(documentSnapshot.getString("displayName"));
+            view.setEmail(currentUser.getEmail());
+            view.setProfilePicture(currentUser.getPhotoUrl());
+        });
     }
 
     public void setPermissions(int requestCode, int[] grantResults) {
