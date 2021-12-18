@@ -110,26 +110,34 @@ import androidx.recyclerview.widget.RecyclerView;
             }
     }
 
-    private void showStarsRating(Double rate, ImageView imageViewRate1, ImageView imageViewRate2, ImageView imageViewRate3){
-        if (rate > 3.0) {
-            if (rate < 4.0) {
-                imageViewRate1.setVisibility(View.VISIBLE);
-                imageViewRate2.setVisibility(View.INVISIBLE);
-                imageViewRate3.setVisibility(View.INVISIBLE);
-            } else if (rate < 4.5 && rate >= 4.0) {
-                imageViewRate1.setVisibility(View.VISIBLE);
-                imageViewRate2.setVisibility(View.VISIBLE);
-                imageViewRate3.setVisibility(View.INVISIBLE);
-            } else if (rate >= 4.5) {
-                imageViewRate1.setVisibility(View.VISIBLE);
-                imageViewRate2.setVisibility(View.VISIBLE);
-                imageViewRate3.setVisibility(View.VISIBLE);
+    private void showStarsRating(int rate, ImageView imageViewRate1, ImageView imageViewRate2, ImageView imageViewRate3){
+            switch (rate){
+                case 0:
+                    imageViewRate1.setVisibility(View.INVISIBLE);
+                    imageViewRate2.setVisibility(View.INVISIBLE);
+                    imageViewRate3.setVisibility(View.INVISIBLE);
+                    break;
+
+                case 1:
+                    imageViewRate1.setVisibility(View.VISIBLE);
+                    imageViewRate2.setVisibility(View.INVISIBLE);
+                    imageViewRate3.setVisibility(View.INVISIBLE);
+                    break;
+
+                case 2:
+                    imageViewRate1.setVisibility(View.VISIBLE);
+                    imageViewRate2.setVisibility(View.VISIBLE);
+                    imageViewRate3.setVisibility(View.INVISIBLE);
+                    break;
+
+                case 3:
+                    imageViewRate1.setVisibility(View.VISIBLE);
+                    imageViewRate2.setVisibility(View.VISIBLE);
+                    imageViewRate3.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    break;
             }
-        } else{
-            imageViewRate1.setVisibility(View.INVISIBLE);
-            imageViewRate2.setVisibility(View.INVISIBLE);
-            imageViewRate3.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override

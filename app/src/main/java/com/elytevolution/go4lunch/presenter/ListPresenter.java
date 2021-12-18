@@ -1,6 +1,7 @@
 package com.elytevolution.go4lunch.presenter;
 
 import android.util.Log;
+import android.view.View;
 
 import com.elytevolution.go4lunch.api.Go4LunchApi;
 import com.elytevolution.go4lunch.api.Go4LunchLiveApi;
@@ -101,6 +102,23 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
         }
     }
 
+    public int getRating(Restaurant restaurant) {
+        if (restaurant.getRating() != null) {
+            if (restaurant.getRating() > 3.0) {
+                if (restaurant.getRating() < 4.0) {
+                    return 1;
+                } else if (restaurant.getRating() < 4.5 && restaurant.getRating() >= 4.0) {
+                    return 2;
+                } else if (restaurant.getRating() >= 4.5) {
+                    return 3;
+                }
+            } else {
+                return 0;
+            }
+        }
+        return 0;
+    }
+
     @Override
     public void onFailure() {
         Log.d(TAG, "FAILURE");
@@ -130,8 +148,8 @@ public class ListPresenter implements GooglePlaceCalls.Callbacks {
         return restaurants.get(position).getParticipation();
     }
 
-    public Double getRating(int position) {
-        return restaurants.get(position).getRating();
+    public int getRating(int position) {
+        return getRating(restaurants.get(position));
     }
 
     public LatLng getCurrentLocation() {

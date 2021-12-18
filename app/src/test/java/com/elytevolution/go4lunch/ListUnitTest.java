@@ -72,8 +72,8 @@ public class ListUnitTest {
 
     @Test
     public void getRatingWithSuccess() {
-        Double rating1 = listPresenter.getRating(0);
-        Double rating2 = restaurantsGenerator.get(0).getRating();
+        int rating1 = listPresenter.getRating(0);
+        int rating2 = listPresenter.getRating(restaurantsGenerator.get(0));
         assertEquals(rating1, rating2);
     }
 
@@ -89,5 +89,57 @@ public class ListUnitTest {
         String idPlace1 = listPresenter.getRestaurantId(0);
         String idPlace2 = restaurantsGenerator.get(0).getIdPlace();
         assertEquals(idPlace1, idPlace2);
+    }
+
+    @Test
+    public void getDistFromWithSuccess() {
+        double lat1 = 42.4399116;
+        double lng1 = 3.1655852;
+        double lat2 = 42.44151109999999;
+        double lng2 = 3.1650565;
+        double expectedDistance = 0.11375504467146255;
+
+        double res = listPresenter.distFrom(lat1, lng1, lat2, lng2);
+
+        assertEquals(res, expectedDistance, 0.0);
+    }
+
+    @Test
+    public void getRatingWithThreeStars() {
+        int expectedStars = 3;
+
+        int res = listPresenter.getRating(restaurantsGenerator.get(2));
+
+        assertEquals(res, expectedStars);
+    }
+
+    @Test
+    public void getRatingWithTwoStars() {
+
+        int expectedStars = 2;
+
+        int res = listPresenter.getRating(restaurantsGenerator.get(3));
+
+        assertEquals(res, expectedStars);
+    }
+
+    @Test
+    public void getRatingWithOneStar() {
+
+        int expectedStars = 1;
+
+        int res = listPresenter.getRating(restaurantsGenerator.get(0));
+
+        assertEquals(res, expectedStars);
+    }
+
+    @Test
+    public void getRatingWithZeroStar() {
+
+        int expectedStars = 0;
+
+        int res = listPresenter.getRating(restaurantsGenerator.get(1));
+
+        assertEquals(res, expectedStars);
     }
 }
