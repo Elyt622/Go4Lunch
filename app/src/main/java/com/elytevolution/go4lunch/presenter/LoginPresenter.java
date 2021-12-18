@@ -89,7 +89,6 @@ public class LoginPresenter {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "signInWithEmail:success");
                         currentUser = auth.getCurrentUser();
-                        getFCMToken();
                         if (currentUser != null) view.navigateToMainActivity();
                     } else {
                         Log.w(TAG, "signInWithEmail:failure", task.getException());

@@ -40,7 +40,7 @@ public class SignUpPresenter {
 
     public void getFCMToken(String email, String firstname, String lastname) {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            createUser(auth.getUid(),firstname + ' ' + lastname, email, null, null, task.getResult());
+            createUser(auth.getUid(),firstname + ' ' + lastname, email, "", "", task.getResult());
         });
     }
 
