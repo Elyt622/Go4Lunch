@@ -47,7 +47,7 @@ public class MapPresenter implements GooglePlaceCalls.Callbacks{
             double latitude = result.getGeometry().getLocation().getLat();
             double longitude = result.getGeometry().getLocation().getLng();
             LatLng latLng = new LatLng(latitude, longitude);
-
+            map.clear();
             getParticipation(idPlace).addOnSuccessListener(documentSnapshot -> {
                 List<String> participants = (ArrayList) documentSnapshot.get("uid");
                 if (participants != null && participants.size() != 0) {
