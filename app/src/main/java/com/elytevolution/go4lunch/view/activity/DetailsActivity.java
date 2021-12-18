@@ -1,6 +1,7 @@
 package com.elytevolution.go4lunch.view.activity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import com.elytevolution.go4lunch.presenter.DetailsPresenter;
 import com.elytevolution.go4lunch.view.adapter.DetailsAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsPresent
     private RecyclerView recyclerView;
 
     private String idPlace;
+
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,10 @@ public class DetailsActivity extends AppCompatActivity implements DetailsPresent
 
         recyclerView = findViewById(R.id.recycler_view_users_detail_activity);
 
+        toolbar = findViewById(R.id.toolbar_details_activity);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         configureRecyclerView();
 
         imageViewCall.setImageResource(R.drawable.ic_call_black_18dp);
@@ -70,12 +78,19 @@ public class DetailsActivity extends AppCompatActivity implements DetailsPresent
         imageViewWebsite.setOnClickListener(v -> startActivity(presenter.navigateToWebsiteIntent()));
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void configureRecyclerView(){
         adapter = new DetailsAdapter(presenter);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-
     @Override
     public void showButtonFavorite() {
         imageViewFavorite.setVisibility(android.view.View.VISIBLE);
