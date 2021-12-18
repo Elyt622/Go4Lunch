@@ -71,7 +71,7 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
                 String string = (String) marker.getTag();
                 Intent intent = new Intent(getContext(), DetailsActivity.class);
                 intent.putExtra("ID", string);
-                if(this != null) this.startActivity(intent);
+                this.startActivity(intent);
                 return false;
             });
         }
