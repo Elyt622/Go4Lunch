@@ -4,13 +4,13 @@ import java.util.List;
 
 public class Participation {
 
-    private String idPlace;
+    private final String idPlace;
 
-    private String namePlace;
+    private final String namePlace;
 
-    private String addressPlace;
+    private final String addressPlace;
 
-    private List<String> uid;
+    private final List<String> uid;
 
     public Participation(String idPlace, String namePlace, List<String> uid, String addressPlace){
         this.idPlace = idPlace;
@@ -18,8 +18,6 @@ public class Participation {
         this.uid = uid;
         this.addressPlace = addressPlace;
     }
-
-    public Participation(){ }
 
     public String getNamePlace() {
         return namePlace;

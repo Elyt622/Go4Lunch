@@ -3,7 +3,6 @@ package com.elytevolution.go4lunch.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
-
 import com.elytevolution.go4lunch.view.activity.LoginActivity;
 import com.elytevolution.go4lunch.view.activity.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;

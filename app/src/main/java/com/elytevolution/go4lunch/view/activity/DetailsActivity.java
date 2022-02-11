@@ -35,7 +35,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsPresent
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_restaurant);
+        setContentView(R.layout.activity_details_restaurant);
 
         if(getIntent() != null){
             idPlace = getIntent().getStringExtra("ID");

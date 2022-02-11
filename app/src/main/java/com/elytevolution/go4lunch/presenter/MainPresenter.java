@@ -11,7 +11,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.view.activity.DetailsActivity;
 import com.facebook.login.LoginManager;
@@ -26,12 +25,10 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
 import androidx.core.app.ActivityCompat;
 
 import static android.app.Activity.RESULT_CANCELED;

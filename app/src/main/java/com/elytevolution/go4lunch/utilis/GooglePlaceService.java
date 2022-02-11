@@ -1,7 +1,6 @@
 package com.elytevolution.go4lunch.utilis;
 
 import com.elytevolution.go4lunch.model.NearBySearch;
-
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

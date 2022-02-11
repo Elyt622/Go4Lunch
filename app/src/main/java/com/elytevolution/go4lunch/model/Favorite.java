@@ -4,16 +4,14 @@ import java.util.List;
 
 public class Favorite {
 
-    private String uid;
+    private final String uid;
 
-    private List<String> idPlace;
+    private final List<String> idPlace;
 
     public Favorite(List<String> idPlace, String uid) {
         this.idPlace = idPlace;
         this.uid = uid;
     }
-
-    public Favorite(){}
 
     public List<String> getIdPlace() {
         return idPlace;

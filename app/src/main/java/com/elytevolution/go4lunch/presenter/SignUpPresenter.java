@@ -3,10 +3,8 @@ package com.elytevolution.go4lunch.presenter;
 import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
-
 import static android.content.ContentValues.TAG;
 import static com.elytevolution.go4lunch.firestorerequest.UserHelper.createUser;
 

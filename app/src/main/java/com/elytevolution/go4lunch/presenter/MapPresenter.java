@@ -1,7 +1,6 @@
 package com.elytevolution.go4lunch.presenter;
 
 import android.util.Log;
-
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
 import com.google.android.gms.maps.GoogleMap;
@@ -9,12 +8,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import androidx.annotation.Nullable;
-
 import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.getParticipation;
 
 public class MapPresenter implements GooglePlaceCalls.Callbacks{

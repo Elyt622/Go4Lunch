@@ -5,7 +5,6 @@ import com.elytevolution.go4lunch.api.Go4LunchLiveApi;
 import com.elytevolution.go4lunch.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import java.util.ArrayList;
 import java.util.List;
 

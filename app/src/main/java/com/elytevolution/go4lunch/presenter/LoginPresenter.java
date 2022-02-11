@@ -3,8 +3,12 @@ package com.elytevolution.go4lunch.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.elytevolution.go4lunch.view.activity.LoginActivity;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -23,18 +27,12 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.identity.TwitterLoginButton;
-
 import static com.elytevolution.go4lunch.firestorerequest.UserHelper.createUser;
 import static com.elytevolution.go4lunch.firestorerequest.UserHelper.getUsersCollection;
 import static com.elytevolution.go4lunch.firestorerequest.UserHelper.updateUserFcmToken;
+
+import java.util.Arrays;
 
 public class LoginPresenter {
 
@@ -54,12 +52,9 @@ public class LoginPresenter {
 
     private Activity activity;
 
-    private final TwitterLoginButton twitterLoginButton;
-
-    public LoginPresenter(LoginPresenter.View view, Activity activity, TwitterLoginButton twitterLoginButton) {
+    public LoginPresenter(LoginPresenter.View view, Activity activity) {
         this.view = view;
         this.activity = activity;
-        this.twitterLoginButton = twitterLoginButton;
     }
 
     public void handleResponseAfterSignIn(int resultCode, int requestCode, Intent data){
@@ -74,9 +69,6 @@ public class LoginPresenter {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
             }
-        }
-        else if(requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE){
-            twitterLoginButton.onActivityResult(requestCode, resultCode, data);
         }
         else if(requestCode == FacebookSdk.getCallbackRequestCodeOffset()){
             callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -127,38 +119,28 @@ public class LoginPresenter {
                 });
     }
 
-    private void firebaseAuthWithTwitter(TwitterSession session){
-        AuthCredential credential = TwitterAuthProvider.getCredential(session.getAuthToken().token,
-                session.getAuthToken().secret);
-        auth.signInWithCredential(credential).addOnCompleteListener(activity, task -> {
-            if(task.isSuccessful()) {
-                currentUser = task.getResult().getUser();
-                getFCMToken();
-                if (currentUser != null) view.navigateToMainActivity();
-            }
-        });
-    }
-
-    public void configureAuthFacebook(LoginButton facebookLoginButton) {
+    public void configureAuthFacebook(ImageButton facebookLoginButton) {
         callbackManager = CallbackManager.Factory.create();
-        facebookLoginButton.setPermissions("email", "public_profile");
-        facebookLoginButton.registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        firebaseAuthWithFacebook(loginResult.getAccessToken().getToken());
-                    }
+        facebookLoginButton.setOnClickListener(v -> {
+            LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("email", "public_profile"));
+            LoginManager.getInstance().registerCallback(callbackManager,
+                    new FacebookCallback<LoginResult>() {
+                        @Override
+                        public void onSuccess(LoginResult loginResult) {
+                            firebaseAuthWithFacebook(loginResult.getAccessToken().getToken());
+                        }
 
-                    @Override
-                    public void onCancel() {
-                        Log.d(TAG, "Callback result: Canceled");
-                    }
+                        @Override
+                        public void onCancel() {
+                            Log.d(TAG, "Callback result: Canceled");
+                        }
 
-                    @Override
-                    public void onError(FacebookException exception) {
-                        Log.d(TAG, "Callback result: Error");
-                    }
-                });
+                        @Override
+                        public void onError(FacebookException exception) {
+                            Log.d(TAG, "Callback result: Error");
+                        }
+                    });
+        });
     }
 
     public void configureAuthGoogle(String idWebClient){
@@ -173,20 +155,6 @@ public class LoginPresenter {
     private void signInWithGoogle() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
         view.navigateToLoginGoogleScreen(signInIntent);
-    }
-
-    private void configAuthTwitter() {
-        twitterLoginButton.setCallback(new Callback<TwitterSession>() {
-            @Override
-            public void success(Result<TwitterSession> result) {
-                firebaseAuthWithTwitter(result.data);
-            }
-
-            @Override
-            public void failure(TwitterException exception) {
-                Log.d(TAG, "Twitter Authentication Failure");
-            }
-        });
     }
 
     public void createNewUser(String fcmToken) {
@@ -212,7 +180,6 @@ public class LoginPresenter {
 
     public void onCreate() {
         initFirebaseAuth();
-        configAuthTwitter();
     }
 
     public void onDestroy(){

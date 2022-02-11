@@ -15,6 +15,7 @@
     <string name="password_login_activity">Mot de passe</string>
     <string name="or_login_activity">OU</string>
     <string name="sign_up_login_activity">S\'inscrire</string>
+    <string name="no_have_an_account">Vous n\'avez pas de compte ?</string>
     <string name="enable_location_main_activity">Vous devez activer la localisation pour utiliser l\'application</string>
     <string name="activate_localization_main_activity">Activer votre localisation</string>
     <string name="sign_up_signup_activity">S\'inscrire</string>

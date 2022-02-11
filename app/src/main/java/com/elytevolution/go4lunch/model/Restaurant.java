@@ -4,25 +4,26 @@ import androidx.annotation.Nullable;
 
 public class Restaurant {
 
-    private String idPlace;
+    private final String idPlace;
 
-    private String name;
-
-    @Nullable
-    private String address;
+    private final String name;
 
     @Nullable
-    private Boolean currentOpen;
-
-    private double lgt, lat;
+    private final String address;
 
     @Nullable
-    private Double rating;
+    private final Boolean currentOpen;
+
+    private final double lgt;
+    private final double lat;
+
+    @Nullable
+    private final Double rating;
 
     private int participation;
 
     @Nullable
-    private String photoRef;
+    private final String photoRef;
 
     public Restaurant(String idPlace, String name, @Nullable String address, @Nullable Boolean currentOpen, double lgt, double lat, int participation, @Nullable Double rating, @Nullable String photoRef){
         this.idPlace = idPlace;

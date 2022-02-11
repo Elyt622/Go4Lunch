@@ -1,20 +1,15 @@
 package com.elytevolution.go4lunch.presenter;
 
 import android.util.Log;
-import android.view.View;
-
 import com.elytevolution.go4lunch.api.Go4LunchApi;
 import com.elytevolution.go4lunch.api.Go4LunchLiveApi;
 import com.elytevolution.go4lunch.model.NearBySearch;
 import com.elytevolution.go4lunch.model.Restaurant;
 import com.elytevolution.go4lunch.utilis.GooglePlaceCalls;
 import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import androidx.annotation.Nullable;
-
 import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.createParticipation;
 import static com.elytevolution.go4lunch.firestorerequest.ParticipationHelper.getParticipationCollection;
 

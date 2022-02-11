@@ -1,11 +1,8 @@
 package com.elytevolution.go4lunch.utilis;
 
 import android.util.Log;
-
 import com.elytevolution.go4lunch.model.NearBySearch;
-
 import java.lang.ref.WeakReference;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import retrofit2.Call;

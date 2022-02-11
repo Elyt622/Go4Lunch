@@ -4,17 +4,17 @@ import androidx.annotation.Nullable;
 
 public class User {
 
-    private String fcmToken;
+    private final String fcmToken;
 
-    private String uid;
+    private final String uid;
 
-    private String displayName;
+    private final String displayName;
 
-    private String email;
+    private final String email;
 
-    @Nullable private String urlPicture;
+    @Nullable private final String urlPicture;
 
-    private String idPlace;
+    private final String idPlace;
 
     public User(String uid, String displayName, String email, @Nullable String urlPicture, String idPlace, String fcmToken) {
         this.uid = uid;
@@ -24,8 +24,6 @@ public class User {
         this.idPlace = idPlace;
         this.fcmToken = fcmToken;
     }
-
-    public User(){ }
 
     public String getUid() {
         return uid;

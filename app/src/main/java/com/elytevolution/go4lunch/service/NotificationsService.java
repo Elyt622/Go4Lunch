@@ -8,12 +8,10 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.util.Log;
-
 import com.elytevolution.go4lunch.R;
 import com.elytevolution.go4lunch.view.activity.MainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 

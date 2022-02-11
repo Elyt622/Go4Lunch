@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-
 import com.elytevolution.go4lunch.api.Go4LunchApi;
 import com.elytevolution.go4lunch.model.User;
 import com.google.android.gms.common.api.ApiException;
@@ -15,11 +14,9 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import static com.elytevolution.go4lunch.firestorerequest.FavoriteHelper.createFavorite;
 import static com.elytevolution.go4lunch.firestorerequest.FavoriteHelper.getFavorite;
 import static com.elytevolution.go4lunch.firestorerequest.FavoriteHelper.updateFavorite;
