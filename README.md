@@ -32,7 +32,7 @@ Cliquez sur le bouton "Clone or Download"
 Téléchargez le projet en cliquant sur "Download ZIP"
 
 ### Cloner l'application
-Cloner le projet à partir d'un terminal avec la commande: "git clone git@github.com:Elyt622/Todoc.git"
+Cloner le projet à partir d'un terminal avec la commande: "git clone git@github.com:Elyt622/Go4Lunch.git"
 
 ### Installation
 Importer le projet dans Android Studio
