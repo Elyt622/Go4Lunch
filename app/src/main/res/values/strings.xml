@@ -1,10 +1,10 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="com.google.android.geo.API_KEY" translatable="false">@string/google_maps_key</string>
+<resources>
     <string name="app_name" translatable="false">Go4Lunch</string>
-    <string name="facebook_application_id" translatable="false">2626477007572234</string>
-    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb420763051691337</string>
-    <string name="com.twitter.sdk.android.CONSUMER_KEY" translatable="false">6IuzLp8OfhxCvC4VmDoWM4eH8</string>
-    <string name="com.twitter.sdk.android.CONSUMER_SECRET" translatable="false">E5qg3dpVEZIbo6QZPZV9yKbfSRbgnFrEmj24dFTYI9Uv64HLfg</string>
+
+    <string name="facebook_app_id" translatable="false">1600505523710359</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb1600505523710359</string>
+    <string name="facebook_client_token" translatable="false">75ee9cdf626e25bdc419b572b5d556a0</string>
+
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="restaurant_message_join">want to join</string>
