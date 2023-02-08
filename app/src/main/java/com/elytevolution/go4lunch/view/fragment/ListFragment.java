@@ -44,7 +44,7 @@ public class ListFragment extends Fragment implements ListPresenter.View{
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        presenter = new ListPresenter(this, location, getString(R.string.google_maps_key), DI.getNewInstanceApiService());
+        presenter = new ListPresenter(this, location, getResources().getString(R.string.maps_api_key), DI.getNewInstanceApiService());
         presenter.onCreate();
 
         configureAdapter(view, recyclerView, presenter);
@@ -72,7 +72,7 @@ public class ListFragment extends Fragment implements ListPresenter.View{
 
     private void configureSwipeRefreshLayout(){
         swipeRefreshLayout.setOnRefreshListener(() ->
-                presenter.executeHttpRequestWithRetrofit(getString(R.string.google_maps_key), location, RADIUS, TYPE));
+                presenter.executeHttpRequestWithRetrofit(getString(R.string.maps_api_key), location, RADIUS, TYPE));
     }
 
     @Override

@@ -42,7 +42,7 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter = new MapPresenter(this, getString(R.string.google_maps_key), location);
+        presenter = new MapPresenter(this, getResources().getString(R.string.maps_api_key), location);
         presenter.onCreate();
     }
 
@@ -59,7 +59,7 @@ public class MapFragment extends Fragment implements MapPresenter.View, OnMapRea
 
     @SuppressLint("MissingPermission")
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         if(permissionIsEnable()) {
 
             googleMap.setMyLocationEnabled(true);

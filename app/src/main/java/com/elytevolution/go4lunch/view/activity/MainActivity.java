@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         View view = binding.getRoot();
         setContentView(view);
 
-        presenter = new MainPresenter(this, getString(R.string.google_maps_key), this);
+        presenter = new MainPresenter(this, getString(R.string.maps_api_key), this);
 
         configureNavigationView();
 
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         return true;
     }
