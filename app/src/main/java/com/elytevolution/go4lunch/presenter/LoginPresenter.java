@@ -1,21 +1,23 @@
 package com.elytevolution.go4lunch.presenter;
 
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.createUser;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.getUsersCollection;
+import static com.elytevolution.go4lunch.firestorerequest.UserHelper.updateUserFcmToken;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.elytevolution.go4lunch.view.activity.LoginActivity;
+import androidx.annotation.NonNull;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -28,9 +30,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.messaging.FirebaseMessaging;
-import static com.elytevolution.go4lunch.firestorerequest.UserHelper.createUser;
-import static com.elytevolution.go4lunch.firestorerequest.UserHelper.getUsersCollection;
-import static com.elytevolution.go4lunch.firestorerequest.UserHelper.updateUserFcmToken;
 
 import java.util.Arrays;
 
@@ -124,7 +123,7 @@ public class LoginPresenter {
         facebookLoginButton.setOnClickListener(v -> {
             LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("email", "public_profile"));
             LoginManager.getInstance().registerCallback(callbackManager,
-                    new FacebookCallback<LoginResult>() {
+                    new FacebookCallback<>() {
                         @Override
                         public void onSuccess(LoginResult loginResult) {
                             firebaseAuthWithFacebook(loginResult.getAccessToken().getToken());
@@ -136,7 +135,7 @@ public class LoginPresenter {
                         }
 
                         @Override
-                        public void onError(FacebookException exception) {
+                        public void onError(@NonNull FacebookException exception) {
                             Log.d(TAG, "Callback result: Error");
                         }
                     });
